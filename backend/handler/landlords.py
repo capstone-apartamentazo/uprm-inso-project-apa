@@ -16,26 +16,26 @@ class LandlordHandler:
     return data
 
   def getAll(self):
-    landlords = self.landlords.getAll()
-    if landlords:
+    daoLandlords = self.landlords.getAll()
+    if daoLandlords:
       result = []
-      for landlord in landlords:
-        result.append(self.dictionary(landlord))
+      for row in daoLandlords:
+        result.append(self.dictionary(row))
       return jsonify(result), 200
     else:
       return jsonify('Error Occured'), 405
   
   def getById(self, json):
-    landlord = self.landlords.getById(json['landlord_id'])
-    if landlord:
-      return jsonify(self.dictionary(landlord[0])), 200
+    daoLandlord = self.landlords.getById(json['landlord_id'])
+    if daoLandlord:
+      return jsonify(self.dictionary(daoLandlord[0])), 200
     else:
       return jsonify('Landlord Not Found'), 405
 
   def updateLandlord(self, json):
-    landlord = self.getById(json)
-    if landlord:
-      print(landlord)
+    daoLandlord = self.getById(json)
+    if daoLandlord:
+      print(daoLandlord)
       id = json['landlord_id']
       name = json['landlord_name']
       email = json['landlord_email']
