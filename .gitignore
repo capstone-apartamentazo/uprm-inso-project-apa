@@ -1,2 +1,3 @@
-
+__pycache__/
+backend/util/init.sql
 .DS_Store
