@@ -31,49 +31,64 @@ class TenantHandler:
     else:
       return jsonify('Tenant Not Found'), 405
 
-  def updateTenant(self, json):
-    daoTenant = self.getById(json)
-    if daoTenant:
-      id = json['tenant_id']
-      name = json['tenant_name']
-      email = json['tenant_email']
-      password = json['tenant_password']
-      phone = json['tenant_phone']
-      updatedTenant = self.tenants.updateTenant(id, name, email, password, phone)
-      return jsonify(self.dictionary(updatedTenant)), 200
-    else:
-      return jsonify('Tenant Not Found'), 404
-
-  def emailTaken(self, email):
-    return self.tenants.getEmail(email)
-  
-  def phoneTaken(self, number):
-    return self.tenants.getPhoneNumber(number)
-
   def addTenant(self, json):
     name = json['tenant_name']
     email = json['tenant_email'].lower()
     password = json['tenant_password']
-    phoneNumber = json['tenant_phone']
-
-    try:
-      if not len(name.strip()):
-        return jsonify('Empty Name'), 400
-      if not len(email.strip()):
-        return jsonify('Empty Email'), 400
-      if self.emailTaken(email):
-        return jsonify('Email Taken'), 400
-      if not len(password.strip()):
-        return jsonify('Empty Password'), 400
-      if not len(phoneNumber.strip()):
-        return jsonify('Empty Phone Number'), 400
-      if self.phoneTaken(phoneNumber):
-        return jsonify('Phone Number Taken'), 400
-    except:
-      return jsonify('Invalid Input'), 400
-
-    newTenant = self.tenants.addTenant(name, email, password, phoneNumber)
-    if newTenant:
-      return jsonify(self.dictionary(newTenant)), 201
+    phone = json['tenant_phone']
+    valid, reason = self.checkInput(0, name, email, password, phone)
+    if valid:
+      newTenant = self.tenants.addTenant(name, email, password, phone)
+      if newTenant:
+        return jsonify(self.dictionary(newTenant)), 201
+      else:
+        return jsonify('Error adding Tenant'), 500
     else:
-      return jsonify('Error adding Tenant'), 500
+      # returns reason why input was invalid
+      return jsonify(reason), 400
+
+  def updateTenant(self, json):
+    identifier = json['tenant_id']
+    name = json['tenant_name']
+    email = json['tenant_email']
+    password = json['tenant_password']
+    phone = json['tenant_phone']
+    valid, reason = self.checkInput(identifier, name, email, password, phone)
+    # update tenant if input is valid
+    if valid:
+      updatedTenant = self.tenants.updateTenant(identifier, name, email, password, phone)
+      if updatedTenant:
+        return jsonify(self.dictionary(updatedTenant)), 200
+      else:
+        return jsonify('Error updating Tenant'), 500
+    else:
+      # returns reason why input was invalid
+      return jsonify(reason), 400
+
+  def checkInput(self, identifier, name, email, password, phone):
+    # strip function removes any spaces given
+    try:
+      if identifier > 0 and not self.tenants.getById(identifier):
+        return False, 'Tenant Not Found'
+      if not len(name.strip()):
+        return False, 'Empty Name'
+      if not len(email.strip()):
+        return False, 'Empty Email'
+      if self.emailTaken(email, identifier):
+        return False, 'Email Taken'
+      if not len(password.strip()):
+        return False, 'Empty Password'
+      if not len(phone.strip()):
+        return False, 'Empty Phone Number'
+      if self.phoneTaken(phone, identifier):
+        return False, 'Phone Number Taken'
+    except:
+      return False, 'Invalid Input'
+    else:
+      return True , ''
+
+  def emailTaken(self, email, identifier):
+    return self.tenants.getEmail(email, identifier)
+  
+  def phoneTaken(self, number, identifier):
+    return self.tenants.getPhoneNumber(number, identifier)
