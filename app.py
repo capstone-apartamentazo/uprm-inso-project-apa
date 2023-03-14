@@ -27,8 +27,8 @@ def updateLandlord():
 
 # TODO
 @app.route('/apartamentazo/landlords/new', methods=['POST'])
-def newLandlord():
-  return None
+def addLandlord():
+  return LandlordHandler().addLandlord(request.json)
 
 # TODO
 @app.route('/apartamentazo/landlords/login', methods=['POST'])
@@ -55,8 +55,8 @@ def updateTenant():
 
 # TODO
 @app.route('/apartamentazo/tenants/new', methods=['POST'])
-def newTenant():
-  return None
+def addTenant():
+  return TenantHandler().addTenant(request.json)
 
 # TODO
 @app.route('/apartamentazo/tenants/login', methods=['POST'])
