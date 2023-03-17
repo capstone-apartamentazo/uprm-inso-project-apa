@@ -3,6 +3,7 @@ from backend.util.config import app
 from backend.handler.landlords import LandlordHandler
 from backend.handler.tenants import TenantHandler
 from backend.handler.messages import MessageHandler
+from backend.handler.accommodations import AccommodationHandler
 
 @app.route('/')
 def home():
@@ -20,23 +21,23 @@ def getLandlordById():
     return LandlordHandler().getById(request.json)
 
 # TODO
-@app.route('/apartamentazo/landlords', methods=['DELETE'])
-def removeLandlord():
+@app.route('/apartamentazo/landlords/login', methods=['POST'])
+def loginLandlord():
   return None
-
-# TODO add restrictions when updating user
-@app.route('/apartamentazo/landlords', methods=['PUT'])
-def updateLandlord():
-    return LandlordHandler().updateLandlord(request.json)
 
 # TODO add restrictions when creating user
 @app.route('/apartamentazo/landlords/new', methods=['POST'])
 def addLandlord():
   return LandlordHandler().addLandlord(request.json)
 
+# TODO add restrictions when updating user
+@app.route('/apartamentazo/landlords', methods=['PUT'])
+def updateLandlord():
+    return LandlordHandler().updateLandlord(request.json)
+
 # TODO
-@app.route('/apartamentazo/landlords/login', methods=['POST'])
-def loginLandlord():
+@app.route('/apartamentazo/landlords', methods=['DELETE'])
+def removeLandlord():
   return None
 
 """
@@ -51,23 +52,23 @@ def getTenantById():
     return TenantHandler().getById(request.json)
 
 # TODO
-@app.route('/apartamentazo/tenants', methods=['DELETE'])
-def removeTenant():
+@app.route('/apartamentazo/tenants/login', methods=['POST'])
+def loginTenant():
   return None
-
-# TODO add restrictions when updating user
-@app.route('/apartamentazo/tenants', methods=['PUT'])
-def updateTenant():
-    return TenantHandler().updateTenant(request.json)
 
 # TODO add restrictions when creating user
 @app.route('/apartamentazo/tenants/new', methods=['POST'])
 def addTenant():
   return TenantHandler().addTenant(request.json)
 
+# TODO add restrictions when updating user
+@app.route('/apartamentazo/tenants', methods=['PUT'])
+def updateTenant():
+    return TenantHandler().updateTenant(request.json)
+
 # TODO
-@app.route('/apartamentazo/tenants/login', methods=['POST'])
-def loginTenant():
+@app.route('/apartamentazo/tenants', methods=['DELETE'])
+def removeTenant():
   return None
 
 """
@@ -96,18 +97,45 @@ def tenantSendsMessage():
   return MessageHandler().tenantSendsMessage(request.json)
 
 # TODO
-@app.route('/apartamentazo/messages', methods=['DELETE'])
-def removeMessage():
-  return None
-
-# TODO
 @app.route('/apartamentazo/messages', methods=['PUT'])
 def updateMessage():
     return None
 
+# TODO
+@app.route('/apartamentazo/messages', methods=['DELETE'])
+def removeMessage():
+  return None
+
 """
 ACCOMMODATIONS (LANDLORDS)
 """
+@app.route('/apartamentazo/accommodations/all')
+def getAllAccommodations():
+  return AccommodationHandler().getAll()
+
+@app.route('/apartamentazo/accommodations', methods=['POST'])
+def getAccommodationById():
+    return AccommodationHandler().getById(request.json)
+
+@app.route('/apartamentazo/accommodations/landlord', methods=['POST'])
+def getAccommodationByLandlordId():
+    return AccommodationHandler().getByLandlordId(request.json)
+
+# TODO add restrictions when creating accommodation
+@app.route('/apartamentazo/accommodations/new', methods=['POST'])
+def addAccommodation():
+  return None
+
+# TODO add restrictions when updating accommodation
+@app.route('/apartamentazo/accommodations', methods=['PUT'])
+def updateAccommodation():
+    return None
+
+# TODO
+@app.route('/apartamentazo/accommodations', methods=['DELETE'])
+def removeAccommodation():
+  return None
+
 
 """
 SHARED AMENITIES (ACCOMMODATIONS)
