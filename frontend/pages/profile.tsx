@@ -1,7 +1,7 @@
 
 
 import Layout from '@/components/Layout';
-import EButton from '@/components/eButton';
+import Listing from '@/components/Listing';
 import Link from 'next/link';
 
 const uname = "Bruce Wayne"
@@ -14,7 +14,7 @@ const Profile = () => {
         <Layout>
 
             <main className="grid grid-cols-5 gap-4 py-24">
-                <div className='grid  gap-4 pl-4 '>
+                <div className='grid  gap-4 pl-10 '>
 
                     
                     <div className="flex justify-center text-center" >
@@ -65,8 +65,10 @@ const Profile = () => {
 
 
                 </div>
-                <div className='text-center col-span-4 pr-4 '>
-                    <div className='ring-1 ring-stone-200'><h1 >Data</h1></div>
+                <div className='text-center col-span-4 pr-10 '>
+                    <div className='ring-1 ring-stone-200'>
+                        <Listing title='Bosque 1' address='calle bosque' features='1 bed' price="$200/month" href='/'/>
+                    </div>
                 </div>
             </main>
         </Layout>
