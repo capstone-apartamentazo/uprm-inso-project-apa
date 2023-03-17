@@ -31,3 +31,27 @@ class MessageHandler:
       return jsonify(self.dictionary(daoMessage)), 200
     else:
       return jsonify('Message Not Found'), 405
+  
+  def getConversation(self, json):
+    daoMessages = self.messages.getConversation(json['landlord_id'], json['tenant_id'])
+    if daoMessages:
+      result = []
+      for row in daoMessages:
+        result.append(self.dictionary(row))
+      return jsonify(result), 200
+    else:
+      return jsonify('Conversation Not Found'), 405
+
+  def landlordSendsMessage(self, json):
+    daoMessage = self.messages.landlordSendsMessage(json['landlord_id'], json['tenant_id'], json['msg_content'])
+    if daoMessage:
+      return jsonify(self.dictionary(daoMessage)), 200
+    else:
+      return jsonify('Messages Not Found'), 405
+
+  def tenantSendsMessage(self, json):
+    daoMessage = self.messages.tenantSendsMessage(json['landlord_id'], json['tenant_id'], json['msg_content'])
+    if daoMessage:
+      return jsonify(self.dictionary(daoMessage)), 200
+    else:
+      return jsonify('Messages Not Found'), 405

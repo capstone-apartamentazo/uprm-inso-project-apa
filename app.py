@@ -81,6 +81,20 @@ def getAllMessages():
 def getMessageByPrimaryKeys():
     return MessageHandler().getByPrimaryKeys(request.json)
 
+@app.route('/apartamentazo/messages/conversation', methods=['POST'])
+def getConversation():
+    return MessageHandler().getConversation(request.json)
+
+# TODO add restrictions when creating messages
+@app.route('/apartamentazo/landlord/sends/message', methods=['POST'])
+def landlordSendsMessage():
+  return MessageHandler().landlordSendsMessage(request.json)
+
+# TODO add restrictions when creating messages
+@app.route('/apartamentazo/tenant/sends/message', methods=['POST'])
+def tenantSendsMessage():
+  return MessageHandler().tenantSendsMessage(request.json)
+
 # TODO
 @app.route('/apartamentazo/messages', methods=['DELETE'])
 def removeMessage():
@@ -90,11 +104,6 @@ def removeMessage():
 @app.route('/apartamentazo/messages', methods=['PUT'])
 def updateMessage():
     return None
-
-# TODO
-@app.route('/apartamentazo/messages/send', methods=['POST'])
-def sendMessage():
-  return None
 
 """
 ACCOMMODATIONS (LANDLORDS)
