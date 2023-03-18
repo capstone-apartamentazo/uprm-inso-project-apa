@@ -31,11 +31,14 @@ class SharedAmenities:
     cursor.close()
     return res
 
-  # def addAccommodation(self, street, number, city, state, country, zipcode, description, landlord):
-  #   query = 'INSERT INTO accommodations (accm_street, accm_number, accm_city, accm_state, accm_country, accm_zipcode, accm_description, landlord_id) \
-  #           VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING *'
-  #   cursor = db.cursor()
-  #   cursor.execute(query, (street, number, city, state, country, zipcode, description, landlord))
-  #   res = cursor.fetchone()
-  #   cursor.close()
-  #   return res
+  def updateSharedAmenities(self, identifier, bedrooms, bathrooms, kitchen, washer, dryer, internet, pets_allowed):
+    query = 'UPDATE shared_amenities \
+            SET bedrooms = %s, bathrooms = \'%s\', kitchen = %s, washer = %s, dryer = %s, internet = %s, pets_allowed = %s \
+            WHERE shared_amenities_id = %s \
+            RETURNING *'
+    cursor = db.cursor()
+    cursor.execute(query, (bedrooms, bathrooms, kitchen, washer, dryer, internet, pets_allowed, identifier))
+    res = cursor.fetchone()
+    db.commit()
+    cursor.close()
+    return res

@@ -51,3 +51,14 @@ class SharedAmenitiesHandler:
       return jsonify(self.dictionary(daoAmenities)), 200
     else:
       return jsonify('Error adding Accommodation'), 405
+
+  def updateSharedAmenities(self, json):
+    identifier = json['shared_amenities_id']
+    bedrooms, bathrooms = json['bedrooms'], json['bathrooms']
+    kitchen, washer, dryer = json['kitchen'], json['washer'], json['dryer']
+    internet, pets_allowed = json['internet'], json['pets_allowed']
+    updatedAmenities = self.amenities.updateSharedAmenities(identifier, bedrooms, bathrooms, kitchen, washer, dryer, internet, pets_allowed)
+    if updatedAmenities:
+      return jsonify(self.dictionary(updatedAmenities)), 200
+    else:
+      return jsonify('Error updating Shared Amenities'), 500

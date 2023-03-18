@@ -156,14 +156,15 @@ def getSharedAmenitiesByAccommodationId():
     return SharedAmenitiesHandler().getByAccommodationId(request.json)
 
 # TODO add restrictions when creating shared amenities
+# only uses accm_id field
 @app.route('/apartamentazo/accommodations/amenities/add', methods=['POST'])
 def addSharedAmenities():
-  return None
+  return SharedAmenitiesHandler().addSharedAmenities(request.json)
 
 # TODO add restrictions when updating shared amenities
 @app.route('/apartamentazo/accommodations/amenities', methods=['PUT'])
 def updateSharedAmenities():
-    return None
+    return SharedAmenitiesHandler().updateSharedAmenities(request.json)
 
 # TODO
 @app.route('/apartamentazo/accommodations/amenities', methods=['DELETE'])
