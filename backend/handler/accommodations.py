@@ -44,3 +44,14 @@ class AccommodationHandler:
       return jsonify(result), 200
     else:
       return jsonify('Accommodations Not Found'), 405
+
+  def addAccommodation(self, json):
+    daoAccommodation = self.accommodations.addAccommodation(
+                        json['accm_street'], json['accm_number'], json['accm_city'], 
+                        json['accm_state'], json['accm_country'], json['accm_zipcode'], 
+                        json['accm_description'], json['landlord_id'])
+    
+    if daoAccommodation:
+      return jsonify(self.dictionary(daoAccommodation)), 200
+    else:
+      return jsonify('Error adding Accommodation'), 405

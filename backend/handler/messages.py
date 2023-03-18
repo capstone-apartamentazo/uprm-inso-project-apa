@@ -47,11 +47,11 @@ class MessageHandler:
     if daoMessage:
       return jsonify(self.dictionary(daoMessage)), 200
     else:
-      return jsonify('Messages Not Found'), 405
+      return jsonify('Error sending Message'), 405
 
   def tenantSendsMessage(self, json):
     daoMessage = self.messages.tenantSendsMessage(json['landlord_id'], json['tenant_id'], json['msg_content'])
     if daoMessage:
       return jsonify(self.dictionary(daoMessage)), 200
     else:
-      return jsonify('Messages Not Found'), 405
+      return jsonify('Error sending Message'), 405

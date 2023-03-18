@@ -124,7 +124,7 @@ def getAccommodationByLandlordId():
 # TODO add restrictions when creating accommodation
 @app.route('/apartamentazo/accommodations/new', methods=['POST'])
 def addAccommodation():
-  return None
+  return AccommodationHandler().addAccommodation(request.json)
 
 # TODO add restrictions when updating accommodation
 @app.route('/apartamentazo/accommodations', methods=['PUT'])
