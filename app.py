@@ -5,6 +5,7 @@ from backend.handler.tenants import TenantHandler
 from backend.handler.messages import MessageHandler
 from backend.handler.accommodations import AccommodationHandler
 from backend.handler.shared_amenities import SharedAmenitiesHandler
+from backend.handler.notices import NoticeHandler
 
 @app.route('/')
 def home():
@@ -155,12 +156,6 @@ def getSharedAmenitiesById():
 def getSharedAmenitiesByAccommodationId():
     return SharedAmenitiesHandler().getByAccommodationId(request.json)
 
-# TODO add restrictions when creating shared amenities
-# only uses accm_id field
-@app.route('/apartamentazo/accommodations/amenities/add', methods=['POST'])
-def addSharedAmenities():
-  return SharedAmenitiesHandler().addSharedAmenities(request.json)
-
 # TODO add restrictions when updating shared amenities
 @app.route('/apartamentazo/accommodations/amenities', methods=['PUT'])
 def updateSharedAmenities():
@@ -174,6 +169,34 @@ def removeSharedAmenities():
 """
 NOTICES (ACCOMMODATIONS)
 """
+@app.route('/apartamentazo/notices/all')
+def getAllNotices():
+  return NoticeHandler().getAll()
+
+# TODO
+@app.route('/apartamentazo/notices', methods=['POST'])
+def getNoticeById():
+    return NoticeHandler().getById(request.json)
+
+# TODO
+@app.route('/apartamentazo/accommodations/notices', methods=['POST'])
+def getNoticesByAccommodationId():
+    return NoticeHandler().getByAccommodationId(request.json)
+
+# TODO add restrictions when creating notices
+@app.route('/apartamentazo/accommodations/notices/add', methods=['POST'])
+def addNotice():
+  return NoticeHandler().addNotice(request.json)
+
+# TODO add restrictions when updating notices
+@app.route('/apartamentazo/accommodations/notices', methods=['PUT'])
+def updateNotice():
+    return NoticeHandler().updateNotice(request.json)
+
+# TODO
+@app.route('/apartamentazo/accommodations/notices', methods=['DELETE'])
+def removeNotice():
+  return None
 
 """
 REVIEWS (ACCOMMODATIONS AND TENANTS)
