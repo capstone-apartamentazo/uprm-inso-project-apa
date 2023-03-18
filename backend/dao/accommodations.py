@@ -29,23 +29,6 @@ class Accommodations:
     cursor = db.cursor()
     cursor.execute(query, (street, number, city, state, country, zipcode, description, landlord))
     res = cursor.fetchone()
+    db.commit()
     cursor.close()
     return res
-
-  # def landlordSendsMessage(self, landlord, tenant, content):
-  #   cursor = db.cursor()
-  #   cursor.execute('INSERT INTO messages (landlord_id, tenant_id, landlord_sent_msg, msg_content) \
-  #                   VALUES (%s, %s, true, \'%s\') RETURNING *' %(landlord, tenant, content))
-  #   res = cursor.fetchone()
-  #   db.commit()
-  #   cursor.close()
-  #   return res
-
-  # def tenantSendsMessage(self, landlord, tenant, content):
-  #   cursor = db.cursor()
-  #   cursor.execute('INSERT INTO messages (landlord_id, tenant_id, landlord_sent_msg, msg_content) \
-  #                   VALUES (%s, %s, false, \'%s\') RETURNING *' %(landlord, tenant, content))
-  #   res = cursor.fetchone()
-  #   db.commit()
-  #   cursor.close()
-  #   return res

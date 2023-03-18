@@ -1,9 +1,11 @@
 from flask import jsonify
 from backend.dao.accommodations import Accommodations
+from backend.dao.shared_amenities import SharedAmenities
 
 class AccommodationHandler:
   def __init__(self):
     self.accommodations = Accommodations()
+    self.amenities = SharedAmenities()
   
   def dictionary(self, row):
     data = {}
@@ -47,11 +49,15 @@ class AccommodationHandler:
 
   def addAccommodation(self, json):
     daoAccommodation = self.accommodations.addAccommodation(
-                        json['accm_street'], json['accm_number'], json['accm_city'], 
-                        json['accm_state'], json['accm_country'], json['accm_zipcode'], 
-                        json['accm_description'], json['landlord_id'])
-    
+      json['accm_street'], json['accm_number'], json['accm_city'], 
+      json['accm_state'], json['accm_country'], json['accm_zipcode'], 
+      json['accm_description'], json['landlord_id'])
+
     if daoAccommodation:
-      return jsonify(self.dictionary(daoAccommodation)), 200
+      daoAmenities = self.amenities.addSharedAmenities(daoAccommodation[0])
+      if daoAmenities:
+        return jsonify(self.dictionary(daoAccommodation)), 200
+      else:
+        jsonify('Error adding Shared Amenities to Accommodation'), 405
     else:
       return jsonify('Error adding Accommodation'), 405

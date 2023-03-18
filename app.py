@@ -4,6 +4,7 @@ from backend.handler.landlords import LandlordHandler
 from backend.handler.tenants import TenantHandler
 from backend.handler.messages import MessageHandler
 from backend.handler.accommodations import AccommodationHandler
+from backend.handler.shared_amenities import SharedAmenitiesHandler
 
 @app.route('/')
 def home():
@@ -140,6 +141,34 @@ def removeAccommodation():
 """
 SHARED AMENITIES (ACCOMMODATIONS)
 """
+@app.route('/apartamentazo/shared/amenities/all')
+def getAllSharedAmenities():
+  return SharedAmenitiesHandler().getAll()
+
+# TODO
+@app.route('/apartamentazo/shared/amenities', methods=['POST'])
+def getSharedAmenitiesById():
+    return SharedAmenitiesHandler().getById(request.json)
+
+# TODO
+@app.route('/apartamentazo/accommodations/amenities', methods=['POST'])
+def getSharedAmenitiesByAccommodationId():
+    return SharedAmenitiesHandler().getByAccommodationId(request.json)
+
+# TODO add restrictions when creating shared amenities
+@app.route('/apartamentazo/accommodations/amenities/add', methods=['POST'])
+def addSharedAmenities():
+  return None
+
+# TODO add restrictions when updating shared amenities
+@app.route('/apartamentazo/accommodations/amenities', methods=['PUT'])
+def updateSharedAmenities():
+    return None
+
+# TODO
+@app.route('/apartamentazo/accommodations/amenities', methods=['DELETE'])
+def removeSharedAmenities():
+  return None
 
 """
 NOTICES (ACCOMMODATIONS)
