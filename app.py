@@ -6,6 +6,7 @@ from backend.handler.messages import MessageHandler
 from backend.handler.accommodations import AccommodationHandler
 from backend.handler.shared_amenities import SharedAmenitiesHandler
 from backend.handler.notices import NoticeHandler
+from backend.handler.units import UnitHandler
 
 @app.route('/')
 def home():
@@ -205,6 +206,32 @@ REVIEWS (ACCOMMODATIONS AND TENANTS)
 """
 UNITS (ACCOMMODATIONS)
 """
+@app.route('/apartamentazo/units/all')
+def getAllUnits():
+  return UnitHandler().getAll()
+
+@app.route('/apartamentazo/units', methods=['POST'])
+def getUnitById():
+    return UnitHandler().getById(request.json)
+
+@app.route('/apartamentazo/accommodations/units', methods=['POST'])
+def getUnitsByAccommodationId():
+    return UnitHandler().getByAccommodationId(request.json)
+
+# TODO add restrictions when creating unit
+@app.route('/apartamentazo/units/add', methods=['POST'])
+def addUnit():
+  return UnitHandler().addUnit(request.json)
+
+# TODO add restrictions when updating unit
+@app.route('/apartamentazo/units', methods=['PUT'])
+def updateUnit():
+    return UnitHandler().updateUnit(request.json)
+
+# TODO
+@app.route('/apartamentazo/units', methods=['DELETE'])
+def removeUnit():
+  return None
 
 """
 PRIVATE AMENITIES (UNITS)
