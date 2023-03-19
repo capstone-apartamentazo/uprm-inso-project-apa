@@ -50,7 +50,7 @@ class SharedAmenitiesHandler:
     if daoAmenities:
       return jsonify(self.dictionary(daoAmenities)), 200
     else:
-      return jsonify('Error adding Accommodation'), 405
+      return jsonify('Error adding Shared Amenities'), 405
 
   def updateSharedAmenities(self, json):
     identifier = json['shared_amenities_id']

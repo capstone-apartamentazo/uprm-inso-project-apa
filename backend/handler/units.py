@@ -1,9 +1,11 @@
 from flask import jsonify
 from backend.dao.units import Units
+from backend.dao.private_amenities import PrivateAmenities
 
 class UnitHandler:
   def __init__(self):
     self.units = Units()
+    self.amenities = PrivateAmenities()
   
   def dictionary(self, row):
     data = {}
@@ -46,6 +48,11 @@ class UnitHandler:
   def addUnit(self, json):
     daoUnit = self.units.addUnit(json['shared'], json['price'], json['init_date'], json['end_date'], json['accm_id'])
     if daoUnit:
+      daoAmenities = self.amenities.addPrivateAmenities(daoUnit[0])
+      if daoAmenities:
+        return jsonify(self.dictionary(daoUnit)), 200
+      else:
+        jsonify('Error adding Private Amenities to Unit'), 405
       return jsonify(self.dictionary(daoUnit)), 200
     else:
       return jsonify('Error adding Unit'), 405

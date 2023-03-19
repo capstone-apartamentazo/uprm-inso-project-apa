@@ -7,6 +7,7 @@ from backend.handler.accommodations import AccommodationHandler
 from backend.handler.shared_amenities import SharedAmenitiesHandler
 from backend.handler.notices import NoticeHandler
 from backend.handler.units import UnitHandler
+from backend.handler.private_amenities import PrivateAmenitiesHandler
 
 @app.route('/')
 def home():
@@ -143,7 +144,7 @@ def removeAccommodation():
 """
 SHARED AMENITIES (ACCOMMODATIONS)
 """
-@app.route('/apartamentazo/shared/amenities/all')
+@app.route('/apartamentazo/accommodations/amenities/all')
 def getAllSharedAmenities():
   return SharedAmenitiesHandler().getAll()
 
@@ -170,7 +171,7 @@ def removeSharedAmenities():
 """
 NOTICES (ACCOMMODATIONS)
 """
-@app.route('/apartamentazo/notices/all')
+@app.route('/apartamentazo/accommodations/notices/all')
 def getAllNotices():
   return NoticeHandler().getAll()
 
@@ -236,6 +237,29 @@ def removeUnit():
 """
 PRIVATE AMENITIES (UNITS)
 """
+@app.route('/apartamentazo/units/amenities/all')
+def getAllPrivateAmenities():
+  return PrivateAmenitiesHandler().getAll()
+
+# TODO
+@app.route('/apartamentazo/private/amenities', methods=['POST'])
+def getPrivateAmenitiesById():
+    return PrivateAmenitiesHandler().getById(request.json)
+
+# TODO
+@app.route('/apartamentazo/units/amenities', methods=['POST'])
+def getPrivateAmenitiesByUnitId():
+    return PrivateAmenitiesHandler().getByUnitId(request.json)
+
+# TODO add restrictions when updating shared amenities
+@app.route('/apartamentazo/units/amenities', methods=['PUT'])
+def updatePrivateAmenities():
+    return PrivateAmenitiesHandler().updatePrivateAmenities(request.json)
+
+# TODO
+@app.route('/apartamentazo/units/amenities', methods=['DELETE'])
+def removePrivateAmenities():
+  return None
 
 """
 REQUESTS (UNITS AND TENANTS)
