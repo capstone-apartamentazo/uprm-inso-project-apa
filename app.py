@@ -8,6 +8,7 @@ from backend.handler.shared_amenities import SharedAmenitiesHandler
 from backend.handler.notices import NoticeHandler
 from backend.handler.units import UnitHandler
 from backend.handler.private_amenities import PrivateAmenitiesHandler
+from backend.handler.requests import RequestHandler
 
 @app.route('/')
 def home():
@@ -75,6 +76,7 @@ def updateTenant():
 def removeTenant():
   return None
 
+# TODO modify messages table with unique constraints
 """
 MESSAGES (LANDLORDS AND TENANTS)
 """
@@ -264,6 +266,54 @@ def removePrivateAmenities():
 """
 REQUESTS (UNITS AND TENANTS)
 """
+@app.route('/apartamentazo/requests/all')
+def getAllRequests():
+  return RequestHandler().getAll()
+
+# TODO
+@app.route('/apartamentazo/requests', methods=['POST'])
+def getRequestById():
+    return RequestHandler().getById(request.json)
+
+# TODO
+@app.route('/apartamentazo/units/requests', methods=['POST'])
+def getRequestsByUnitId():
+    return RequestHandler().getByUnitId(request.json)
+
+# TODO
+@app.route('/apartamentazo/tenants/requests', methods=['POST'])
+def getRequestsByTenantId():
+    return RequestHandler().getByTenantId(request.json)
+
+# TODO add restrictions when creating requests
+@app.route('/apartamentazo/requests/add', methods=['POST'])
+def addRequestWithoutTour():
+    return RequestHandler().addRequestWithoutTour(request.json)
+
+# TODO add restrictions when creating requests
+@app.route('/apartamentazo/requests/tour/add', methods=['POST'])
+def addRequestWithTour():
+    return RequestHandler().addRequestWithTour(request.json)
+
+# TODO add restrictions when updating requests
+@app.route('/apartamentazo/requests/tour', methods=['PUT'])
+def updateRequestTour():
+    return RequestHandler().updateRequestTour(request.json)
+
+# TODO add restrictions when updating requests
+@app.route('/apartamentazo/requests/landlords/approval', methods=['PUT'])
+def updateLandlordApproval():
+    return RequestHandler().updateLandlordApproval(request.json)
+
+# TODO add restrictions when updating requests
+@app.route('/apartamentazo/requests/tenants/approval', methods=['PUT'])
+def updateTenantApproval():
+    return RequestHandler().updateTenantApproval(request.json)
+
+# TODO
+@app.route('/apartamentazo/requests', methods=['DELETE'])
+def removeRequest():
+  return None
 
 """
 LEASES (UNITS AND TENANTS)
