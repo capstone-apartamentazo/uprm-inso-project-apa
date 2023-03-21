@@ -9,6 +9,7 @@ from backend.handler.notices import NoticeHandler
 from backend.handler.units import UnitHandler
 from backend.handler.private_amenities import PrivateAmenitiesHandler
 from backend.handler.requests import RequestHandler
+from backend.handler.leases import LeaseHandler
 
 @app.route('/')
 def home():
@@ -318,3 +319,41 @@ def removeRequest():
 """
 LEASES (UNITS AND TENANTS)
 """
+@app.route('/apartamentazo/leases/all')
+def getAllLeases():
+  return LeaseHandler().getAll()
+
+# TODO
+@app.route('/apartamentazo/leases', methods=['POST'])
+def getLeaseById():
+    return LeaseHandler().getById(request.json)
+
+# TODO
+@app.route('/apartamentazo/units/leases', methods=['POST'])
+def getLeasesByUnitId():
+    return LeaseHandler().getByUnitId(request.json)
+
+# TODO
+@app.route('/apartamentazo/tenants/leases', methods=['POST'])
+def getLeaseByTenantId():
+    return LeaseHandler().getByTenantId(request.json)
+
+# TODO add restrictions when creating leases
+@app.route('/apartamentazo/leases/add', methods=['POST'])
+def addLease():
+    return LeaseHandler().addLease(request.json)
+
+# TODO add restrictions when updating leases
+@app.route('/apartamentazo/leases', methods=['PUT'])
+def updateLease():
+    return LeaseHandler().updateLease(request.json)
+
+# TODO add restrictions when updating current tenant
+@app.route('/apartamentazo/leases/current/tenant', methods=['PUT'])
+def updateCurrentTenant():
+    return LeaseHandler().updateCurrentTenant(request.json)
+
+# TODO
+@app.route('/apartamentazo/leases', methods=['DELETE'])
+def removeLease():
+  return None
