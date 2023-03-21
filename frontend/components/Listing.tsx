@@ -1,5 +1,5 @@
 import React from 'react'
-
+//src="https://tecdn.b-cdn.net/img/new/standard/nature/186.jpg"
 
 type Props = {
     title: string,
@@ -14,10 +14,11 @@ const Listing: React.FC<Props> = ({title , address , features , price,href }) =>
     <div className="flex justify-center">
         <a href={href} data-te-ripple-init data-te-ripple-color="light">
         <div
-            className="block max-w-xs rounded-lg bg-white shadow-lg ring-1 ring-stone-200 dark:bg-neutral-700">
+            className="block max-w-full rounded-lg bg-white shadow-lg ring-1 ring-stone-200 dark:bg-neutral-700">
             
                 <img
-                    className="rounded-t-lg"
+                    className="rounded-t-lg  aspect-video h-40"
+                    
                     src="https://tecdn.b-cdn.net/img/new/standard/nature/186.jpg"
                     alt="" />
             
