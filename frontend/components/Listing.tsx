@@ -14,7 +14,7 @@ const Listing: React.FC<Props> = ({title , address , features , price,href }) =>
     <div className="flex justify-center">
         <a href={href} data-te-ripple-init data-te-ripple-color="light">
         <div
-            className="block max-w-sm rounded-lg bg-white shadow-lg ring-1 ring-stone-200 dark:bg-neutral-700">
+            className="block max-w-xs rounded-lg bg-white shadow-lg ring-1 ring-stone-200 dark:bg-neutral-700">
             
                 <img
                     className="rounded-t-lg"
