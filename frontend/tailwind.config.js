@@ -11,16 +11,18 @@ module.exports = {
 		},
 	},
 	daisyui: {
-		styled: true,
-		themes: false,
-		base: true,
-		utils: true,
-		logs: true,
-		rtl: false,
-		prefix: "",
-	  },
+		themes: [
+			{
+				dark: {
+					primary: '#5C9EAD',
+					secondary: '#326273',
+					accent: '#E39774',
+					neutral: '#ffffff',
+					'base-100': '#ffffff',
+				},
+			},
+		],
+	},
 	variants: {},
-	plugins: [require('@tailwindcss/typography'), require('@tailwindcss/forms'),require("daisyui")],
-	variants: {},
-	plugins: [require('@tailwindcss/typography'), require('@tailwindcss/forms')],
+	plugins: [require('@tailwindcss/typography'), require('@tailwindcss/forms'), require('daisyui')],
 };
