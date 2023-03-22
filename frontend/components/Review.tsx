@@ -22,12 +22,12 @@ const Review: React.FC<Props> = ({ }) => {
                     <div className="items-center">
                         <div className="avatar p-4">
                             <div className=" w-10 rounded-full ring-1 ring-accent ring-offset-base-100 ring-offset-2">
-                                <img className='aspect-square' src="/images/user.png" />
+                                <img className='aspect-square' src="/images/person.png" />
                             </div>
                         </div>
                     </div>
                     <div className='flex flex-col'>
-                        <h1 className='font-semibold'>Bruce Wayne</h1>
+                        <h1 className='font-semibold'>Maya Williams</h1>
                         <h2 className='text-neutral-600'>March 2022</h2>
                     </div>
 
