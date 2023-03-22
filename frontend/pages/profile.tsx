@@ -2,6 +2,7 @@
 
 import Layout from '@/components/Layout';
 import Listing from '@/components/Listing';
+import Review from '@/components/Review';
 import Image from 'next/image';
 
 const uname = "Bruce Wayne"
@@ -13,14 +14,14 @@ const languages = ["Spanish", "English"]
 const Profile = () => {
     return (
         <Layout>
-            <main className='flex flex-row flex-nowrap'>
-                <div className='flex flex-col basis-1/4 pt-10 pl-6 '>
+            <main className='flex flex-row flex-nowrap '>
+                <div className='flex  flex-col flex-initial basis-1/4 pt-10 pl-6 pr-6 '>
                     <div
-                        className="block min-w-full rounded-xl pt-8 bg-white ring-stone-200 ring-1 shadow-lg dark:bg-neutral-700 items-center text-center">
+                        className="block min-w-full rounded-xl pt-6 bg-white ring-stone-200 ring-1 shadow-lg dark:bg-neutral-700 items-center text-center">
                         <div className=''>
-                            <div className="avatar">
+                            <div className="avatar my-4 mx-10">
                                 <div className=" w-40 rounded-full ring ring-accent ring-offset-base-100 ring-offset-2">
-                                    <img src="/images/user.png" />
+                                    <img className='aspect-square' src="/images/user.png" />
                                 </div>
                             </div>
                         </div>
@@ -29,7 +30,7 @@ const Profile = () => {
                                 className="mb-2 text-2xl pt-2 font-bold leading-tight text-neutral-800 dark:text-neutral-50">
                                 {uname}
                             </h5>
-                            <p className=" font-semibold pb-8 text-neutral-600 dark:text-neutral-200 ">
+                            <p className=" font-semibold pb-6 text-neutral-600 dark:text-neutral-200 ">
                                 Rating: {rating}/5
                             </p>
 
@@ -54,10 +55,10 @@ const Profile = () => {
                         </div>
                     </div>
                 </div>
-                <div className='flex flex-col basis-1/4 pt-10 ml-4 '>
+                <div className='flex flex-col flex-initial basis-1/4 pt-10 pl-4 '>
                     <div className='rounded-md p-6'>
                         <h1 className=' text-3xl font-bold text-left  '> <a href='/' className="hover:underline">Listings</a></h1>
-                        <div className="carousel w-full pl-4 pt-4 pr-4 pb-4 space-x-4 rounded-box">
+                        <div className="carousel w-full pl-4  pt-4 pr-4 pb-4 space-x-4 rounded-box overscroll-contain">
 
                             <div className="carousel-item pl-1">
                                 <Listing title='Bosque 1' address='calle bosque' features='1 bed' price="$200/month" href='/' />                        </div>
@@ -75,26 +76,14 @@ const Profile = () => {
                                 <Listing title='Bosque 1' address='calle bosque' features='1 bed' price="$200/month" href='/' />                        </div>
                         </div>
                     </div>
-                   
-                    <div className='rounded-md p-6'>
-                        <h1 className=' text-3xl font-bold text-left  '> <a href='/' className="hover:underline">Reviews</a></h1>
-                        <div className="carousel w-full pl-4 pt-4 pr-4 pb-4 space-x-4 rounded-box">
 
-                            <div className="carousel-item pl-1">
-                                <Listing title='Bosque 1' address='calle bosque' features='1 bed' price="$200/month" href='/' />                        </div>
-                            <div className="carousel-item">
-                                <Listing title='Bosque 1' address='calle bosque' features='1 bed' price="$200/month" href='/' />                        </div>
-                            <div className="carousel-item">
-                                <Listing title='Bosque 1' address='calle bosque' features='1 bed' price="$200/month" href='/' />                        </div>
-                            <div className="carousel-item">
-                                <Listing title='Bosque 1' address='calle bosque' features='1 bed' price="$200/month" href='/' />                        </div>
-                            <div className="carousel-item">
-                                <Listing title='Bosque 1' address='calle bosque' features='1 bed' price="$200/month" href='/' />                        </div>
-                            <div className="carousel-item">
-                                <Listing title='Bosque 1' address='calle bosque' features='1 bed' price="$200/month" href='/' />                        </div>
-                            <div className="carousel-item">
-                                <Listing title='Bosque 1' address='calle bosque' features='1 bed' price="$200/month" href='/' />                        </div>
+                    <div className='rounded-md p-6 max-w-full'>
+                        <h1 className=' text-3xl font-bold text-left  '> <a href='/' className="hover:underline">Reviews (2)</a></h1>
+                        <div className='flex flex-col '>
+                            <Review></Review>
+                            <Review></Review>
                         </div>
+
                     </div>
 
                 </div>
