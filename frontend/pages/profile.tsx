@@ -14,7 +14,7 @@ const languages = ["Spanish", "English"]
 const Profile = () => {
     return (
         <Layout>
-            <main className='flex flex-row flex-nowrap '>
+            <main className='flex flex-row flex-nowrap pt-24'>
                 <div className='flex  flex-col flex-initial basis-1/4 pt-10 pl-6 pr-6 '>
                     <div
                         className="block min-w-full rounded-xl pt-6 bg-white ring-stone-200 ring-1 shadow-lg dark:bg-neutral-700 items-center text-center">
