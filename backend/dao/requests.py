@@ -11,21 +11,21 @@ class Requests:
 
   def getById(self, identifier):
     cursor = db.cursor()
-    cursor.execute('SELECT * FROM requests WHERE request_id = %s AND deleted_flag = false' %identifier)
+    cursor.execute('SELECT * FROM requests WHERE request_id = %s AND deleted_flag = false' %(identifier))
     res = cursor.fetchone()
     cursor.close()
     return res
 
-  def getByUnitId(self, identifier):
+  def getByUnitId(self, unit):
     cursor = db.cursor()
-    cursor.execute('SELECT * FROM requests WHERE unit_id = %s AND deleted_flag = false' %identifier)
+    cursor.execute('SELECT * FROM requests WHERE unit_id = %s AND deleted_flag = false' %(unit))
     res = cursor.fetchall()
     cursor.close()
     return res
 
-  def getByTenantId(self, identifier):
+  def getByTenantId(self, tenant):
     cursor = db.cursor()
-    cursor.execute('SELECT * FROM requests WHERE tenant_id = %s AND deleted_flag = false' %identifier)
+    cursor.execute('SELECT * FROM requests WHERE tenant_id = %s AND deleted_flag = false' %(tenant))
     res = cursor.fetchall()
     cursor.close()
     return res

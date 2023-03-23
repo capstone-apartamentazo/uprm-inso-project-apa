@@ -277,20 +277,32 @@ REQUESTS (UNITS AND TENANTS)
 def getAllRequests():
   return RequestHandler().getAll()
 
-# TODO
 @app.route('/apartamentazo/requests', methods=['POST'])
 def getRequestById():
     return RequestHandler().getById(request.json)
 
-# TODO
 @app.route('/apartamentazo/units/requests', methods=['POST'])
 def getRequestsByUnitId():
     return RequestHandler().getByUnitId(request.json)
 
-# TODO
 @app.route('/apartamentazo/tenants/requests', methods=['POST'])
 def getRequestsByTenantId():
     return RequestHandler().getByTenantId(request.json)
+
+# TODO
+@app.route('/apartamentazo/requests/tour', methods=['POST'])
+def getAllRequestsWithTour():
+    return None
+
+# TODO
+@app.route('/apartamentazo/units/requests/tour', methods=['POST'])
+def getRequestsByUnitIdWithTour():
+    return None
+
+# TODO
+@app.route('/apartamentazo/tenants/requests/tour', methods=['POST'])
+def getRequestsByTenantIdWithTour():
+    return None
 
 # TODO add restrictions when creating requests
 @app.route('/apartamentazo/requests/add', methods=['POST'])

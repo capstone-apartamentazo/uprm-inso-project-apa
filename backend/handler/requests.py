@@ -5,7 +5,7 @@ class RequestHandler:
   def __init__(self):
     self.requests = Requests()
   
-  # TODO add accommodation info
+  # TODO maybe add accommodation info
   def dictionary(self, row):
     data = {}
     data['Request ID'] = row[0]
@@ -70,22 +70,22 @@ class RequestHandler:
       return jsonify('Error adding Request with Tour'), 405
 
   def updateRequestTour(self, json):
-    tourUpdate = self.requests.updateRequestTour(json['request_id'], json['tenant_wants_tour'], json['tour_date'], json['comment'])
-    if tourUpdate:
-      return jsonify(self.dictionary(tourUpdate)), 200
+    daoRequest = self.requests.updateRequestTour(json['request_id'], json['tenant_wants_tour'], json['tour_date'], json['comment'])
+    if daoRequest:
+      return jsonify(self.dictionary(daoRequest)), 200
     else:
       return jsonify('Error updating tour in Request'), 405
 
   def updateLandlordApproval(self, json):
-    landlordApproval = self.requests.updateLandlordApproval(json['request_id'], json['landlord_approves'])
-    if landlordApproval:
-      return jsonify(self.dictionary(landlordApproval)), 200
+    daoRequest = self.requests.updateLandlordApproval(json['request_id'], json['landlord_approves'])
+    if daoRequest:
+      return jsonify(self.dictionary(daoRequest)), 200
     else:
       return jsonify('Error updating landlord approval in Request'), 405
 
   def updateTenantApproval(self, json):
-    tenantApproval = self.requests.updateTenantApproval(json['request_id'], json['tenant_approves'])
-    if tenantApproval:
-      return jsonify(self.dictionary(tenantApproval)), 200
+    daoRequest = self.requests.updateTenantApproval(json['request_id'], json['tenant_approves'])
+    if daoRequest:
+      return jsonify(self.dictionary(daoRequest)), 200
     else:
       return jsonify('Error updating tenant approval in Request'), 405
