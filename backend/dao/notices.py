@@ -11,21 +11,21 @@ class Notices:
 
   def getById(self, identifier):
     cursor = db.cursor()
-    cursor.execute('SELECT * FROM notices WHERE notice_id = %s AND deleted_flag = false' %identifier)
+    cursor.execute('SELECT * FROM notices WHERE notice_id = %s AND deleted_flag = false' %(identifier))
     res = cursor.fetchone()
     cursor.close()
     return res
 
-  def getByAccommodationId(self, identifier):
+  def getByAccommodationId(self, accm):
     cursor = db.cursor()
-    cursor.execute('SELECT * FROM notices WHERE accm_id = %s AND deleted_flag = false' %identifier)
+    cursor.execute('SELECT * FROM notices WHERE accm_id = %s AND deleted_flag = false' %(accm))
     res = cursor.fetchall()
     cursor.close()
     return res
 
-  def addNotice(self, title, content, identifier):
+  def addNotice(self, title, content, accm):
     cursor = db.cursor()
-    cursor.execute('INSERT INTO notices (notice_title, notice_content, accm_id) VALUES (%s, %s, %s) RETURNING *', (title, content, identifier))
+    cursor.execute('INSERT INTO notices (notice_title, notice_content, accm_id) VALUES (%s, %s, %s) RETURNING *', (title, content, accm))
     res = cursor.fetchone()
     db.commit()
     cursor.close()

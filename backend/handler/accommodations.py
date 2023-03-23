@@ -10,14 +10,15 @@ class AccommodationHandler:
   def dictionary(self, row):
     data = {}
     data['Accommodation ID'] = row[0]
-    data['Street'] = row[1]
-    data['Accommodation Number'] = row[2]
-    data['City'] = row[3]
-    data['State'] = row[4]
-    data['Country'] = row[5]
-    data['Zip Code'] = row[6]
-    data['Description'] = row[7]
-    data['Landlord ID'] = row[8]
+    data['Accommodation Title'] = row[1]
+    data['Street'] = row[2]
+    data['Accommodation Number'] = row[3]
+    data['City'] = row[4]
+    data['State'] = row[5]
+    data['Country'] = row[6]
+    data['Zip Code'] = row[7]
+    data['Description'] = row[8]
+    data['Landlord ID'] = row[9]
     return data
 
   def getAll(self):
@@ -49,9 +50,9 @@ class AccommodationHandler:
 
   def addAccommodation(self, json):
     daoAccommodation = self.accommodations.addAccommodation(
-      json['accm_street'], json['accm_number'], json['accm_city'], 
-      json['accm_state'], json['accm_country'], json['accm_zipcode'], 
-      json['accm_description'], json['landlord_id'])
+      json['accm_title'], json['accm_street'], json['accm_number'], 
+      json['accm_city'], json['accm_state'], json['accm_country'], 
+      json['accm_zipcode'], json['accm_description'], json['landlord_id'])
 
     if daoAccommodation:
       daoAmenities = self.amenities.addSharedAmenities(daoAccommodation[0])
@@ -61,3 +62,14 @@ class AccommodationHandler:
         jsonify('Error adding Shared Amenities to Accommodation'), 405
     else:
       return jsonify('Error adding Accommodation'), 405
+
+  def updateAccommodation(self, json):
+    daoAccommodation = self.accommodations.updateAccommodation(
+      json['accm_id'], json['accm_title'], json['accm_street'], 
+      json['accm_number'], json['accm_city'], json['accm_state'], 
+      json['accm_country'], json['accm_zipcode'], json['accm_description'])
+
+    if daoAccommodation:
+      return jsonify(self.dictionary(daoAccommodation)), 200
+    else:
+      return jsonify('Error updating Accommodation'), 405

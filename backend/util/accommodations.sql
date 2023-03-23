@@ -1,5 +1,6 @@
 CREATE TABLE accommodations (
   accm_id BIGSERIAL PRIMARY KEY,
+  accm_title VARCHAR(255) NOT NULL,
   accm_street VARCHAR(255) NOT NULL,
   accm_number VARCHAR(10),
   accm_city VARCHAR(20) NOT NULL,
@@ -43,10 +44,12 @@ CREATE TABLE notices (
 );
 
 CREATE TABLE reviews (
-  review_send_date TIMESTAMP PRIMARY KEY,
+  review_id BIGSERIAL PRIMARY KEY,
+  review_send_date TIMESTAMPTZ DEFAULT NOW()::TIMESTAMP(0),
   rating INT NOT NULL,
   comment VARCHAR(255),
   accm_id BIGINT REFERENCES accommodations(accm_id),
   tenant_id BIGINT REFERENCES tenants(tenant_id),
+  CONSTRAINT tenant_review UNIQUE (accm_id, tenant_id),
   deleted_flag BOOLEAN NOT NULL DEFAULT FALSE
 );

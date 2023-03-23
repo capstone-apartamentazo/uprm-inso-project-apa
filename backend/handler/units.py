@@ -10,12 +10,13 @@ class UnitHandler:
   def dictionary(self, row):
     data = {}
     data['Unit ID'] = row[0]
-    data['Available'] = row[1]
-    data['Shared'] = row[2]
-    data['Price'] = row[3]
-    data['Start Date'] = row[4]
-    data['End Date'] = row[5]
-    data['Accommodation ID'] = row[6]
+    data['Unit Number'] = row[1]
+    data['Available'] = row[2]
+    data['Shared'] = row[3]
+    data['Price'] = row[4]
+    data['Date Available'] = row[5]
+    data['Contract Duration'] = row[6]
+    data['Accommodation ID'] = row[7]
     return data
 
   def getAll(self):
@@ -46,7 +47,7 @@ class UnitHandler:
       return jsonify('Units Not Found in Accommodation'), 405
 
   def addUnit(self, json):
-    daoUnit = self.units.addUnit(json['shared'], json['price'], json['init_date'], json['end_date'], json['accm_id'])
+    daoUnit = self.units.addUnit(json['unit_number'], json['shared'], json['price'], json['date_available'], json['contract_duration'], json['accm_id'])
     if daoUnit:
       daoAmenities = self.amenities.addPrivateAmenities(daoUnit[0])
       if daoAmenities:
@@ -58,12 +59,12 @@ class UnitHandler:
       return jsonify('Error adding Unit'), 405
 
   def updateUnit(self, json):
-    identifier = json['unit_id']
+    identifier, number = json['unit_id'], json['unit_number']
     available, shared, price = json['available'], json['shared'], json['price']
-    start, end = json['init_date'], json['end_date']
+    date_available, duration = json['date_available'], json['contract_duration']
 
-    updatedUnit = self.units.updateUnit(identifier, available, shared, price, start, end)
-    if updatedUnit:
-      return jsonify(self.dictionary(updatedUnit)), 200
+    daoUnit = self.units.updateUnit(identifier, number, available, shared, price, date_available, duration)
+    if daoUnit:
+      return jsonify(self.dictionary(daoUnit)), 200
     else:
       return jsonify('Error updating Unit'), 500

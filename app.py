@@ -86,22 +86,28 @@ def getAllMessages():
   return MessageHandler().getAll()
 
 @app.route('/apartamentazo/messages', methods=['POST'])
-def getMessageByPrimaryKeys():
-    return MessageHandler().getByPrimaryKeys(request.json)
+def getMessageById():
+    return MessageHandler().getById(request.json)
+
+@app.route('/apartamentazo/messages/unique', methods=['POST'])
+def getMessageByConstraint():
+    return MessageHandler().getByConstraint(request.json)
 
 @app.route('/apartamentazo/messages/conversation', methods=['POST'])
 def getConversation():
     return MessageHandler().getConversation(request.json)
 
-# TODO add restrictions when creating messages
 @app.route('/apartamentazo/landlord/sends/message', methods=['POST'])
 def landlordSendsMessage():
   return MessageHandler().landlordSendsMessage(request.json)
 
-# TODO add restrictions when creating messages
 @app.route('/apartamentazo/tenant/sends/message', methods=['POST'])
 def tenantSendsMessage():
   return MessageHandler().tenantSendsMessage(request.json)
+
+@app.route('/apartamentazo/message/read', methods=['PUT'])
+def messageRead():
+  return MessageHandler().messageRead(request.json)
 
 # TODO
 @app.route('/apartamentazo/messages', methods=['PUT'])
@@ -136,7 +142,7 @@ def addAccommodation():
 # TODO add restrictions when updating accommodation
 @app.route('/apartamentazo/accommodations', methods=['PUT'])
 def updateAccommodation():
-    return None
+    return AccommodationHandler().updateAccommodation(request.json)
 
 # TODO
 @app.route('/apartamentazo/accommodations', methods=['DELETE'])
@@ -271,20 +277,32 @@ REQUESTS (UNITS AND TENANTS)
 def getAllRequests():
   return RequestHandler().getAll()
 
-# TODO
 @app.route('/apartamentazo/requests', methods=['POST'])
 def getRequestById():
     return RequestHandler().getById(request.json)
 
-# TODO
 @app.route('/apartamentazo/units/requests', methods=['POST'])
 def getRequestsByUnitId():
     return RequestHandler().getByUnitId(request.json)
 
-# TODO
 @app.route('/apartamentazo/tenants/requests', methods=['POST'])
 def getRequestsByTenantId():
     return RequestHandler().getByTenantId(request.json)
+
+# TODO
+@app.route('/apartamentazo/requests/tour', methods=['POST'])
+def getAllRequestsWithTour():
+    return None
+
+# TODO
+@app.route('/apartamentazo/units/requests/tour', methods=['POST'])
+def getRequestsByUnitIdWithTour():
+    return None
+
+# TODO
+@app.route('/apartamentazo/tenants/requests/tour', methods=['POST'])
+def getRequestsByTenantIdWithTour():
+    return None
 
 # TODO add restrictions when creating requests
 @app.route('/apartamentazo/requests/add', methods=['POST'])

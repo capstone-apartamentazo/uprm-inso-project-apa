@@ -55,24 +55,27 @@ class LeaseHandler:
       return jsonify('Leases from Tenant Not Found'), 405
 
   def addLease(self, json):
-    daoLease = self.leases.addLease(json['price'], json['init_date'], json['end_date'], json['unit_id'], json['tenant_id'])
+    price, start, end = json['price'], json['init_date'], json['end_date']
+    unit, tenant = json['unit_id'], json['tenant_id']
+    daoLease = self.leases.addLease(price, start, end, unit, tenant)
     if daoLease:
       return jsonify(self.dictionary(daoLease)), 200
     else:
       return jsonify('Error adding Lease'), 405
 
   def updateLease(self, json):
-    leaseUpdate = self.leases.updateLease(json['lease_id'], json['price'], json['init_date'], json['end_date'], 
-                                          json['is_current_tenant'], json['unit_id'], json['tenant_id'])
-
-    if leaseUpdate:
-      return jsonify(self.dictionary(leaseUpdate)), 200
+    identifier, price = json['lease_id'], json['price']
+    start, end = json['init_date'], json['end_date']
+    currTenant, unit, tenant = json['is_current_tenant'], json['unit_id'], json['tenant_id']
+    daoLease = self.leases.updateLease(identifier, price, start, end, currTenant, unit, tenant)
+    if daoLease:
+      return jsonify(self.dictionary(daoLease)), 200
     else:
       return jsonify('Error updating Lease'), 405
 
   def updateCurrentTenant(self, json):
-    leaseUpdate = self.leases.updateCurrentTenant(json['lease_id'], json['is_current_tenant'])
-    if leaseUpdate:
-      return jsonify(self.dictionary(leaseUpdate)), 200
+    daoLease = self.leases.updateCurrentTenant(json['lease_id'], json['is_current_tenant'])
+    if daoLease:
+      return jsonify(self.dictionary(daoLease)), 200
     else:
       return jsonify('Error updating Current Tenant from Lease'), 405

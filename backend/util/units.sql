@@ -1,11 +1,13 @@
 CREATE TABLE units (
   unit_id BIGSERIAL PRIMARY KEY,
+  unit_number VARCHAR(10),
   available BOOLEAN NOT NULL DEFAULT TRUE,
   shared BOOLEAN NOT NULL DEFAULT FALSE,
   price BIGINT NOT NULL,
-  init_date DATE NOT NULL DEFAULT CURRENT_DATE,
-  end_date DATE NOT NULL DEFAULT CURRENT_DATE + INTERVAL '1 year',
+  date_available DATE NOT NULL DEFAULT CURRENT_DATE,
+  contract_duration INT NOT NULL DEFAULT 12,
   accm_id BIGINT REFERENCES accommodations(accm_id),
+  CONSTRAINT accm_unit UNIQUE (accm_id, unit_number),
   deleted_flag BOOLEAN NOT NULL DEFAULT FALSE
 );
 
