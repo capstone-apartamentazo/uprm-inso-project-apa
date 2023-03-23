@@ -4,7 +4,7 @@ class Landlords:
 
   def getAll(self):
     cursor = db.cursor()
-    cursor.execute('SELECT * FROM landlords WHERE deleted_flag = False')
+    cursor.execute('SELECT * FROM landlords WHERE deleted_flag = false')
     res = cursor.fetchall()
     cursor.close()
     return res
