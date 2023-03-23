@@ -142,7 +142,7 @@ def addAccommodation():
 # TODO add restrictions when updating accommodation
 @app.route('/apartamentazo/accommodations', methods=['PUT'])
 def updateAccommodation():
-    return None
+    return AccommodationHandler().updateAccommodation(request.json)
 
 # TODO
 @app.route('/apartamentazo/accommodations', methods=['DELETE'])
