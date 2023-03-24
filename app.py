@@ -6,6 +6,7 @@ from backend.handler.messages import MessageHandler
 from backend.handler.accommodations import AccommodationHandler
 from backend.handler.shared_amenities import SharedAmenitiesHandler
 from backend.handler.notices import NoticeHandler
+from backend.handler.reviews import ReviewHandler
 from backend.handler.units import UnitHandler
 from backend.handler.private_amenities import PrivateAmenitiesHandler
 from backend.handler.requests import RequestHandler
@@ -180,38 +181,66 @@ def removeSharedAmenities():
 """
 NOTICES (ACCOMMODATIONS)
 """
-@app.route('/apartamentazo/accommodations/notices/all')
+@app.route('/apartamentazo/notices/all')
 def getAllNotices():
   return NoticeHandler().getAll()
 
-# TODO
 @app.route('/apartamentazo/notices', methods=['POST'])
 def getNoticeById():
     return NoticeHandler().getById(request.json)
 
-# TODO
 @app.route('/apartamentazo/accommodations/notices', methods=['POST'])
 def getNoticesByAccommodationId():
     return NoticeHandler().getByAccommodationId(request.json)
 
 # TODO add restrictions when creating notices
-@app.route('/apartamentazo/accommodations/notices/add', methods=['POST'])
+@app.route('/apartamentazo/notices/add', methods=['POST'])
 def addNotice():
   return NoticeHandler().addNotice(request.json)
 
 # TODO add restrictions when updating notices
-@app.route('/apartamentazo/accommodations/notices', methods=['PUT'])
+@app.route('/apartamentazo/notices', methods=['PUT'])
 def updateNotice():
     return NoticeHandler().updateNotice(request.json)
 
 # TODO
-@app.route('/apartamentazo/accommodations/notices', methods=['DELETE'])
+@app.route('/apartamentazo/notices', methods=['DELETE'])
 def removeNotice():
   return None
 
 """
 REVIEWS (ACCOMMODATIONS AND TENANTS)
 """
+@app.route('/apartamentazo/reviews/all')
+def getAllReviews():
+  return ReviewHandler().getAll()
+
+@app.route('/apartamentazo/reviews', methods=['POST'])
+def getReviewById():
+    return ReviewHandler().getById(request.json)
+
+@app.route('/apartamentazo/accommodations/reviews', methods=['POST'])
+def getReviewsByAccommodationId():
+    return ReviewHandler().getByAccommodationId(request.json)
+
+@app.route('/apartamentazo/tenants/reviews', methods=['POST'])
+def getReviewsByTenantId():
+    return ReviewHandler().getByTenantId(request.json)
+
+# TODO add restrictions when creating reviews
+@app.route('/apartamentazo/reviews/add', methods=['POST'])
+def addReview():
+  return ReviewHandler().addReview(request.json)
+
+# TODO add restrictions when updating reviews
+@app.route('/apartamentazo/reviews', methods=['PUT'])
+def updateReview():
+    return ReviewHandler().updateReview(request.json)
+
+# TODO
+@app.route('/apartamentazo/reviews', methods=['DELETE'])
+def removeReview():
+  return None
 
 """
 UNITS (ACCOMMODATIONS)
