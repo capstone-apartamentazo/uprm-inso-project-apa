@@ -99,7 +99,7 @@ class TenantHandler:
     return not re.search(emailRegex, email)
   
   def passwordValid(self, password):
-    passwordRegex = '^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s).{4,8}$'
+    passwordRegex = '^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s).{4,20}$'
     return not re.search(passwordRegex, password)
 
   def emailTaken(self, email, identifier):
