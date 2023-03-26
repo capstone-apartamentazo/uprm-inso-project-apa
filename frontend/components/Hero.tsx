@@ -84,8 +84,8 @@ export default function Hero() {
 					</path>
 				</g>
 			</svg>
-			<h1 className='text-5xl mb-4 pt-48'>Apartamentazo</h1>
-			<h2 className='font-semibold mb-5'>Helping you find your next college apartment</h2>
+			<h1 className='text-5xl mb-4 pt-48 font-semibold'>Apartamentazo</h1>
+			<h2 className='font-semibold mb-5 text-lg'>Helping you find your next college apartment</h2>
 
 			<form className='flex items-center justify-center'>
 				<label className='sr-only'>Search for a location...</label>
