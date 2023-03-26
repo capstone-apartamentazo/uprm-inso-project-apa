@@ -32,11 +32,10 @@ const About = () => {
 							Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.{' '}
 						</p>
 						<div className='items-center flex justify-center mt-10 mb-28 gap-5'>
-							{/*TODO: Modify this so the inforamtion is fetched and passed as props? */}
-							<Card />
-							<Card />
-							<Card />
-							<Card />
+							<Card title="César Amaro" description="Software Engineer" position="Front-end" picture="" />
+							<Card title="Elliot Cardona" description="Software Engineer" position="Front-end" picture="" />
+							<Card title="Daniel Crespo" description="Software Engineer" position="Back-end" picture="" />
+							<Card title="Carlos Torres" description="Software Engineer" position="Back-end" picture="" />
 						</div>
 					</section>
 				</div>
