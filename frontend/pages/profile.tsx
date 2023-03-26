@@ -42,7 +42,7 @@ const Profile = () => {
 						</div>
 					</div>
 				</div>
-				<div className='flex flex-col flex-initial basis-1/4 pt-10 pl-4 '>
+				<div className='flex flex-col flex-initial basis-1/4 pt-10 pl-4 w-9/12'>
 					<div className='rounded-md p-6'>
 						<h1 className=' text-3xl font-bold text-left  '>
 							{' '}
