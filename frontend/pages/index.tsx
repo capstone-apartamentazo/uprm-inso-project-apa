@@ -14,14 +14,10 @@ const Home = () => {
 		<Layout>
 			<Hero />
 			<Recent />
-			<Features />
-			<section className='text-right m-10 bg-red-500 pt-10 px-10'>
-				<h1 className='font-light text-4xl'>Features for Y</h1>
-				<div className='items-center flex justify-center mt-10 mb-28 gap-5 bg-black h-96'>
-					{/* TODO: This section changes based on whether the user is signed in or not, is a landlord, or is a student */}
-					{/*TODO: Modify this so the inforamtion is fetched and passed as props? */}
-				</div>
-			</section>
+			<Features reverse='false' title='Simplifying your college apartment hunt' description='Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem quasi. In deleniti eaque aut repudiandae et a id nisi.' />
+			<Features reverse='true' title='Easy access to your landlord' description='Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem quasi. In deleniti eaque aut repudiandae et a id nisi.' />
+			<Features reverse='false' title='Payment reminders' description='Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem quasi. In deleniti eaque aut repudiandae et a id nisi.' />
+			<Features reverse='true' title='Keep track of your listings' description='Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem quasi. In deleniti eaque aut repudiandae et a id nisi.' />
 		</Layout>
 	);
 };

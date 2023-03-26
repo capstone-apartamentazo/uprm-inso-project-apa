@@ -1,18 +1,15 @@
 import Image from 'next/image';
 
 interface Props {
-	title: string
-	position: string
-	description: string
+	title: string;
+	position: string;
+	description: string;
 }
 
 export default function Card(props: any) {
 	var position;
 	if (props.position) {
-		position =
-			<div className='text-gray-500'>
-				{props.position}
-			</div>
+		position = <div className='text-gray-500'>{props.position}</div>;
 	}
 	return (
 		<div className=' bg-white rounded-2xl p-4 w-48 border-2 border-gray-100 hover:bg-gray-100 text-center shadow-lg'>
