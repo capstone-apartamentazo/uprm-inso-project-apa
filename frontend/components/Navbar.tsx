@@ -90,7 +90,7 @@ export default function Navbar(path: any) {
 	/* bg-opacity-30 backdrop-filter backdrop-blur-lg */
 
 	return (
-		<div className={`navbar text-primary-content fixed px-16 py-5 ${classes}`}>
+		<div className={`navbar text-primary-content fixed px-16 py-5 ${classes} z-10`}>
 			<div className='flex-1'>
 				<Link href={'../'}>
 					<span className='btn btn-ghost normal-case text-xl text-white'>
