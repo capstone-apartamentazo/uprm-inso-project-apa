@@ -55,3 +55,15 @@ class Landlords:
     res = cursor.fetchone()
     cursor.close()
     return res
+
+  def updateRating(self, identifier):
+    query = 'UPDATE landlords \
+            SET landlord_rating = (SELECT AVG(rating) FROM reviews NATURAL INNER JOIN accommodations WHERE landlord_id = %s) \
+            WHERE landlord_id = %s \
+            RETURNING *'
+    cursor = db.cursor()
+    cursor.execute(query, (identifier, identifier))
+    res = cursor.fetchone()
+    db.commit()
+    cursor.close()
+    return res

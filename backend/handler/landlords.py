@@ -113,3 +113,10 @@ class LandlordHandler:
 
   def phoneTaken(self, number, identifier):
     return self.landlords.getPhoneNumber(number, identifier)
+  
+  def updateRating(self, json):
+    daoLandlord = self.landlords.updateRating(json['landlord_id'])
+    if daoLandlord:
+      return jsonify(self.dictionary(daoLandlord)), 200
+    else:
+      return jsonify('Error updating Landlord Rating'), 405

@@ -17,6 +17,10 @@ CREATE TABLE tenants (
   deleted_flag BOOLEAN NOT NULL DEFAULT FALSE
 );
 
+SELECT AVG(rating) FROM reviews NATURAL INNER JOIN accommodations WHERE landlord_id = 2;
+
+UPDATE landlords SET landlord_rating = (SELECT AVG(rating) FROM reviews NATURAL INNER JOIN accommodations WHERE landlord_id = 1) WHERE landlord_id = 1 RETURNING *;
+
 CREATE TABLE messages (
   message_id BIGSERIAL PRIMARY KEY,
   landlord_id BIGINT REFERENCES landlords(landlord_id),

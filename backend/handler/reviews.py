@@ -1,9 +1,13 @@
 from flask import jsonify
 from backend.dao.reviews import Reviews
+from backend.handler.accommodations import Accommodations
+from backend.handler.landlords import Landlords
 
 class ReviewHandler:
   def __init__(self):
     self.reviews = Reviews()
+    self.accommodations = Accommodations()
+    self.landlords = Landlords()
   
   def dictionary(self, row):
     data = {}
@@ -55,6 +59,12 @@ class ReviewHandler:
   def addReview(self, json):
     daoReview = self.reviews.addReview(json['rating'], json['comment'], json['accm_id'], json['tenant_id'])
     if daoReview:
+      accm = self.accommodations.getById(json['accm_id'])
+      if not accm:
+        return jsonify('Error retrieving Landlord Id'), 405
+      landlord = self.landlords.updateRating(accm[9])
+      if not landlord:
+        return jsonify('Error updating Landlord Rating'), 405
       return jsonify(self.dictionary(daoReview)), 200
     else:
       return jsonify('Error adding Review'), 405
@@ -62,6 +72,12 @@ class ReviewHandler:
   def updateReview(self, json):
     daoReview = self.reviews.updateReview(json['review_id'], json['rating'], json['comment'])
     if daoReview:
+      accm = self.accommodations.getById(json['accm_id'])
+      if not accm:
+        return jsonify('Error retrieving Landlord Id'), 405
+      landlord = self.landlords.updateRating(accm[9])
+      if not landlord:
+        return jsonify('Error updating Landlord Rating'), 405
       return jsonify(self.dictionary(daoReview)), 200
     else:
       return jsonify('Error updating Review'), 500

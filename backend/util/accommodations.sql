@@ -9,6 +9,7 @@ CREATE TABLE accommodations (
   accm_zipcode VARCHAR(10) NOT NULL,
   accm_description VARCHAR(255),
   landlord_id BIGINT REFERENCES landlords(landlord_id) ON DELETE CASCADE,
+  CONSTRAINT landlord_accm UNIQUE (landlord_id, accm_number)  -- TODO (add constraint)
   deleted_flag BOOLEAN NOT NULL DEFAULT FALSE
 );
 
