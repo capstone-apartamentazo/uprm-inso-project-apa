@@ -3,7 +3,7 @@ CREATE TABLE landlords (
   landlord_name VARCHAR(255) NOT NULL,
   landlord_email VARCHAR(255) UNIQUE NOT NULL,
   landlord_password VARCHAR(255) NOT NULL,
-  landlord_phone VARCHAR(10) UNIQUE NOT NULL,
+  landlord_phone VARCHAR(12) UNIQUE NOT NULL,
   landlord_rating NUMERIC(2,1) NOT NULL DEFAULT 0.0,
   deleted_flag BOOLEAN NOT NULL DEFAULT FALSE
 );
@@ -13,7 +13,7 @@ CREATE TABLE tenants (
   tenant_name VARCHAR(255) NOT NULL,
   tenant_email VARCHAR(255) UNIQUE NOT NULL,
   tenant_password VARCHAR(255) NOT NULL,
-  tenant_phone VARCHAR(10) UNIQUE NOT NULL,
+  tenant_phone VARCHAR(12) UNIQUE NOT NULL,
   deleted_flag BOOLEAN NOT NULL DEFAULT FALSE
 );
 
