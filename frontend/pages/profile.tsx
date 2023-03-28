@@ -51,7 +51,7 @@ const Profile = () => {
 								Listings
 							</a>
 						</h1>
-						<div className='carousel w-full pl-4 pt-4 pr-4 pb-4 space-x-4 rounded-box overscroll-contain'>
+						<div className='carousel w-full pl-4 pt-4 pr-4 pb-4 space-x-4 rounded-box overscroll-auto'>
 							<div className='carousel-item pl-1'>
 								<Listing title='Bosque 1' address='calle bosque' features='1 bed' price='$200/month' href='/' />{' '}
 							</div>
