@@ -8,6 +8,7 @@ const rating = '4';
 const joined = '2022';
 const location = 'Moca, PR';
 const languages = ['Spanish', 'English'];
+const reviewCount = 2;
 
 const Profile = () => {
 	return (
@@ -17,8 +18,8 @@ const Profile = () => {
 					<div className='block min-w-full rounded-xl pt-6 bg-white ring-stone-200 ring-1 shadow-lg dark:bg-neutral-700 items-center text-center'>
 						<div className=''>
 							<div className='avatar my-4 mx-10'>
-								<div className=' w-40 rounded-full ring ring-accent ring-offset-base-100 ring-offset-2'>
-									<img className='aspect-square' src='/images/user.png' />
+								<div className=' w-40 rounded-full ring ring-accent ring-offset-base-100 ring-offset-2 hover:ring-4 hover:shadow-lg'>
+									<a href='/'><img className='aspect-square' src='/images/user.png' /></a>
 								</div>
 							</div>
 						</div>
@@ -79,7 +80,7 @@ const Profile = () => {
 						<h1 className=' text-3xl font-bold text-left  '>
 							{' '}
 							<a href='/' className='hover:underline'>
-								Reviews (2)
+								Reviews ({reviewCount})
 							</a>
 						</h1>
 						<div className='flex flex-col '>
