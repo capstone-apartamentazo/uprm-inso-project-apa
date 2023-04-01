@@ -11,16 +11,16 @@ localConfig = {
 }
 
 herokuConfig = {
-  'host': '',
-  'dbname': '',
-  'user': '',
-  'password': '',
+  'host': 'ec2-34-236-103-63.compute-1.amazonaws.com',
+  'dbname': 'd94ppu9a7iv7u',
+  'user': 'loiljbrkkiucqg',
+  'password': 'ce381cc46d804dc2e6a4fe7f757095d021459da6bdfb282da70a7aac82dcb371',
   'port': '5432'
 }
 
 # Connect to PostgreSQL database
 try:
-  pgConfig = localConfig
+  pgConfig = herokuConfig
   db = psycopg2.connect(
     host=pgConfig['host'],
     database=pgConfig['dbname'],
