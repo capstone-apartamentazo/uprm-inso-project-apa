@@ -1,5 +1,5 @@
 from flask import jsonify
-from backend.dao.notices import Notices
+from dao.notices import Notices
 
 class NoticeHandler:
   def __init__(self):

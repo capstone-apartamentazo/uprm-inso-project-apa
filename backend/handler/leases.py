@@ -1,5 +1,5 @@
 from flask import jsonify
-from backend.dao.leases import Leases
+from dao.leases import Leases
 
 class LeaseHandler:
   def __init__(self):

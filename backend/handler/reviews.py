@@ -1,7 +1,7 @@
 from flask import jsonify
-from backend.dao.reviews import Reviews
-from backend.handler.accommodations import Accommodations
-from backend.handler.landlords import Landlords
+from dao.reviews import Reviews
+from handler.accommodations import Accommodations
+from handler.landlords import Landlords
 
 class ReviewHandler:
   def __init__(self):

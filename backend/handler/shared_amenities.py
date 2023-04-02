@@ -1,5 +1,5 @@
 from flask import jsonify
-from backend.dao.shared_amenities import SharedAmenities
+from dao.shared_amenities import SharedAmenities
 
 class SharedAmenitiesHandler:
   def __init__(self):

@@ -1,7 +1,7 @@
 from flask import jsonify
-from backend.dao.accommodations import Accommodations
-from backend.dao.shared_amenities import SharedAmenities
-from backend.dao.landlords import Landlords
+from dao.accommodations import Accommodations
+from dao.shared_amenities import SharedAmenities
+from dao.landlords import Landlords
 import re
 
 class AccommodationHandler:

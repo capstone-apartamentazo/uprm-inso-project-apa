@@ -1,4 +1,4 @@
-from backend.util.config import db
+from util.config import db
 
 class Landlords:
 

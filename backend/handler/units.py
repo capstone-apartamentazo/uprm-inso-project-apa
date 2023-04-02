@@ -1,6 +1,6 @@
 from flask import jsonify
-from backend.dao.units import Units
-from backend.dao.private_amenities import PrivateAmenities
+from dao.units import Units
+from dao.private_amenities import PrivateAmenities
 
 class UnitHandler:
   def __init__(self):

@@ -1,5 +1,5 @@
 from flask import jsonify
-from backend.dao.tenants import Tenants
+from dao.tenants import Tenants
 import re
 
 class TenantHandler:

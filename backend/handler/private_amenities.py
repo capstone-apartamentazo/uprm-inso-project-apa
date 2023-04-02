@@ -1,5 +1,5 @@
 from flask import jsonify
-from backend.dao.private_amenities import PrivateAmenities
+from dao.private_amenities import PrivateAmenities
 
 class PrivateAmenitiesHandler:
   def __init__(self):

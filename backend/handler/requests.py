@@ -1,5 +1,5 @@
 from flask import jsonify
-from backend.dao.requests import Requests
+from dao.requests import Requests
 
 class RequestHandler:
   def __init__(self):
