@@ -10,9 +10,9 @@ type Props = {
 
 const Listing: React.FC<Props> = ({ title, address, features, price, href }) => {
 	return (
-		<div className='flex justify-center w-72'>
+		<div className='flex justify-center w-72 transition ease-in-out delay-50 hover:-translate-y-1 hover:scale-10 duration-200 '>
 			<a href={href} data-te-ripple-init data-te-ripple-color='light'>
-				<div className='block max-w-full rounded-lg bg-white shadow-lg ring-1 ring-stone-200 dark:bg-neutral-700'>
+				<div className='block max-w-full rounded-lg bg-white shadow-lg ring-1 ring-stone-200 dark:bg-neutral-700 '>
 					<img className='rounded-t-lg aspect-video h-56' src='https://tecdn.b-cdn.net/img/new/standard/nature/186.jpg' alt='' />
 					<div className='p-4 flex menu-vertical h-48 align-middle'>
 						<h1 className='text-left mb-2 text-xl font-bold leading-tight text-neutral-800 dark:text-neutral-50'>{title}</h1>

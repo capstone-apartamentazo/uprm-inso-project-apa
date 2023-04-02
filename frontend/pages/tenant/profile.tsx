@@ -43,40 +43,10 @@ const Profile = () => {
 						</div>
 					</div>
 				</div>
-				<div className='flex flex-col flex-initial basis-1/4 pt-10 pl-4 w-9/12'>
-					<div className='rounded-md p-6'>
-						<h1 className=' text-3xl font-bold text-left  '>
-							{' '}
-							<a href='/' className='hover:underline'>
-								Listings
-							</a>
-						</h1>
-						<div className='carousel w-full pl-4 pt-4 pr-4 pb-4 space-x-4 rounded-box overscroll-auto'>
-							<div className='carousel-item pl-1'>
-								<Listing title='Bosque 1' address='calle bosque' features='1 bed' price='$200/month' href='/' />{' '}
-							</div>
-							<div className='carousel-item'>
-								<Listing title='Bosque 1' address='calle bosque' features='1 bed' price='$200/month' href='/' />{' '}
-							</div>
-							<div className='carousel-item'>
-								<Listing title='Bosque 1' address='calle bosque' features='1 bed' price='$200/month' href='/' />{' '}
-							</div>
-							<div className='carousel-item'>
-								<Listing title='Bosque 1' address='calle bosque' features='1 bed' price='$200/month' href='/' />{' '}
-							</div>
-							<div className='carousel-item'>
-								<Listing title='Bosque 1' address='calle bosque' features='1 bed' price='$200/month' href='/' />{' '}
-							</div>
-							<div className='carousel-item'>
-								<Listing title='Bosque 1' address='calle bosque' features='1 bed' price='$200/month' href='/' />{' '}
-							</div>
-							<div className='carousel-item'>
-								<Listing title='Bosque 1' address='calle bosque' features='1 bed' price='$200/month' href='/' />{' '}
-							</div>
-						</div>
-					</div>
+				<div className='flex flex-col flex-initial  pt-10 pl-4 w-9/12'>
+					
 
-					<div className='rounded-md p-6 max-w-full'>
+					<div className='rounded-md p-6 w-full max-w-full'>
 						<h1 className=' text-3xl font-bold text-left  '>
 							{' '}
 							<a href='/' className='hover:underline'>
