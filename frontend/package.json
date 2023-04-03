@@ -1,5 +1,5 @@
 {
-  "name": "Apartamentazo",
+  "name": "apartamentazo",
   "description": "Helping you find your next college apartment",
   "version": "0.0.0",
   "repository": {
@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start -p $PORT"
   },
   "dependencies": {
     "@lottiefiles/lottie-player": "^1.7.1",
