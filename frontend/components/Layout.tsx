@@ -53,10 +53,8 @@ const Layout = ({ children, ...customMeta }: LayoutProps) => {
 				<meta name='description' content={meta.description} key='description' />
 				{meta.date && <meta property='article:published_time' content={meta.date} />}
 				<title key='title'>{meta.title}</title>
-				<nav>
-					<Navbar path={asPath} />
-				</nav>
 			</Head>
+			<Navbar path={asPath} />
 			<main className='flex flex-col min-h-screen'>{children}</main>
 			<footer className='mt-auto'>
 				<Footer />

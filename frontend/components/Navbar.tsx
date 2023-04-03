@@ -66,6 +66,7 @@ export default function Navbar(path: any) {
 			</div>
 		</div>
 	);
+
 	switch (path.path) {
 		case '/':
 			classes = 'bg-transparent';
