@@ -10,7 +10,7 @@ class MyDocument extends Document {
 	render() {
 		return (
 			<Html>
-				<Head>{/* Favicons, Google site verification and other common meta tags across the site. */}</Head>
+				<Head />
 				<body>
 					<Main />
 					<NextScript />
