@@ -404,10 +404,3 @@ def updateCurrentTenant():
 @app.route('/api/leases', methods=['DELETE'])
 def removeLease():
   return None
-
-"""
-TESTS
-"""
-@app.route('/loaderio-fa0db6d49f8bf2f6c766b1e054e189b8/')
-def home():
-  return "loaderio-fa0db6d49f8bf2f6c766b1e054e189b8"
