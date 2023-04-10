@@ -2,7 +2,7 @@ module.exports = {
 	publicRuntimeConfig: {
 		site: {
 			name: 'Apartamentazo',
-			url: process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : 'https://apartamentazo.com/',
+			url: process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : 'https://apartamentazo.herokuapp.com',
 			title: 'Apartamentazo',
 			description: 'Helping you find your next college apartment',
 			socialPreview: '/images/preview.png',
@@ -12,5 +12,8 @@ module.exports = {
 	i18n: {
 		locales: ['en-US'],
 		defaultLocale: 'en-US',
+	},
+	images: {
+		domains: ['images.unsplash.com'],
 	},
 };
