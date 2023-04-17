@@ -28,50 +28,42 @@ const Messages = () => {
                     </div>
 
                 </div>
-                <div className='flex flex-col flex-initial basis-1/4 pt-10 pl-4 w-9/12'>
-                    <div className='rounded-md p-6'>
-                        <h1 className=' text-3xl font-bold text-left  '>
-                            {' '}
-                            <a href='/' className='hover:underline'>
-                                Listings
-                            </a>
-                        </h1>
-                        <div className='carousel w-full pl-4 pt-4 pr-4 pb-4 space-x-4 rounded-box overscroll-auto'>
-                            <div className='carousel-item pl-1'>
-                                <Listing title='Bosque 1' address='calle bosque' features='1 bed' price='$200/month' href='/' />{' '}
+                <div className='flex flex-col flex-initial flex-grow basis-1/4 mt-20 pl-4 mr-10 w-9/12 '>
+                    <div className='rounded-xl p-6 ring-1 ring-stone-200'>
+                        <div className="chat chat-start">
+                            <div className="chat-image avatar">
+                                <div className="w-10 rounded-full">
+                                    <img src="/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+                                </div>
                             </div>
-                            <div className='carousel-item'>
-                                <Listing title='Bosque 1' address='calle bosque' features='1 bed' price='$200/month' href='/' />{' '}
+                            <div className="chat-header">
+                                Obi-Wan Kenobi
+                                <time className="text-xs opacity-50">12:45</time>
                             </div>
-                            <div className='carousel-item'>
-                                <Listing title='Bosque 1' address='calle bosque' features='1 bed' price='$200/month' href='/' />{' '}
-                            </div>
-                            <div className='carousel-item'>
-                                <Listing title='Bosque 1' address='calle bosque' features='1 bed' price='$200/month' href='/' />{' '}
-                            </div>
-                            <div className='carousel-item'>
-                                <Listing title='Bosque 1' address='calle bosque' features='1 bed' price='$200/month' href='/' />{' '}
-                            </div>
-                            <div className='carousel-item'>
-                                <Listing title='Bosque 1' address='calle bosque' features='1 bed' price='$200/month' href='/' />{' '}
-                            </div>
-                            <div className='carousel-item'>
-                                <Listing title='Bosque 1' address='calle bosque' features='1 bed' price='$200/month' href='/' />{' '}
+                            <div className="chat-bubble chat-bubble-accent">You were the Chosen One!</div>
+                            <div className="chat-footer opacity-50">
+                                Delivered
                             </div>
                         </div>
+                        <div className="chat chat-end">
+                            <div className="chat-image avatar">
+                                <div className="w-10 rounded-full">
+                                    <img src="/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+                                </div>
+                            </div>
+                            <div className="chat-header">
+                                Anakin
+                                <time className="text-xs opacity-50">12:46</time>
+                            </div>
+                            <div className="chat-bubble chat-bubble-primary text-white">I hate you!</div>
+                            <div className="chat-footer opacity-50">
+                                Seen at 12:46
+                            </div>
+                        </div>
+
                     </div>
 
-                    <div className='rounded-md p-6 max-w-full'>
-                        <h1 className=' text-3xl font-bold text-left  '>
-                            {' '}
-                            <a href='/' className='hover:underline'>
-                                Reviews ({reviewCount})
-                            </a>
-                        </h1>
-                        <div className='flex flex-col '>
-                            
-                        </div>
-                    </div>
+
                 </div>
             </main>
         </Layout>
