@@ -6,21 +6,6 @@ import psycopg2
 import os
 
 load_dotenv()
-localConfig = {
-  'host': 'localhost',
-  'dbname': 'apartamentazo',
-  'user': 'admin',
-  'password': 'rum802',
-  'port': '5432'
-}
-
-herokuConfig = {
-  'host': 'ec2-44-215-1-253.compute-1.amazonaws.com',
-  'dbname': 'd9pcfgv9193h2q',
-  'user': 'lgiaolgdpelycy',
-  'password': 'd25c9aa6ceeccea2b59b92a499fbff69c3de138abd347c5fc5fa9abd9645ebd5',
-  'port': '5432'
-}
 
 # Connect to PostgreSQL database
 try:
