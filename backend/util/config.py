@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_cors import CORS
+import flask_praetorian
 import psycopg2
 
 localConfig = {
@@ -42,4 +43,10 @@ except (Exception, psycopg2.Error) as error:
 
 # Init Flask App
 app = Flask(__name__)
-CORS(app)
+guard = flask_praetorian.Praetorian()
+cors = CORS(app)
+
+app.debug = True
+app.config["SECRET_KEY"] = "rum802"
+app.config["JWT_ACCESS_LIFESPAN"] = { "hours": 24 }
+app.config["JWT_REFRESH_LIFESPAN"] = { "days": 30 }

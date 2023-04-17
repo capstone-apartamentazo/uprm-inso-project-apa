@@ -1,6 +1,10 @@
 from flask import jsonify
 from dao.landlords import Landlords
+from models.landlord import Landlord
+from util.config import app, guard
 import re
+
+guard.init_app(app, Landlord)
 
 class LandlordHandler:
   def __init__(self):
@@ -33,6 +37,13 @@ class LandlordHandler:
     else:
       return jsonify('Landlord Not Found'), 405
 
+  def login(self, json):
+    email = json['landlord_email'].lower()
+    password = json['landlord_password']
+    landlord = guard.authenticate(email, password)
+    token = { "access_token": guard.encode_jwt_token(landlord) }
+    return jsonify(token), 200
+
   def addLandlord(self, json):  
     name = json['landlord_name']
     email = json['landlord_email'].lower()
@@ -41,7 +52,7 @@ class LandlordHandler:
     valid, reason = self.checkInput(0, name, email, password, phone)
     # add landlord if input is valid
     if valid:
-      newLandlord = self.landlords.addLandlord(name, email, password, phone)
+      newLandlord = self.landlords.addLandlord(name, email, guard.hash_password(password), phone)
       if newLandlord:
         return jsonify(self.dictionary(newLandlord)), 201
       else:
@@ -59,7 +70,7 @@ class LandlordHandler:
     valid, reason = self.checkInput(identifier, name, email, password, phone)
     # update landlord if input is valid
     if valid:
-      updatedLandlord = self.landlords.updateLandlord(identifier, name, email, password, phone)
+      updatedLandlord = self.landlords.updateLandlord(identifier, name, email, guard.hash_password(password), phone)
       if updatedLandlord:
         return jsonify(self.dictionary(updatedLandlord)), 200
       else:

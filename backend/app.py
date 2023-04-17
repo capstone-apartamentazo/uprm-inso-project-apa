@@ -30,7 +30,7 @@ def getLandlordById():
 # TODO
 @app.route('/api/landlords/login', methods=['POST'])
 def loginLandlord():
-  return None
+  return LandlordHandler().login(request.json)
 
 # TODO add restrictions when creating user
 @app.route('/api/landlords/new', methods=['POST'])
