@@ -11,10 +11,10 @@ localConfig = {
 }
 
 herokuConfig = {
-  'host': 'ec2-34-236-103-63.compute-1.amazonaws.com',
-  'dbname': 'd94ppu9a7iv7u',
-  'user': 'loiljbrkkiucqg',
-  'password': 'ce381cc46d804dc2e6a4fe7f757095d021459da6bdfb282da70a7aac82dcb371',
+  'host': 'ec2-44-215-1-253.compute-1.amazonaws.com',
+  'dbname': 'd9pcfgv9193h2q',
+  'user': 'lgiaolgdpelycy',
+  'password': 'd25c9aa6ceeccea2b59b92a499fbff69c3de138abd347c5fc5fa9abd9645ebd5',
   'port': '5432'
 }
 
