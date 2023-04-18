@@ -1,4 +1,5 @@
 from flask import jsonify
+import flask_praetorian
 from dao.landlords import Landlords
 from models.landlord import Landlord
 from util.config import app, guard
@@ -41,8 +42,13 @@ class LandlordHandler:
     email = json['landlord_email'].lower()
     password = json['landlord_password']
     landlord = guard.authenticate(email, password)
-    token = { "access_token": guard.encode_jwt_token(landlord) }
+    token = { 'access_token': guard.encode_jwt_token(landlord) }
     return jsonify(token), 200
+  
+  @flask_praetorian.auth_required
+  def protected(self):
+    json = {'landlord_id': flask_praetorian.current_user_id()}
+    return self.getById(json)
 
   def addLandlord(self, json):  
     name = json['landlord_name']

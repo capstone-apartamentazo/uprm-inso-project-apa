@@ -27,10 +27,13 @@ def getAllLandlords():
 def getLandlordById():
     return LandlordHandler().getById(request.json)
 
-# TODO
 @app.route('/api/landlords/login', methods=['POST'])
 def loginLandlord():
   return LandlordHandler().login(request.json)
+
+@app.route('/api/landlords/protected')
+def protectedLandlord():
+  return LandlordHandler().protected()
 
 # TODO add restrictions when creating user
 @app.route('/api/landlords/new', methods=['POST'])
