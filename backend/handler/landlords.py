@@ -50,6 +50,12 @@ class LandlordHandler:
     json = {'landlord_id': flask_praetorian.current_user_id()}
     return self.getById(json)
 
+  def refresh(self):
+    old_token = guard.read_token_from_header()
+    new_token = guard.refresh_jwt_token(old_token)
+    token = { 'access_token': new_token }
+    return jsonify(token), 200
+
   def addLandlord(self, json):  
     name = json['landlord_name']
     email = json['landlord_email'].lower()
