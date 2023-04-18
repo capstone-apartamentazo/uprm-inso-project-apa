@@ -6,12 +6,7 @@ import { GetServerSideProps } from 'next'
 import axios from 'axios';
 import { Container } from '@nextui-org/react';
 
-const uname = 'Bruce Wayne';
-const rating = '4';
-const joined = '2022';
-const location = 'Moca, PR';
-const languages = ['Spanish', 'English'];
-const reviewCount = 2;
+
 
 interface Message {
     Content: string
@@ -34,7 +29,7 @@ const Messages: React.FC<Props> = ({ messages }) => {
             <main className='flex flex-col flex-nowrap mt-32 '>
 
                 <div className='flex flex-row flex-nowrap'>
-                    <div className='grid grid-rows-1 gap-1 ml-10 mr-6 basis-1/4 auto-rows-min h-full ring-1 ring-stone-200 rounded-lg shadow-lg'>
+                    <div className='grid grid-rows-auto gap-1 ml-10 mr-6 basis-1/4 auto-rows-min h-96 ring-1 ring-stone-200 rounded-lg shadow-lg'>
                         <div>
                             <div className='h-16 pl-4 pt-4  shadow-md'>
                                 <h1 className=' text-3xl font-bold text-left '>
@@ -47,13 +42,7 @@ const Messages: React.FC<Props> = ({ messages }) => {
                             <Conversation userName='Marcos' userImg='/images/person.png' body='helloo' date="1m ago" read={true}></Conversation>
 
                         </div>
-                        <div className='flex flex-row justify-center mb-4'>
-                            <div className="btn-group ring-1 ring-stone-200  rounded-md">
-                                <button className="btn btn-disabled btn-sm">«</button>
-                                <button className="btn btn-sm font-normal">Page 1</button>
-                                <button className="btn btn-disabled btn-sm">»</button>
-                            </div>
-                        </div>
+                        
                     </div>
 
                     <div className='grid grid-rows-auto  w-4/6 h-96 mr-6 gap-1 ring-1 ring-stone-200 rounded-lg overflow-hidden shadow-lg'>
@@ -140,27 +129,4 @@ export default Messages
                                         <p>Tenant ID: {message["Tenant ID"]}</p>
 
                                     </li>
-
-
-
-
-                                    <div className='flex flex-col flex-initial flex-grow basis-1/4 mt-4 ml-2 mr-10 w-9/12 h-96 rounded-xl ring-1 ring-stone-200 shadow-lg overflow-hidden '>
-                        <div className='sticky top-0'>
-                            <div className='flex flex-row flex-nowrap bg-white   drop-shadow-md items-center '>
-
-                                <div className="avatar p-4">
-                                    <div className=" w-10 rounded-full ring-1 ring-accent ring-offset-base-100 ring-offset-2 hover:shadow-lg hover:ring-2">
-                                        <a href='' className=''><img className='aspect-square' src='/images/person.png' /></a>
-                                    </div>
-                                </div>
-
-
-                                <h1 className='font-semibold text-xl'>{messages.at(1)?.['Landlord Sent Message'] ? "messages.at(1)?.['Landlord ID'](Landlord Name)" : "messages.at(1)?.['Tenant ID'](Tenant Name)"}</h1>
-                            </div>
-                        </div>
-                        
-                        <div className='sticky inset-x-0 bottom-0'>
-                            
-                        </div>
-                    </div>
                                     */
