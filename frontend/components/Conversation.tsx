@@ -18,9 +18,9 @@ const Message: React.FC<Props> = ({ userName, userImg, body, date, read }) => {
 
     return (
 
-        <div onClick={() => setRead(true)} className="flex flex-nowrap flex-row rounded-md  items-center  cursor-pointer pl-2 pb-2 mx-2 my-2  hover:bg-gray-100">
+        <div onClick={() => setRead(true)} className="flex flex-nowrap flex-row rounded-md  items-center  cursor-pointer   mx-2 my-2 py-2  hover:bg-gray-100">
             <div className="items-center">
-                <div className="avatar p-4">
+                <div className="avatar pl-2 pr-4 py-2">
                     <div className=" w-10 rounded-full ring-1 ring-accent ring-offset-base-100 ring-offset-2 hover:shadow-lg hover:ring-2">
                         <a href='' className=''><img className='aspect-square' src={userImg} /></a>
                     </div>
