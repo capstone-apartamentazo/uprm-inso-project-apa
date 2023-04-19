@@ -86,7 +86,7 @@ const Messages: React.FC<Props> = ({ messages }) => {
 
                         </div>
 
-                        <div className='flex flex-row justify-center '>
+                        <div className='flex flex-row justify-center my-3'>
 
                             <input type="text" placeholder="Type here" className="input flex-grow mx-4 ring-primary ring-2 ring-offset-2 focus:outline-none focus:border-0 focus:ring-primary focus:ring-2 focus:ring-offset-2" />
 
