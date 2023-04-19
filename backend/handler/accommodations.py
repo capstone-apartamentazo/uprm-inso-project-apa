@@ -179,7 +179,7 @@ class AccommodationHandler:
     return self.accommodations.getByConstraint(flask_praetorian.current_user_id(), number)
 
   def search(self, json):
-    daoAccommodations = self.accommodations.search(json['input'])
+    daoAccommodations = self.accommodations.search(json['input'], json['offset'])
     if daoAccommodations:
       result = []
       for row in daoAccommodations:

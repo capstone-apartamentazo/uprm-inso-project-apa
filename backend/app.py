@@ -410,12 +410,8 @@ def removeLease():
   return None
 
 """
-SEARCH (ACCOMMODATIONS AND UNITS)
+SEARCH (ACCOMMODATIONS)
 """
-@app.route('/api/search/accommodations', methods=['POST'])
+@app.route('/api/search', methods=['POST'])
 def searchAccommodations():
   return AccommodationHandler().search(request.json)
-
-@app.route('/api/search/units', methods=['POST'])
-def searchUnits():
-  return None
