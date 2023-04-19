@@ -85,7 +85,6 @@ def updateTenant():
 def removeTenant():
   return None
 
-# TODO modify messages table with unique constraints
 """
 MESSAGES (LANDLORDS AND TENANTS)
 """
@@ -142,12 +141,10 @@ def getAccommodationById():
 def getAccommodationByLandlordId():
     return AccommodationHandler().getByLandlordId(request.json)
 
-# TODO add restrictions when creating accommodation
 @app.route('/api/accommodations/new', methods=['POST'])
 def addAccommodation():
   return AccommodationHandler().addAccommodation(request.json)
 
-# TODO add restrictions when updating accommodation
 @app.route('/api/accommodations', methods=['PUT'])
 def updateAccommodation():
     return AccommodationHandler().updateAccommodation(request.json)

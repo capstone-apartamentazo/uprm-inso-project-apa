@@ -43,3 +43,11 @@ class Accommodations:
     db.commit()
     cursor.close()
     return res
+
+  def getByConstraint(self, landlord, number):
+    query = 'SELECT * FROM accommodations WHERE accm_number = %s AND landlord_id = %s'
+    cursor = db.cursor()
+    cursor.execute(query, (number, landlord))
+    res = cursor.fetchone()
+    cursor.close()
+    return res
