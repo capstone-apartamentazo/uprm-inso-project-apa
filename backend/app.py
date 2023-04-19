@@ -39,12 +39,10 @@ def protectedLandlord():
 def refreshLandlord():
   return LandlordHandler().refresh()
 
-# TODO add restrictions when creating user
 @app.route('/api/landlords/new', methods=['POST'])
 def addLandlord():
   return LandlordHandler().addLandlord(request.json)
 
-# TODO add restrictions when updating user
 @app.route('/api/landlords', methods=['PUT'])
 def updateLandlord():
     return LandlordHandler().updateLandlord(request.json)
@@ -70,12 +68,10 @@ def getTenantById():
 def loginTenant():
   return None
 
-# TODO add restrictions when creating user
 @app.route('/api/tenants/new', methods=['POST'])
 def addTenant():
   return TenantHandler().addTenant(request.json)
 
-# TODO add restrictions when updating user
 @app.route('/api/tenants', methods=['PUT'])
 def updateTenant():
     return TenantHandler().updateTenant(request.json)
@@ -95,6 +91,14 @@ def getAllMessages():
 @app.route('/api/messages', methods=['POST'])
 def getMessageById():
     return MessageHandler().getById(request.json)
+
+@app.route('/api/messages/landlord', methods=['POST'])
+def getMessageByLandlordId():
+    return MessageHandler().getByLandlordId(request.json)
+
+@app.route('/api/messages/tenant', methods=['POST'])
+def getMessageByTenantId():
+    return MessageHandler().getByTenantId(request.json)
 
 @app.route('/api/messages/unique', methods=['POST'])
 def getMessageByConstraint():
