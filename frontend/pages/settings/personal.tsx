@@ -6,9 +6,46 @@ import { GetServerSideProps } from 'next'
 import axios from 'axios';
 import { Container } from '@nextui-org/react';
 import Link from 'next/link';
+import { useState } from 'react';
 
 
 const Personal = () => {
+
+    const [nameEdit, setNameEdit] = useState(false);
+    const [phoneEdit, setPhoneEdit] = useState(false);
+
+    function handleNameEdit(){
+        if (nameEdit){
+            if (document.getElementById("nameInput") != null){
+                console.log((document.getElementById("nameInput")! as HTMLInputElement).value);
+                (document.getElementById("nameInput")! as HTMLInputElement).value = "";
+            }else{
+                console.log("name form not found")
+            }
+            setNameEdit(!nameEdit);
+        }else{
+            setNameEdit(!nameEdit);
+        }
+    }
+    function handlePhoneEdit(){
+        if (phoneEdit){
+            if (document.getElementById("phoneInput") != null){
+                console.log((document.getElementById("phoneInput")! as HTMLInputElement).value);
+                (document.getElementById("phoneInput")! as HTMLInputElement).value = "";
+            }else{
+                console.log("phone form not found")
+            }
+            setPhoneEdit(!phoneEdit);
+        }else{
+            setPhoneEdit(!phoneEdit);
+        }
+        
+        
+
+
+    }
+
+
     return (
         <Layout>
             <main className='flex flex-col flex-nowrap mt-32 ml-8'>
@@ -21,32 +58,31 @@ const Personal = () => {
                         <li><Link href="/settings/personal">Personal Info</Link></li>
                     </ul>
                 </div>
-                <div className='flex flex-col max-w-lg  ml-10 mr-10 ring-1 ring-stone-200 rounded-lg shadow-lg'>
+                <div className='flex flex-col max-w-lg  mr-10 mt-4 ring-1 ring-stone-200 rounded-lg shadow-lg'>
 
                     <div className='mx-4 mt-6'>
                         <div className='flex flex-row'>
                             <div className='flex-grow'>
                                 <h1 className='font-semibold'>Name</h1>
-                                <h2>Marcos Plaza</h2>
+                                <h2 className={(nameEdit ? 'hidden' : '')}>Marcos Plaza</h2>
+                                <input type="text" placeholder="New name" id='nameInput' className={"" + (nameEdit ? 'input w-full max-w-xs' : 'hidden')} />
+
                             </div>
 
-                            <button className='flex-none link-accent font-bold btn-link'>
-                                Edit
+                            <button onClick={handleNameEdit} className='flex-none link-accent font-bold btn-link'>
+                                {nameEdit ? 'Save' : 'Edit'}
                             </button>
                         </div>
 
                     </div>
                     <div className="divider"></div>
-                    <div className='mx-4 '>
-                        <div className='flex flex-row'>
+                    <div className='ml-4 '>
+                        <div className='flex flex-row items-center'>
                             <div className='flex-grow'>
                                 <h1 className='font-semibold'>Email</h1>
                                 <h2>marcos@gmail.com</h2>
                             </div>
 
-                            <button className='flex-none link-accent font-bold btn-link'>
-                                Edit
-                            </button>
                         </div>
 
                     </div>
@@ -55,11 +91,13 @@ const Personal = () => {
                         <div className='flex flex-row'>
                             <div className='flex-grow'>
                                 <h1 className='font-semibold'>Phone Number</h1>
-                                <h2>787-111-2222</h2>
+                                <h2 className={(phoneEdit ? 'hidden' : '')}>787-111-0000</h2>
+                                <input type="text" placeholder="New phone number" id='phoneInput' className={"" + (phoneEdit ? 'input w-full max-w-xs' : 'hidden')} />
+
                             </div>
 
-                            <button className='flex-none link-accent font-bold btn-link'>
-                                Edit
+                            <button onClick={handlePhoneEdit} className='flex-none link-accent font-bold btn-link'>
+                                {phoneEdit ? 'Save' : 'Edit'}
                             </button>
                         </div>
 
