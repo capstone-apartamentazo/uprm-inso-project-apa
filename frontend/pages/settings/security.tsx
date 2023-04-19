@@ -56,7 +56,7 @@ const Security = () => {
                         <li><Link href="/settings/security">Login & Security</Link></li>
                     </ul>
                 </div>
-                <div className='flex flex-col max-w-lg  ml-10 mr-10 mt-4 ring-1 ring-stone-200 rounded-lg shadow-lg'>
+                <div className='flex flex-col max-w-lg  mr-10 mt-4 ring-1 ring-stone-200 rounded-lg shadow-lg'>
 
                     <div className='mx-4 mt-6'>
                         <div className='flex flex-row'>
