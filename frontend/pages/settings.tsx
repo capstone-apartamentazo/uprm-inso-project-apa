@@ -20,7 +20,7 @@ const Settings = () => {
                     </ul>
                 </div>
 
-                <div className='flex flex-row flex-wrap gap-3 mt-4 justify-center  h-52'>
+                <div className='flex flex-row flex-wrap gap-3 mt-4   h-52'>
                     <Link href="/settings/personal">
                         <div className="card w-82 bg-base-100 ring-1 ring-stone-200 shadow-xl transition ease-in-out delay-50 hover:-translate-y-1 hover:scale-10 duration-200 ">
                             <div className="card-body">
