@@ -4,7 +4,30 @@ const { publicRuntimeConfig } = getConfig();
 const { name } = publicRuntimeConfig.site;
 
 const Login = () => {
-	const handleSubmit = async (event) => {};
+	const handleSubmit = async (event) => {
+		event.preventDefault();
+
+		const data = {
+			email: event.target.email.value,
+			password: event.target.password.value,
+		};
+
+		const JSONdata = JSON.stringify(data);
+		const endpoint = '/api/something';
+
+		const options = {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSONdata,
+		};
+
+		const response = await fetch(endpoint, options);
+		const result = await response.json();
+
+		alert(`${result.data}`);
+	};
 	return (
 		<div className='text-center'>
 			<input type='checkbox' id='login-modal' className='modal-toggle' />
@@ -22,8 +45,8 @@ const Login = () => {
 						<h3 className='text-4xl text-accent font-bold my-10'>Login</h3>
 
 						<form onSubmit={handleSubmit} className='p-5 form-control gap-10'>
-							<input type='text' id='first' name='first' placeholder='E-mail' className='bg-gray-200 bg-opacity-50 border border-transparent focus:ring-accent focus:border-accent pl-4' required />
-							<input type='text' id='last' name='last' placeholder='Password' className='bg-gray-200 bg-opacity-50 border border-transparent focus:ring-accent focus:border-accent pl-4' required />
+							<input type='text' id='email' name='email' placeholder='E-mail' className='bg-gray-200 bg-opacity-50 border border-transparent focus:ring-accent focus:border-accent pl-4' required />
+							<input type='password' id='password' name='password' placeholder='Password' className='bg-gray-200 bg-opacity-50 border border-transparent focus:ring-accent focus:border-accent pl-4' required />
 							<button type='submit' className='btn text-white bg-accent hover:bg-accent'>
 								Log In
 							</button>

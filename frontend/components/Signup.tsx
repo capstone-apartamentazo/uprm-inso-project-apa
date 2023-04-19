@@ -4,7 +4,35 @@ const { publicRuntimeConfig } = getConfig();
 const { name } = publicRuntimeConfig.site;
 
 const Signup = () => {
-	const handleSubmit = async (event) => {};
+	const handleSubmit = async (event) => {
+		event.preventDefault();
+
+		const data = {
+			first: event.target.first.value,
+			last: event.target.last.value,
+			email: event.target.email.value,
+			password: event.target.password.value,
+			cpassword: event.target.cpassword.value,
+			type: event.target.inlineRadio1.checked ? event.target.inlineRadio1.value : event.target.inlineRadio2.value,
+		};
+
+		const JSONdata = JSON.stringify(data);
+		alert(`${JSONdata}`);
+		const endpoint = '/api/something';
+
+		const options = {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSONdata,
+		};
+
+		const response = await fetch(endpoint, options);
+		const result = await response.json();
+
+		alert(`${result.data}`);
+	};
 	return (
 		<div className='text-center'>
 			<input type='checkbox' id='signup-modal' className='modal-toggle' />
@@ -28,20 +56,20 @@ const Signup = () => {
 							</div>
 							<input type='text' id='email' name='email' placeholder='E-mail' className='bg-gray-200 bg-opacity-50 border border-transparent focus:ring-accent focus:border-accent pl-4' required />
 							<div className='gap-5 flex-row flex'>
-								<input type='text' id='password' name='password' placeholder='Password' className='w-1/2 bg-gray-200 bg-opacity-50 border border-transparent focus:ring-accent focus:border-accent pl-4' required />
-								<input type='text' id='cpassword' name='cpassword' placeholder='Confirm Password' className='w-1/2 bg-gray-200 bg-opacity-50 border border-transparent focus:ring-accent focus:border-accent pl-4' required />
+								<input type='password' id='password' name='password' placeholder='Password' className='w-1/2 bg-gray-200 bg-opacity-50 border border-transparent focus:ring-accent focus:border-accent pl-4' required />
+								<input type='password' id='cpassword' name='cpassword' placeholder='Confirm Password' className='w-1/2 bg-gray-200 bg-opacity-50 border border-transparent focus:ring-accent focus:border-accent pl-4' required />
 							</div>
 							<div className='text-left'>
 								<div className='flex-row pb-5'>Account Type</div>
 								<div className='flex-row text-left justify-start'>
 									<div className='mb-[0.125rem] mr-4 inline-block min-h-[1.5rem]'>
-										<input type='radio' name='inlineRadioOptions' className=' hover:cursor-pointer text-accent bg-gray-200 border-gray-200 focus:accent' id='inlineRadio1' value='option1' />
+										<input type='radio' name='inlineRadioOptions' className=' hover:cursor-pointer text-accent bg-gray-200 border-gray-200 focus:accent' id='inlineRadio1' value='student' />
 										<label className='mt-px inline-block pl-2 hover:cursor-pointer' htmlFor='inlineRadio1'>
 											Student
 										</label>
 									</div>
 									<div className='mb-[0.125rem] mr-4 inline-block min-h-[1.5rem] pl-[1.5rem] hover:cursor-pointer'>
-										<input type='radio' name='inlineRadioOptions' className='hover:cursor-pointer  text-accent bg-gray-200 border-gray-200 focus:accent' id='inlineRadio2' value='option2' />
+										<input type='radio' name='inlineRadioOptions' className='hover:cursor-pointer  text-accent bg-gray-200 border-gray-200 focus:accent' id='inlineRadio2' value='landlord' />
 										<label className='mt-px inline-block pl-2 hover:cursor-pointer' htmlFor='inlineRadio2'>
 											Landlord
 										</label>
