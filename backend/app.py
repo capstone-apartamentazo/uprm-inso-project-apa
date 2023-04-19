@@ -408,3 +408,14 @@ def updateCurrentTenant():
 @app.route('/api/leases', methods=['DELETE'])
 def removeLease():
   return None
+
+"""
+SEARCH (ACCOMMODATIONS AND UNITS)
+"""
+@app.route('/api/search/accommodations', methods=['POST'])
+def searchAccommodations():
+  return AccommodationHandler().search(request.json)
+
+@app.route('/api/search/units', methods=['POST'])
+def searchUnits():
+  return None

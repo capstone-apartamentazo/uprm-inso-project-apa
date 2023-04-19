@@ -177,3 +177,13 @@ class AccommodationHandler:
 
   def constraintValid(self, number):
     return self.accommodations.getByConstraint(flask_praetorian.current_user_id(), number)
+
+  def search(self, json):
+    daoAccommodations = self.accommodations.search(json['input'])
+    if daoAccommodations:
+      result = []
+      for row in daoAccommodations:
+        result.append(self.dictionary(row))
+      return jsonify(result), 200
+    else:
+      return jsonify('Accommodations Not Found'), 405

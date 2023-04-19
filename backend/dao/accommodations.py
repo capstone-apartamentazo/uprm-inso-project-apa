@@ -51,3 +51,13 @@ class Accommodations:
     res = cursor.fetchone()
     cursor.close()
     return res
+
+  def search(self, data):
+    query = 'SELECT * FROM accommodations \
+            WHERE (accm_title ILIKE \'%%%s%%\' OR accm_street ILIKE \'%%%s%%\' OR accm_city ILIKE \'%%%s%%\' OR accm_state ILIKE \'%%%s%%\' OR accm_country ILIKE \'%%%s%%\') \
+            AND deleted_flag = false LIMIT 10'
+    cursor = db.cursor()
+    cursor.execute(query %(data, data, data, data, data))
+    res = cursor.fetchall()
+    cursor.close()
+    return res
