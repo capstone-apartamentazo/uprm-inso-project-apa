@@ -13,7 +13,7 @@ const ListingResult: React.FC<Props> = ({ title, address, features, description,
 	return (
 		<div className='card card-side bg-base-100 h-56 w-full shadow-lg transition ease-in-out delay-50 hover:-translate-y-1 hover:scale-10 duration-200 cursor-pointer'>
 			<figure className='p-4 rounded-2xl h-56 w-56'>
-				<img src='/images/user.png' className='rounded-xl' alt='Listing' />
+				<img src='https://images.pexels.com/photos/439391/pexels-photo-439391.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' className='rounded-xl h-48 w-48' alt='Listing' />
 			</figure>
 			<div className='card-body w-72'>
 				<p className='card-title truncate'>{title}</p>

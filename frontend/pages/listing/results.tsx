@@ -1,18 +1,35 @@
-import Card from '@/components/Card';
 import Layout from '@/components/Layout';
-import Listing from '@/components/Listing';
 import ListingResult from '@/components/ListingResult';
-import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
+import { useListings } from '../../useListings';
 
 export default function Listings() {
+	//TODO: Location from search
+	var location = 'LOCATION';
+	const { data, error, isLoading } = useListings('accommodations/all');
+
+	// TODO: Loading and Error components
+	if (error) return <div>Failed to load</div>;
+	if (!data) return <div>Loading...</div>;
+
+	var results = data.length;
+	let listings = [];
+
+	data.map((accm) => {
+		listings.push(
+			<div className='col-start-1 row-span-2 p-2'>
+				<ListingResult title={accm['Accommodation Title']} address={accm['Street'] + ', ' + accm['City']} features={'2 bed • 2 baths'} description={accm['Description']} price={'$800'} href={''} />{' '}
+			</div>
+		);
+	});
+
 	return (
 		<Layout>
 			<section className='pt-24 pl-20'>
 				<div className='grid grid-cols-2 grid-flow-row gap-4'>
 					<div className='row-span-1'>
 						<p className='font-bold text-2xl'>
-							13 results for <span className='text-accent'>Mayagüez, PR</span>
+							{results} results for <span className='text-accent'>{location}</span>
 						</p>
 					</div>
 					<div className='relative col-start-1 row-start-2'>
@@ -66,18 +83,7 @@ export default function Listings() {
 						</select>
 					</div>
 					<div className='col-start-2 row-start-3'>Map here</div>
-					<div className='col-start-1 row-span-2 p-2'>
-						<ListingResult title={'Bosque 65'} address={'65 Calle Bosque, Mayagüez'} features={'2 bed • 2 baths'} description={'This is a description of this unit'} price={'$475'} href={''} />
-					</div>
-					<div className='col-start-1 row-span-2 p-2'>
-						<ListingResult title={'Bosque 65'} address={'65 Calle Bosque, Mayagüez'} features={'2 bed • 2 baths'} description={'This is a description of this unit'} price={'$475'} href={''} />
-					</div>
-					<div className='col-start-1 row-span-2 p-2'>
-						<ListingResult title={'Bosque 65'} address={'65 Calle Bosque, Mayagüez'} features={'2 bed • 2 baths'} description={'This is a description of this unit'} price={'$475'} href={''} />
-					</div>
-					<div className='col-start-1 row-span-2 p-2'>
-						<ListingResult title={'Bosque 65'} address={'65 Calle Bosque, Mayagüez'} features={'2 bed • 2 baths'} description={'This is a description of this unit'} price={'$475'} href={''} />
-					</div>
+					{listings}
 				</div>
 			</section>
 		</Layout>
