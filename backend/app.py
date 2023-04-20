@@ -27,17 +27,22 @@ def getAllLandlords():
 def getLandlordById():
     return LandlordHandler().getById(request.json)
 
-# TODO
 @app.route('/api/landlords/login', methods=['POST'])
 def loginLandlord():
   return LandlordHandler().login(request.json)
 
-# TODO add restrictions when creating user
+@app.route('/api/landlords/protected')
+def protectedLandlord():
+  return LandlordHandler().protected()
+
+@app.route('/api/landlords/refresh')
+def refreshLandlord():
+  return LandlordHandler().refresh()
+
 @app.route('/api/landlords/new', methods=['POST'])
 def addLandlord():
   return LandlordHandler().addLandlord(request.json)
 
-# TODO add restrictions when updating user
 @app.route('/api/landlords', methods=['PUT'])
 def updateLandlord():
     return LandlordHandler().updateLandlord(request.json)
@@ -63,12 +68,10 @@ def getTenantById():
 def loginTenant():
   return None
 
-# TODO add restrictions when creating user
 @app.route('/api/tenants/new', methods=['POST'])
 def addTenant():
   return TenantHandler().addTenant(request.json)
 
-# TODO add restrictions when updating user
 @app.route('/api/tenants', methods=['PUT'])
 def updateTenant():
     return TenantHandler().updateTenant(request.json)
@@ -78,7 +81,6 @@ def updateTenant():
 def removeTenant():
   return None
 
-# TODO modify messages table with unique constraints
 """
 MESSAGES (LANDLORDS AND TENANTS)
 """
@@ -89,6 +91,14 @@ def getAllMessages():
 @app.route('/api/messages', methods=['POST'])
 def getMessageById():
     return MessageHandler().getById(request.json)
+
+@app.route('/api/messages/landlord', methods=['POST'])
+def getMessageByLandlordId():
+    return MessageHandler().getByLandlordId(request.json)
+
+@app.route('/api/messages/tenant', methods=['POST'])
+def getMessageByTenantId():
+    return MessageHandler().getByTenantId(request.json)
 
 @app.route('/api/messages/unique', methods=['POST'])
 def getMessageByConstraint():
@@ -135,12 +145,10 @@ def getAccommodationById():
 def getAccommodationByLandlordId():
     return AccommodationHandler().getByLandlordId(request.json)
 
-# TODO add restrictions when creating accommodation
 @app.route('/api/accommodations/new', methods=['POST'])
 def addAccommodation():
   return AccommodationHandler().addAccommodation(request.json)
 
-# TODO add restrictions when updating accommodation
 @app.route('/api/accommodations', methods=['PUT'])
 def updateAccommodation():
     return AccommodationHandler().updateAccommodation(request.json)
@@ -404,3 +412,10 @@ def updateCurrentTenant():
 @app.route('/api/leases', methods=['DELETE'])
 def removeLease():
   return None
+
+"""
+SEARCH (ACCOMMODATIONS)
+"""
+@app.route('/api/search', methods=['POST'])
+def searchAccommodations():
+  return AccommodationHandler().search(request.json)

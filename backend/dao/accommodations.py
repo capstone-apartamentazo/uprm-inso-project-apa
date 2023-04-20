@@ -43,3 +43,21 @@ class Accommodations:
     db.commit()
     cursor.close()
     return res
+
+  def getByConstraint(self, landlord, number):
+    query = 'SELECT * FROM accommodations WHERE accm_number = %s AND landlord_id = %s'
+    cursor = db.cursor()
+    cursor.execute(query, (number, landlord))
+    res = cursor.fetchone()
+    cursor.close()
+    return res
+
+  def search(self, data, offset):
+    query = 'SELECT * FROM accommodations \
+            WHERE (accm_title ILIKE \'%%%s%%\' OR accm_street ILIKE \'%%%s%%\' OR accm_city ILIKE \'%%%s%%\' OR accm_state ILIKE \'%%%s%%\' OR accm_country ILIKE \'%%%s%%\') \
+            AND deleted_flag = false ORDER BY accm_id DESC LIMIT 10 OFFSET %s'
+    cursor = db.cursor()
+    cursor.execute(query %(data, data, data, data, data, offset))
+    res = cursor.fetchall()
+    cursor.close()
+    return res

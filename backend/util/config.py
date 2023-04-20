@@ -27,6 +27,5 @@ app = Flask(__name__)
 guard = flask_praetorian.Praetorian()
 cors = CORS(app)
 
-app.config["SECRET_KEY"] = "rum802"
-app.config["JWT_ACCESS_LIFESPAN"] = { "hours": 24 }
-app.config["JWT_REFRESH_LIFESPAN"] = { "days": 30 }
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+app.config['JWT_ACCESS_LIFESPAN'] = { 'minutes': 60 }
