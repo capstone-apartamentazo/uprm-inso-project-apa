@@ -1,7 +1,6 @@
 import Layout from '@/components/Layout';
 import ListingResult from '@/components/ListingResult';
 import React, { useState, useEffect } from 'react';
-import { useListings } from '../../useListings';
 import { useRouter } from 'next/router';
 
 const Listings = () => {
@@ -45,9 +44,12 @@ const Listings = () => {
 					setLocation(search);
 				})
 				.catch((err) => {
-					console.log('Something went wrong!');
+					var noListings = [];
+					noListings.push(<div className='col-start-1 row-span-2 p-2'>No results found</div>);
+					setListings(noListings);
+					setAmount('No results');
+					setLocation(search);
 				});
-
 			setListings(listings);
 		}
 	}, [search]);
