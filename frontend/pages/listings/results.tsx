@@ -36,7 +36,7 @@ const Listings = () => {
 					data.map((accm) => {
 						allListings.push(
 							<div key={accm} className='col-start-1 row-span-2 p-2'>
-								<ListingResult key={accm} title={accm['Accommodation Title']} address={accm['Street'] + ', ' + accm['City']} features={'2 bed • 2 baths'} description={accm['Description']} price={'$800'} href={''} />{' '}
+								<ListingResult key={accm} title={accm['Accommodation Title']} address={accm['Street'] + ', ' + accm['City']} features={'2 bed • 2 baths'} description={accm['Description']} price={'$800'} href={''} id={accm['Accommodation ID']} />{' '}
 							</div>
 						);
 					});
@@ -57,7 +57,7 @@ const Listings = () => {
 
 	return (
 		<Layout>
-			<section className='pt-24 pl-20'>
+			<section className='pt-24 pl-20 bg-gray-50 min-h-screen'>
 				<div className='grid grid-cols-2 grid-flow-row gap-4'>
 					<div className='row-span-1'>
 						<p className='font-bold text-2xl'>
