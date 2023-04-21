@@ -1,5 +1,6 @@
 import Listing from './Listing';
 import { useListings } from '../useListings';
+import Link from 'next/link';
 
 export default function Explore() {
 	const { data, error } = useListings('accommodations/all');
@@ -22,7 +23,9 @@ export default function Explore() {
 				{/* TODO: This section changes based on whether the user is signed in or not, is a landlord, or is a student */}
 				{listings}
 			</div>
-			<button className='btn btn-accent text-white mb-18'>View More</button>
+			<Link className='btn btn-accent text-white mb-18' href='/listings/results?search=Mayaguez'>
+				View More
+			</Link>
 		</section>
 	);
 }
