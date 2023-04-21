@@ -2,26 +2,55 @@ import Layout from '@/components/Layout';
 import ListingResult from '@/components/ListingResult';
 import React, { useState, useEffect } from 'react';
 import { useListings } from '../../useListings';
+import { useRouter } from 'next/router';
 
-export default function Listings() {
-	//TODO: Location from search
-	var location = 'LOCATION';
-	const { data, error, isLoading } = useListings('accommodations/all');
+const Listings = () => {
+	let allListings = [];
+	const [listings, setListings] = useState([]);
+	const [amount, setAmount] = useState([]);
+	const [location, setLocation] = useState([]);
 
-	// TODO: Loading and Error components
-	if (error) return <div>Failed to load</div>;
-	if (!data) return <div>Loading...</div>;
+	const router = useRouter();
+	const { search } = router.query;
 
-	var results = data.length;
-	let listings = [];
+	useEffect(() => {
+		if (search) {
+			const data = {
+				input: search,
+				offset: 0,
+			};
 
-	data.map((accm) => {
-		listings.push(
-			<div className='col-start-1 row-span-2 p-2'>
-				<ListingResult title={accm['Accommodation Title']} address={accm['Street'] + ', ' + accm['City']} features={'2 bed • 2 baths'} description={accm['Description']} price={'$800'} href={''} />{' '}
-			</div>
-		);
-	});
+			const endpoint = 'http://127.0.0.1:5000/api/search';
+
+			const options = {
+				method: 'POST',
+				headers: new Headers({ 'content-type': 'application/json' }),
+				body: JSON.stringify(data),
+			};
+
+			fetch(endpoint, options)
+				.then((data) => {
+					return data.json();
+				})
+				.then((data) => {
+					data.map((accm) => {
+						allListings.push(
+							<div key={accm} className='col-start-1 row-span-2 p-2'>
+								<ListingResult key={accm} title={accm['Accommodation Title']} address={accm['Street'] + ', ' + accm['City']} features={'2 bed • 2 baths'} description={accm['Description']} price={'$800'} href={''} />{' '}
+							</div>
+						);
+					});
+					setListings(allListings);
+					setAmount(allListings.length > 1 ? allListings.length + ' results' : allListings.length + ' result');
+					setLocation(search);
+				})
+				.catch((err) => {
+					console.log('Something went wrong!');
+				});
+
+			setListings(listings);
+		}
+	}, [search]);
 
 	return (
 		<Layout>
@@ -29,7 +58,7 @@ export default function Listings() {
 				<div className='grid grid-cols-2 grid-flow-row gap-4'>
 					<div className='row-span-1'>
 						<p className='font-bold text-2xl'>
-							{results} results for <span className='text-accent'>{location}</span>
+							{amount} for <span className='text-accent'>'{location}'</span>
 						</p>
 					</div>
 					<div className='relative col-start-1 row-start-2'>
@@ -88,4 +117,6 @@ export default function Listings() {
 			</section>
 		</Layout>
 	);
-}
+};
+
+export default Listings;
