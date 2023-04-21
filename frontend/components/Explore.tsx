@@ -12,7 +12,7 @@ export default function Explore() {
 	let listings = [];
 
 	top.map((accm) => {
-		listings.push(<Listing title={accm['Accommodation Title']} address={accm['Street'] + ', ' + accm['City']} features={'Water & Internet included'} price={'$800'} href={''} />);
+		listings.push(<Listing key={accm['Accommodation ID']} title={accm['Accommodation Title']} address={accm['Street'] + ', ' + accm['City']} features={'Water & Internet included'} price={'$800'} href={''} />);
 	});
 
 	return (

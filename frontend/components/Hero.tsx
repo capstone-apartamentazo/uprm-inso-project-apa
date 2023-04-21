@@ -1,4 +1,5 @@
 import { useRouter } from 'next/router';
+import SearchBar from './SearchBar';
 
 export default function Hero() {
 	const router = useRouter();
@@ -97,22 +98,8 @@ export default function Hero() {
 				</g>
 			</svg>
 			<h1 className='text-5xl mb-4 pt-48 font-semibold'>Apartamentazo</h1>
-			<h2 className='font-semibold mb-5 text-lg'>Helping you find your next college apartment</h2>
-
-			<form onSubmit={handleSearch} className='flex items-center justify-center'>
-				<label className='sr-only'>Search for a location...</label>{' '}
-				<div className='relative w-2/6'>
-					<div className='relative w-full'>
-						<input type='text' id='search' className='appearance-none bg-gray-50 bg-opacity-80 border border-accent text-gray-900 text-sm rounded-full focus:ring-accent focus:border-accent block w-full pl-5 p-2.5 pr-8' placeholder='Search for a location...' required />
-						<button type='submit' className='absolute top-0.5 right-0 p-2.5 text-sm font-medium text-accent rounded-r-lg'>
-							<svg aria-hidden='true' className='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'>
-								<path strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'></path>
-							</svg>
-							<span className='sr-only'>Search</span>
-						</button>
-					</div>
-				</div>
-			</form>
+			<h2 className='font-semibold mb-5 text-lg '>Helping you find your next college apartment</h2>
+			<SearchBar className='flex justify-center items-center' width='w-2/6' />
 		</section>
 	);
 }
