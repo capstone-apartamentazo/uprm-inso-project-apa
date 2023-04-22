@@ -1,13 +1,9 @@
 from flask import jsonify
-import flask_praetorian
 from psycopg2 import Error
+from util.config import landlord_guard as guard
 from dao.landlords import Landlords
-from models.landlord import Landlord
-from util.config import app, guard
-import flask_praetorian
+import flask_praetorian as praetorian
 import re
-
-guard.init_app(app, Landlord)
 
 class LandlordHandler:
   def __init__(self):
@@ -22,7 +18,7 @@ class LandlordHandler:
         return jsonify('Empty List')
     except (Exception, Error) as e:
       return jsonify("Error"), 400
-  
+
   def getById(self, json):
     try:
       daoLandlord = self.landlords.getById(json['landlord_id'])
@@ -40,9 +36,9 @@ class LandlordHandler:
     token = { 'access_token': guard.encode_jwt_token(landlord) }
     return jsonify(token)
   
-  @flask_praetorian.auth_required
+  @praetorian.auth_required
   def protected(self):
-    json = {'landlord_id': flask_praetorian.current_user_id()}
+    json = { 'landlord_id': praetorian.current_user_id() }
     return self.getById(json)
 
   def refresh(self):
@@ -68,8 +64,8 @@ class LandlordHandler:
       # returns reason why input was invalid
       return jsonify(reason), 400
 
+  @praetorian.auth_required
   def updateLandlord(self, json):
-    identifier = json['landlord_id']
     name = json['landlord_name']
     email = json['landlord_email']
     password = json['landlord_password']
@@ -77,7 +73,7 @@ class LandlordHandler:
     valid, reason = self.checkInput(identifier, name, email, password, phone)
     # update landlord if input is valid
     if valid:
-      updatedLandlord = self.landlords.updateLandlord(identifier, name, email, guard.hash_password(password), phone)
+      updatedLandlord = self.landlords.updateLandlord(praetorian.current_user_id(), name, email, guard.hash_password(password), phone)
       if updatedLandlord:
         return jsonify(updatedLandlord)
       else:
@@ -127,14 +123,14 @@ class LandlordHandler:
   def emailValid(self, email):
     emailRegex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
     return not re.search(emailRegex, email)
-  
+
   def passwordValid(self, password):
     passwordRegex = '^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s).{4,20}$'
     return not re.search(passwordRegex, password)
 
   def emailTaken(self, email, identifier):
     return self.landlords.getEmail(email, identifier)
-  
+
   def phoneValid(self, phone):
     phoneRegex = '^[2-9]\d{2}-\d{3}-\d{4}$'
     return not re.search(phoneRegex, phone)
