@@ -1,23 +1,24 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import apartamentazo from '../public/images/apartamentazo.png';
+import Login from './Login';
+import Signup from './SignUp';
 
 export default function Navbar(path: any) {
 	var classes = '';
 	var navBar = <></>;
-
 	// INFO: Signed out / Default Navigation Bar
 	var defaultBar = (
 		<ul className='menu menu-horizontal px-1 gap-4'>
 			<li>
-				<Link href={''} className='btn btn-accent btn-outline normal-case bg-white w-28 font-light'>
+				<label htmlFor='signup-modal' className='btn btn-accent btn-outline normal-case bg-white w-28'>
 					Sign up
-				</Link>
+				</label>
 			</li>
 			<li>
-				<Link href={''} className='btn btn-accent btn-outline normal-case bg-white w-28 font-light'>
+				<label htmlFor='login-modal' className='btn btn-accent btn-outline normal-case bg-white w-28'>
 					Log in
-				</Link>
+				</label>
 			</li>
 		</ul>
 	);
@@ -99,7 +100,12 @@ export default function Navbar(path: any) {
 					</span>
 				</Link>
 			</div>
-			<div className='flex-none'>{navBar}</div>
+			<div className='flex-none'>
+				{' '}
+				<Login />
+				<Signup />
+				{navBar}
+			</div>
 		</div>
 	);
 }

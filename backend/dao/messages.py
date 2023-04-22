@@ -16,6 +16,22 @@ class Messages:
     cursor.close()
     return res
 
+  def getByLandlordId(self, landlord):
+    query = 'SELECT DISTINCT ON (tenant_id) * FROM messages WHERE landlord_id = %s ORDER BY tenant_id, msg_send_date DESC'
+    cursor = db.cursor()
+    cursor.execute(query %(landlord))
+    res = cursor.fetchall()
+    cursor.close()
+    return res
+
+  def getByTenantId(self, tenant):
+    query = 'SELECT DISTINCT ON (landlord_id) * FROM messages WHERE tenant_id = %s ORDER BY landlord_id, msg_send_date DESC'
+    cursor = db.cursor()
+    cursor.execute(query %(tenant))
+    res = cursor.fetchall()
+    cursor.close()
+    return res
+
   def getByConstraint(self, landlord, tenant, date, landlord_sent_msg):
     query = 'SELECT * FROM messages WHERE landlord_id = %s AND tenant_id = %s AND msg_send_date = %s AND landlord_sent_msg = %s'
     cursor = db.cursor()

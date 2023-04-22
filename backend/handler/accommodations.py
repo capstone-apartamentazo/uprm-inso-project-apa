@@ -1,4 +1,5 @@
 from flask import jsonify
+import flask_praetorian
 from dao.accommodations import Accommodations
 from dao.shared_amenities import SharedAmenities
 from dao.landlords import Landlords
@@ -51,6 +52,7 @@ class AccommodationHandler:
     else:
       return jsonify('Accommodations Not Found'), 405
 
+  @flask_praetorian.auth_required
   def addAccommodation(self, json):
     title = json['accm_title']
     street = json['accm_street']
@@ -58,17 +60,16 @@ class AccommodationHandler:
     city = json['accm_city']
     state = json['accm_state']
     country = json['accm_country']
-    zip = json['accm_zipcode']
+    zipcode = json['accm_zipcode']
     description = json['accm_description']
-    landlordID = json['landlord_id']
+    landlordID = flask_praetorian.current_user_id()
     valid, reason = self.checkLandlordID(landlordID)
     if not valid:
       return jsonify(reason), 400
-    valid, reason = self.checkInput(title, street, number, city, state, country, zip)
+    valid, reason = self.checkInput(title, street, number, city, state, country, zipcode)
     # add accommodation if input is valid
     if valid:
-      newAccommodation = self.accommodations.addAccommodation(title, street, number, city, 
-                                                              state, country, zip, description, landlordID)
+      newAccommodation = self.accommodations.addAccommodation(title, street, number, city, state, country, zipcode, description, landlordID)
       if newAccommodation:
         daoAmenities = self.amenities.addSharedAmenities(newAccommodation[0])
       else:
@@ -81,6 +82,7 @@ class AccommodationHandler:
       # returns reason why input was invalid
       return jsonify(reason), 400
 
+  @flask_praetorian.auth_required
   def updateAccommodation(self, json):
     accm_id = json['accm_id']
     title = json['accm_title']
@@ -89,16 +91,15 @@ class AccommodationHandler:
     city = json['accm_city']
     state = json['accm_state']
     country = json['accm_country']
-    zip = json['accm_zipcode']
+    zipcode = json['accm_zipcode']
     description = json['accm_description']
     valid, reason = self.checkAccmID(accm_id)
     if not valid:
       return jsonify(reason), 400
-    valid, reason = self.checkInput(title, street, number, city, state, country, zip)
+    valid, reason = self.checkInput(title, street, number, city, state, country, zipcode)
     # add accommodation if input is valid
     if valid:
-      updatedAccommodation = self.accommodations.updateAccommodation(accm_id, title, street, number, city, 
-                                                              state, country, zip, description)
+      updatedAccommodation = self.accommodations.updateAccommodation(accm_id, title, street, number, city, state, country, zipcode, description)
       if updatedAccommodation:
         return jsonify(self.dictionary(updatedAccommodation)), 200
       else:
@@ -107,7 +108,7 @@ class AccommodationHandler:
       # returns reason why input was invalid
       return jsonify(reason), 400
     
-  def checkInput(self, title, street, number, city, state, country, zip):
+  def checkInput(self, title, street, number, city, state, country, zipcode):
     # strip function removes any spaces given
     try:
       if not len(title.strip()):
@@ -126,10 +127,12 @@ class AccommodationHandler:
         return False, 'Empty Country'
       if self.onlyCharacters(country):
         return False, 'Country cannot contain numbers or special characters.'
-      if not len(zip.strip()):
+      if not len(zipcode.strip()):
         return False, 'Empty Zip Code'
-      if self.zipValid(zip):
+      if self.zipValid(zipcode):
         return False, 'Enter a Valid Zip Code'
+      if self.constraintValid(number):
+        return False, 'Accommodation number already exists for landlord.'
     except:
       return False, 'Invalid Input'
     else:
@@ -146,8 +149,11 @@ class AccommodationHandler:
 
   def checkAccmID(self, accmID):
     try:
-      if not self.accommodations.getById(accmID):
+      daoAccommodation = self.accommodations.getById(accmID)
+      if not daoAccommodation:
         return False, 'Accommodation Not Found'
+      if daoAccommodation[9] != flask_praetorian.current_user_id():
+        return False, 'Accommodation is not own by Landlord'
     except:
       return False, 'Invalid Input'
     else:
@@ -168,4 +174,16 @@ class AccommodationHandler:
       return
     stringRegex = '^[a-zA-Z ]{1,20}$'
     return not re.search(stringRegex, string)
-  
+
+  def constraintValid(self, number):
+    return self.accommodations.getByConstraint(flask_praetorian.current_user_id(), number)
+
+  def search(self, json):
+    daoAccommodations = self.accommodations.search(json['input'], json['offset'])
+    if daoAccommodations:
+      result = []
+      for row in daoAccommodations:
+        result.append(self.dictionary(row))
+      return jsonify(result), 200
+    else:
+      return jsonify('Accommodations Not Found'), 405
