@@ -1,5 +1,5 @@
 __pycache__/
-basedb/
+capstone/
 logfile
 *.sql
 .env

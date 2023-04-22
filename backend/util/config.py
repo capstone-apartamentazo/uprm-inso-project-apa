@@ -1,31 +1,35 @@
 from flask import Flask
 from flask_cors import CORS
+from flask_praetorian import Praetorian
+from psycopg2 import connect, Error
 from dotenv import load_dotenv
-import flask_praetorian
-import psycopg2
-import os
+from os import environ
 
+# load environment variables
 load_dotenv()
 
 # Connect to PostgreSQL database
 try:
-  dbConfig = os.environ.get('DATABASE_URL')
-  db = psycopg2.connect(dbConfig)
+  database_url = environ.get('DATABASE_URL')
+  db = connect(database_url)
 
   print("Connection successful")
-  
+
   cursor = db.cursor()
   cursor.execute('SELECT version()')
   print(cursor.fetchone())
   cursor.close()
 
-except (Exception, psycopg2.Error) as error:
-  print("Error while connecting to PostgreSQL", error)
+except (Exception, Error) as err:
+  print("Error while connecting to PostgreSQL", err)
 
-# Initialize Flask and CORS App
+# Initialize Flask and CORS app
 app = Flask(__name__)
-guard = flask_praetorian.Praetorian()
 cors = CORS(app)
 
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+# Setup app config
+app.config['SECRET_KEY'] = environ.get('SECRET_KEY')
 app.config['JWT_ACCESS_LIFESPAN'] = { 'minutes': 60 }
+
+# Initialize Praetorian
+guard = Praetorian()
