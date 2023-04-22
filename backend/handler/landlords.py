@@ -66,6 +66,7 @@ class LandlordHandler:
 
   @praetorian.auth_required
   def updateLandlord(self, json):
+    identifier = praetorian.current_user_id()
     name = json['landlord_name']
     email = json['landlord_email']
     password = json['landlord_password']
@@ -73,7 +74,7 @@ class LandlordHandler:
     valid, reason = self.checkInput(identifier, name, email, password, phone)
     # update landlord if input is valid
     if valid:
-      updatedLandlord = self.landlords.updateLandlord(praetorian.current_user_id(), name, email, guard.hash_password(password), phone)
+      updatedLandlord = self.landlords.updateLandlord(identifier, name, email, guard.hash_password(password), phone)
       if updatedLandlord:
         return jsonify(updatedLandlord)
       else:
