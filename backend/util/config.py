@@ -22,7 +22,7 @@ try:
 except (Exception, psycopg2.Error) as error:
   print("Error while connecting to PostgreSQL", error)
 
-# Init Flask App
+# Initialize Flask and CORS App
 app = Flask(__name__)
 guard = flask_praetorian.Praetorian()
 cors = CORS(app)

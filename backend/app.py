@@ -35,7 +35,7 @@ def loginLandlord():
 def protectedLandlord():
   return LandlordHandler().protected()
 
-@app.route('/api/landlords/refresh')
+@app.route('/api/landlords/refresh', methods=['POST'])
 def refreshLandlord():
   return LandlordHandler().refresh()
 
