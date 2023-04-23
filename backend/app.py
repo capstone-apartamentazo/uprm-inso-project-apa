@@ -14,7 +14,7 @@ from handler.leases import LeaseHandler
 
 @app.route('/')
 def home():
-  return "Hello World"
+  return 'Hello World'
 
 """
 LANDLORDS
@@ -63,10 +63,17 @@ def getAllTenants():
 def getTenantById():
     return TenantHandler().getById(request.json)
 
-# TODO
 @app.route('/api/tenants/login', methods=['POST'])
 def loginTenant():
-  return None
+  return TenantHandler().login(request.json)
+
+@app.route('/api/tenants/protected')
+def protectedTenant():
+  return TenantHandler().protected()
+
+@app.route('/api/tenants/refresh')
+def refreshTenant():
+  return TenantHandler().refresh()
 
 @app.route('/api/tenants/new', methods=['POST'])
 def addTenant():
