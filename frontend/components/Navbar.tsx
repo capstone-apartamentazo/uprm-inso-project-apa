@@ -11,14 +11,14 @@ export default function Navbar(path: any) {
 	var defaultBar = (
 		<ul className='menu menu-horizontal px-1 gap-4'>
 			<li>
-				<label htmlFor='signup-modal' className='btn btn-accent btn-outline normal-case bg-white w-28'>
+				<a href='#signup-modal' className='btn btn-accent btn-outline normal-case bg-white w-28'>
 					Sign up
-				</label>
+				</a>
 			</li>
 			<li>
-				<label htmlFor='login-modal' className='btn btn-accent btn-outline normal-case bg-white w-28'>
+				<a href='#login-modal' className='btn btn-accent btn-outline normal-case bg-white w-28'>
 					Log in
-				</label>
+				</a>
 			</li>
 		</ul>
 	);

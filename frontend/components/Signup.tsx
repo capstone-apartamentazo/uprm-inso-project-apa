@@ -35,17 +35,17 @@ const Signup = () => {
 	};
 	return (
 		<div className='text-center'>
-			<input type='checkbox' id='signup-modal' className='modal-toggle' />
-			<label htmlFor='signup-modal' className='modal cursor-pointer'>
+			
+			<label id='signup-modal' className='modal cursor-pointer'>
 				<label className='modal-box relative flex' htmlFor=''>
 					<div className='flex-col flex-none w-10 -my-6 bg-gradient-to-b pl-5 -ml-8 mr-5 from-primary to-accent overscroll-none'>
 						<br></br>
 					</div>
 
 					<div className='flex-col flex-auto'>
-						<label htmlFor='signup-modal' className='btn btn-sm btn-circle absolute right-2 top-2'>
+						<a href='#' className='btn btn-sm btn-circle absolute right-2 top-2'>
 							✕
-						</label>
+						</a>
 
 						<h3 className='text-4xl text-accent font-bold my-10'>Create an Account</h3>
 
@@ -83,7 +83,7 @@ const Signup = () => {
 						</form>
 						<p className='pb-16'>
 							Already have an account?{' '}
-							<a className='text-accent' href=''>
+							<a href='#login-modal' className='text-accent' >
 								Log In
 							</a>
 						</p>
