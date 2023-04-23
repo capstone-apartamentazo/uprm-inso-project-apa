@@ -7,10 +7,6 @@ import { useEffect } from 'react';
 const { publicRuntimeConfig } = getConfig();
 const { name } = publicRuntimeConfig.site;
 
-interface loginResponse  {
-	status: String
-	result: Object
-}
 
 const Login = () => {
 	
@@ -46,7 +42,7 @@ const Login = () => {
 			localStorage.setItem('type', data.type)
 
 			console.log(localStorage.getItem('token'));
-			//alert(`Logged in success`);
+			alert(`Logged in success`);
 			//router.push('#');
 
 			
@@ -55,8 +51,6 @@ const Login = () => {
 		.catch((error) => {
 			console.log(error)
 		  });
-		  //<input type='checkbox' id='login-modal' className='modal-toggle' />
-
 		  
 	};
 	return (
