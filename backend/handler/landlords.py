@@ -124,7 +124,7 @@ class LandlordHandler:
     if not len(password.strip()):
       return False, 'Empty Password'
     if self.passwordValid(password):
-      return False, 'Password must contain 4-8 characters, at least one uppercase/lowercase letter, at least one digit, and no spaces. (Special characters are optional)'
+      return False, 'Password must contain 4-20 characters, at least one uppercase/lowercase letter, at least one digit, and no spaces. (Special characters are optional)'
     if not len(phone.strip()):
       return False, 'Empty Phone Number'
     if self.phoneValid(phone):
