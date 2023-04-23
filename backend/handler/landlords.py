@@ -1,7 +1,6 @@
 from flask import jsonify
 from psycopg2 import Error as pgerror
-from util.config import landlord_guard as guard
-from util.config import db, logger
+from util.config import db, logger, landlord_guard as guard
 from dao.landlords import Landlords
 import flask_praetorian as praetorian
 import re
