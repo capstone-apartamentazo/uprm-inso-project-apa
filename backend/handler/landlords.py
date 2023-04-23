@@ -111,29 +111,26 @@ class LandlordHandler:
 
   def checkInput(self, identifier, name, email, password, phone):
     # strip function removes any spaces given
-    try:
-      if identifier > 0 and not self.landlords.getById(identifier):
-        return False, 'Landlord Not Found'
-      if not len(name.strip()):
-        return False, 'Empty Name'
-      if not len(email.strip()):
-        return False, 'Empty Email'
-      if self.emailValid(email):
-        return False, 'Enter Valid Email'
-      if self.emailTaken(email, identifier):
-        return False, 'Email Taken'
-      if not len(password.strip()):
-        return False, 'Empty Password'
-      if self.passwordValid(password):
-        return False, 'Password must contain 4-8 characters, at least one uppercase/lowercase letter, at least one digit, and no spaces. (Special characters are optional)'
-      if not len(phone.strip()):
-        return False, 'Empty Phone Number'
-      if self.phoneValid(phone):
-        return False, 'Enter Valid Phone Number'
-      if self.phoneTaken(phone, identifier):
-        return False, 'Phone Number Taken'
-    except:
-      return False, 'Invalid Input'
+    if identifier > 0 and not self.landlords.getById(identifier):
+      return False, 'Landlord Not Found'
+    if not len(name.strip()):
+      return False, 'Empty Name'
+    if not len(email.strip()):
+      return False, 'Empty Email'
+    if self.emailValid(email):
+      return False, 'Enter Valid Email'
+    if self.emailTaken(email, identifier):
+      return False, 'Email Taken'
+    if not len(password.strip()):
+      return False, 'Empty Password'
+    if self.passwordValid(password):
+      return False, 'Password must contain 4-8 characters, at least one uppercase/lowercase letter, at least one digit, and no spaces. (Special characters are optional)'
+    if not len(phone.strip()):
+      return False, 'Empty Phone Number'
+    if self.phoneValid(phone):
+      return False, 'Enter Valid Phone Number'
+    if self.phoneTaken(phone, identifier):
+      return False, 'Phone Number Taken'
     else:
       return True , ''
 

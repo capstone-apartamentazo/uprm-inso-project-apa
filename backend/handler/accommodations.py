@@ -1,9 +1,9 @@
 from flask import jsonify
-from psycopg2 import Error
-from util.config import landlord_guard as guard
+from psycopg2 import Error as pgerror
+from util.config import db, logger, landlord_guard as guard
 from dao.accommodations import Accommodations
 from handler.shared_amenities import SharedAmenitiesHandler
-from dao.landlords import Landlords
+from handler.landlords import LandlordHandler
 import flask_praetorian as praetorian
 import re
 
@@ -11,7 +11,7 @@ class AccommodationHandler:
   def __init__(self):
     self.accommodations = Accommodations()
     self.amenities = SharedAmenitiesHandler()
-    self.landlords = Landlords()
+    self.landlords = LandlordHandler()
 
   def getAll(self):
     try:
@@ -20,8 +20,10 @@ class AccommodationHandler:
         return jsonify([row for row in daoAccommodations])
       else:
         return jsonify('Empty List')
-    except (Exception, Error) as e:
-      return jsonify("Error"), 400
+    except (Exception, pgerror) as e:
+      db.rollback()
+      logger.exception(e)
+      return jsonify('Error Occured'), 400
 
   def getById(self, json):
     try:
@@ -30,8 +32,10 @@ class AccommodationHandler:
         return jsonify(daoAccommodation)
       else:
         return jsonify('Accommodation Not Found')
-    except (Exception, Error) as e:
-      return jsonify("Error"), 400
+    except (Exception, pgerror) as e:
+      db.rollback()
+      logger.exception(e)
+      return jsonify('Error Occured'), 400
 
   def getByLandlordId(self, json):
     try:
@@ -40,8 +44,10 @@ class AccommodationHandler:
         return jsonify([row for row in daoAccommodations])
       else:
         return jsonify('Accommodations Not Found')
-    except (Exception, Error) as e:
-      return jsonify("Error"), 400
+    except (Exception, pgerror) as e:
+      db.rollback()
+      logger.exception(e)
+      return jsonify('Error Occured'), 400
 
   def search(self, json):
     try:
@@ -50,8 +56,10 @@ class AccommodationHandler:
         return jsonify([row for row in daoAccommodations])
       else:
         return jsonify('Accommodations Not Found')
-    except (Exception, Error) as e:
-      return jsonify("Error"), 400
+    except (Exception, pgerror) as e:
+      db.rollback()
+      logger.exception(e)
+      return jsonify('Error Occured'), 400
 
   @praetorian.auth_required
   def addAccommodation(self, json):
@@ -80,8 +88,10 @@ class AccommodationHandler:
       else:
         # returns reason why input was invalid
         return jsonify(reason)
-    except (Exception, Error) as e:
-      return jsonify("Error"), 400
+    except (Exception, pgerror) as e:
+      db.rollback()
+      logger.exception(e)
+      return jsonify('Error Occured'), 400
 
   @praetorian.auth_required
   def updateAccommodation(self, json):
@@ -109,59 +119,54 @@ class AccommodationHandler:
       else:
         # returns reason why input was invalid
         return jsonify(reason)
-    except (Exception, Error) as e:
-      return jsonify("Error"), 400
+    except (Exception, pgerror) as e:
+      db.rollback()
+      logger.exception(e)
+      return jsonify('Error Occured'), 400
     
   def checkInput(self, identifier, title, street, number, city, state, country, zipcode):
     # strip function removes any spaces given
-    try:
-      if identifier > 0 and not self.accommodations.getById(identifier):
-        return False, 'Accommodation Not Found'
-      if not len(title.strip()):
-        return False, 'Empty Title'
-      if not len(street.strip()):
-        return False, 'Empty Street'
-      if self.accmNumValid(number):
-        return False, 'Accommodation number can only contain numbers, leters and hyphen. (Hyphen are optional but cannot start or end with a hyphen -)'
-      if not len(city.strip()):
-        return False, 'Empty City'
-      if self.onlyCharacters(city):
-        return False, 'City cannot contain numbers or special characters.'
-      if self.onlyCharacters(state):
-        return False, 'State cannot contain numbers or special characters.'
-      if not len(country.strip()):
-        return False, 'Empty Country'
-      if self.onlyCharacters(country):
-        return False, 'Country cannot contain numbers or special characters.'
-      if not len(zipcode.strip()):
-        return False, 'Empty Zip Code'
-      if self.zipValid(zipcode):
-        return False, 'Enter a Valid Zip Code'
-      if self.constraintExists(number, identifier):
-        return False, 'Accommodation number already exists for landlord.'
-    except:
-      return False, 'Invalid Input'
+    if identifier > 0 and not self.accommodations.getById(identifier):
+      return False, 'Accommodation Not Found'
+    if not len(title.strip()):
+      return False, 'Empty Title'
+    if not len(street.strip()):
+      return False, 'Empty Street'
+    if self.accmNumValid(number):
+      return False, 'Accommodation number can only contain numbers, leters and hyphen. (Hyphen are optional but cannot start or end with a hyphen -)'
+    if not len(city.strip()):
+      return False, 'Empty City'
+    if self.onlyCharacters(city):
+      return False, 'City cannot contain numbers or special characters.'
+    if self.onlyCharacters(state):
+      return False, 'State cannot contain numbers or special characters.'
+    if not len(country.strip()):
+      return False, 'Empty Country'
+    if self.onlyCharacters(country):
+      return False, 'Country cannot contain numbers or special characters.'
+    if not len(zipcode.strip()):
+      return False, 'Empty Zip Code'
+    if self.zipValid(zipcode):
+      return False, 'Enter a Valid Zip Code'
+    if self.constraintExists(number, identifier):
+      return False, 'Accommodation number already exists for landlord.'
     else:
       return True , ''
 
   def checkLandlordID(self, landlordID):
-    try:
-      if not self.landlords.getById(landlordID):
-        return False, 'Landlord Not Found'
-    except:
-      return False, 'Invalid Input'
+    json = { 'landlord_id': landlordID }
+    daoLandlord = self.landlords.getById(json)
+    if not daoLandlord:
+      return False, 'Landlord Not Found'
     else:
       return True , ''
 
   def checkAccmID(self, accmID):
-    try:
-      daoAccommodation = self.accommodations.getById(accmID)
-      if not daoAccommodation:
-        return False, 'Accommodation Not Found'
-      if daoAccommodation['landlord_id'] != praetorian.current_user_id():
-        return False, 'Accommodation is not own by Landlord'
-    except:
-      return False, 'Invalid Input'
+    daoAccommodation = self.accommodations.getById(accmID)
+    if not daoAccommodation:
+      return False, 'Accommodation Not Found'
+    if daoAccommodation['landlord_id'] != praetorian.current_user_id():
+      return False, 'Accommodation is not own by Landlord'
     else:
       return True , ''
 
