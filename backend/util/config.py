@@ -1,10 +1,11 @@
 from flask import Flask, jsonify
 from flask_cors import CORS
 from flask_praetorian import Praetorian
-from psycopg2 import connect, Error
+from psycopg2 import connect, Error as pgerror
 from psycopg2.extras import RealDictCursor
 from dotenv import load_dotenv
 from os import environ
+import logging
 
 # load environment variables
 load_dotenv()
@@ -14,19 +15,22 @@ try:
   database_url = environ.get('DATABASE_URL')
   db = connect(database_url)
 
-  print("Connection successful")
+  print('Connection successful')
 
   cursor = db.cursor()
   cursor.execute('SELECT version()')
   print(cursor.fetchone())
   cursor.close()
 
-except (Exception, Error) as err:
-  print("Error while connecting to PostgreSQL", err)
+except pgerror:
+  print('Error while connecting to PostgreSQL', pgerror)
 
 # Initialize Flask and CORS app
 app = Flask(__name__)
 cors = CORS(app)
+
+# Initialize logger for exception handling
+logger = logging.getLogger()
 
 # Setup app config
 app.config['SECRET_KEY'] = environ.get('SECRET_KEY')
@@ -59,8 +63,10 @@ class Landlord:
       cursor.close()
       if res:
         return Landlord(res)
-    except (Exception, Error) as e:
-      return jsonify("Error"), 400
+    except (Exception, pgerror) as e:
+      db.rollback()
+      logger.exception(e)
+      return jsonify('Error Occured'), 400
 
   @classmethod
   def identify(self, lid):
@@ -71,8 +77,10 @@ class Landlord:
       cursor.close()
       if res:
         return Landlord(res)
-    except (Exception, Error) as e:
-      return jsonify("Error"), 400
+    except (Exception, pgerror) as e:
+      db.rollback()
+      logger.exception(e)
+      return jsonify('Error Occured'), 400
 
 class Tenant:
   def __init__(self, json=None):
@@ -100,8 +108,10 @@ class Tenant:
       cursor.close()
       if res:
         return Tenant(res)
-    except (Exception, Error) as e:
-      return jsonify("Error"), 400
+    except (Exception, pgerror) as e:
+      db.rollback()
+      logger.exception(e)
+      return jsonify('Error Occured'), 400
 
   @classmethod
   def identify(self, tid):
@@ -112,8 +122,10 @@ class Tenant:
       cursor.close()
       if res:
         return Tenant(res)
-    except (Exception, Error) as e:
-      return jsonify("Error"), 400
+    except (Exception, pgerror) as e:
+      db.rollback()
+      logger.exception(e)
+      return jsonify('Error Occured'), 400
 
 # Initialize Praetorian with Flask app for Landlord and Tenant classes
 landlord_guard = Praetorian(app, Landlord)

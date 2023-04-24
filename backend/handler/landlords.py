@@ -1,6 +1,6 @@
 from flask import jsonify
-from psycopg2 import Error
-from util.config import landlord_guard as guard
+from psycopg2 import Error as pgerror
+from util.config import db, logger, landlord_guard as guard
 from dao.landlords import Landlords
 import flask_praetorian as praetorian
 import re
@@ -16,8 +16,10 @@ class LandlordHandler:
         return jsonify([row for row in daoLandlords])
       else:
         return jsonify('Empty List')
-    except (Exception, Error) as e:
-      return jsonify("Error"), 400
+    except (Exception, pgerror) as e:
+      db.rollback()
+      logger.exception(e)
+      return jsonify('Error Occured'), 400
 
   def getById(self, json):
     try:
@@ -26,8 +28,10 @@ class LandlordHandler:
         return jsonify(daoLandlord)
       else:
         return jsonify('Landlord Not Found')
-    except (Exception, Error) as e:
-      return jsonify("Error"), 400
+    except (Exception, pgerror) as e:
+      db.rollback()
+      logger.exception(e)
+      return jsonify('Error Occured'), 400
 
   def login(self, json):
     email = json['landlord_email'].lower()
@@ -48,40 +52,50 @@ class LandlordHandler:
     return jsonify(token)
 
   def addLandlord(self, json):
-    name = json['landlord_name']
-    email = json['landlord_email'].lower()
-    password = json['landlord_password']
-    phone = json['landlord_phone']
-    valid, reason = self.checkInput(0, name, email, password, phone)
-    # add landlord if input is valid
-    if valid:
-      newLandlord = self.landlords.addLandlord(name, email, guard.hash_password(password), phone)
-      if newLandlord:
-        return jsonify(newLandlord)
+    try:
+      name = json['landlord_name']
+      email = json['landlord_email'].lower()
+      password = json['landlord_password']
+      phone = json['landlord_phone']
+      valid, reason = self.checkInput(0, name, email, password, phone)
+      # add landlord if input is valid
+      if valid:
+        newLandlord = self.landlords.addLandlord(name, email, guard.hash_password(password), phone)
+        if newLandlord:
+          return jsonify(newLandlord)
+        else:
+          return jsonify('Error adding Landlord'), 400
       else:
-        return jsonify('Error adding Landlord'), 400
-    else:
-      # returns reason why input was invalid
-      return jsonify(reason), 400
+        # returns reason why input was invalid
+        return jsonify(reason), 400
+    except (Exception, pgerror) as e:
+      db.rollback()
+      logger.exception(e)
+      return jsonify('Error Occured'), 400
 
   @praetorian.auth_required
   def updateLandlord(self, json):
-    identifier = praetorian.current_user_id()
-    name = json['landlord_name']
-    email = json['landlord_email']
-    password = json['landlord_password']
-    phone = json['landlord_phone']
-    valid, reason = self.checkInput(identifier, name, email, password, phone)
-    # update landlord if input is valid
-    if valid:
-      updatedLandlord = self.landlords.updateLandlord(identifier, name, email, guard.hash_password(password), phone)
-      if updatedLandlord:
-        return jsonify(updatedLandlord)
+    try:
+      identifier = praetorian.current_user_id()
+      name = json['landlord_name']
+      email = json['landlord_email']
+      password = json['landlord_password']
+      phone = json['landlord_phone']
+      valid, reason = self.checkInput(identifier, name, email, password, phone)
+      # update landlord if input is valid
+      if valid:
+        updatedLandlord = self.landlords.updateLandlord(identifier, name, email, guard.hash_password(password), phone)
+        if updatedLandlord:
+          return jsonify(updatedLandlord)
+        else:
+          return jsonify('Error updating Landlord'), 400
       else:
-        return jsonify('Error updating Landlord'), 400
-    else:
-      # returns reason why input was invalid
-      return jsonify(reason), 400
+        # returns reason why input was invalid
+        return jsonify(reason), 400
+    except (Exception, pgerror) as e:
+      db.rollback()
+      logger.exception(e)
+      return jsonify('Error Occured'), 400
 
   def updateRating(self, json):
     try:
@@ -90,34 +104,33 @@ class LandlordHandler:
         return jsonify(daoLandlord)
       else:
         return jsonify('Error updating Landlord Rating')
-    except (Exception, Error) as e:
-      return jsonify("Error"), 400
+    except (Exception, pgerror) as e:
+      db.rollback()
+      logger.exception(e)
+      return jsonify('Error Occured'), 400
 
   def checkInput(self, identifier, name, email, password, phone):
     # strip function removes any spaces given
-    try:
-      if identifier > 0 and not self.landlords.getById(identifier):
-        return False, 'Landlord Not Found'
-      if not len(name.strip()):
-        return False, 'Empty Name'
-      if not len(email.strip()):
-        return False, 'Empty Email'
-      if self.emailValid(email):
-        return False, 'Enter Valid Email'
-      if self.emailTaken(email, identifier):
-        return False, 'Email Taken'
-      if not len(password.strip()):
-        return False, 'Empty Password'
-      if self.passwordValid(password):
-        return False, 'Password must contain 4-8 characters, at least one uppercase/lowercase letter, at least one digit, and no spaces. (Special characters are optional)'
-      if not len(phone.strip()):
-        return False, 'Empty Phone Number'
-      if self.phoneValid(phone):
-        return False, 'Enter Valid Phone Number'
-      if self.phoneTaken(phone, identifier):
-        return False, 'Phone Number Taken'
-    except:
-      return False, 'Invalid Input'
+    if identifier > 0 and not self.landlords.getById(identifier):
+      return False, 'Landlord Not Found'
+    if not len(name.strip()):
+      return False, 'Empty Name'
+    if not len(email.strip()):
+      return False, 'Empty Email'
+    if self.emailValid(email):
+      return False, 'Enter Valid Email'
+    if self.emailTaken(email, identifier):
+      return False, 'Email Taken'
+    if not len(password.strip()):
+      return False, 'Empty Password'
+    if self.passwordValid(password):
+      return False, 'Password must contain 4-20 characters, at least one uppercase/lowercase letter, at least one digit, and no spaces. (Special characters are optional)'
+    if not len(phone.strip()):
+      return False, 'Empty Phone Number'
+    if self.phoneValid(phone):
+      return False, 'Enter Valid Phone Number'
+    if self.phoneTaken(phone, identifier):
+      return False, 'Phone Number Taken'
     else:
       return True , ''
 

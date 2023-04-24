@@ -14,7 +14,7 @@ from handler.leases import LeaseHandler
 
 @app.route('/')
 def home():
-  return "Hello World"
+  return 'Hello World'
 
 """
 LANDLORDS
@@ -63,10 +63,17 @@ def getAllTenants():
 def getTenantById():
     return TenantHandler().getById(request.json)
 
-# TODO
 @app.route('/api/tenants/login', methods=['POST'])
 def loginTenant():
-  return None
+  return TenantHandler().login(request.json)
+
+@app.route('/api/tenants/protected')
+def protectedTenant():
+  return TenantHandler().protected()
+
+@app.route('/api/tenants/refresh')
+def refreshTenant():
+  return TenantHandler().refresh()
 
 @app.route('/api/tenants/new', methods=['POST'])
 def addTenant():
@@ -92,13 +99,13 @@ def getAllMessages():
 def getMessageById():
     return MessageHandler().getById(request.json)
 
-@app.route('/api/messages/landlord', methods=['POST'])
+@app.route('/api/messages/landlord')
 def getMessageByLandlordId():
-    return MessageHandler().getByLandlordId(request.json)
+    return MessageHandler().getByLandlordId()
 
-@app.route('/api/messages/tenant', methods=['POST'])
+@app.route('/api/messages/tenant')
 def getMessageByTenantId():
-    return MessageHandler().getByTenantId(request.json)
+    return MessageHandler().getByTenantId()
 
 @app.route('/api/messages/unique', methods=['POST'])
 def getMessageByConstraint():
