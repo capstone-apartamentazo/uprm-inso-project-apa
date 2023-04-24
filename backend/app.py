@@ -99,13 +99,13 @@ def getAllMessages():
 def getMessageById():
     return MessageHandler().getById(request.json)
 
-@app.route('/api/messages/landlord', methods=['POST'])
+@app.route('/api/messages/landlord')
 def getMessageByLandlordId():
-    return MessageHandler().getByLandlordId(request.json)
+    return MessageHandler().getByLandlordId()
 
-@app.route('/api/messages/tenant', methods=['POST'])
+@app.route('/api/messages/tenant')
 def getMessageByTenantId():
-    return MessageHandler().getByTenantId(request.json)
+    return MessageHandler().getByTenantId()
 
 @app.route('/api/messages/unique', methods=['POST'])
 def getMessageByConstraint():
