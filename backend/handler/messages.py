@@ -20,47 +20,27 @@ class MessageHandler:
       logger.exception(e)
       return jsonify('Error Occured'), 400
 
+  @praetorian.auth_required
+  def getByUserId(self):
+    try:
+      daoMessages = []
+      role = praetorian.current_rolenames().pop()
+      if role == 'landlord':
+        daoMessages = self.messages.getByLandlordId(praetorian.current_user_id())
+      elif role == 'tenant':
+        daoMessages = self.messages.getByTenantId(praetorian.current_user_id())
+      if daoMessages:
+        return jsonify([row for row in daoMessages])
+      else:
+        return jsonify('Messages from User is Empty')
+    except (Exception, pgerror) as e:
+      db.rollback()
+      logger.exception(e)
+      return jsonify('Error Occured'), 400
+
   def getById(self, json):
     try:
       daoMessage = self.messages.getById(json['message_id'])
-      if daoMessage:
-        return jsonify(daoMessage)
-      else:
-        return jsonify('Message Not Found')
-    except (Exception, pgerror) as e:
-      db.rollback()
-      logger.exception(e)
-      return jsonify('Error Occured'), 400
-
-  @praetorian.auth_required
-  def getByLandlordId(self):
-    try:
-      daoMessages = self.messages.getByLandlordId(praetorian.current_user_id())
-      if daoMessages:
-        return jsonify([row for row in daoMessages])
-      else:
-        return jsonify('Messages from Landlord Not Found')
-    except (Exception, pgerror) as e:
-      db.rollback()
-      logger.exception(e)
-      return jsonify('Error Occured'), 400
-
-  @praetorian.auth_required
-  def getByTenantId(self):
-    try:
-      daoMessages = self.messages.getByTenantId(praetorian.current_user_id())
-      if daoMessages:
-        return jsonify([row for row in daoMessages])
-      else:
-        return jsonify('Messages from Tenant Not Found')
-    except (Exception, pgerror) as e:
-      db.rollback()
-      logger.exception(e)
-      return jsonify('Error Occured'), 400
-  
-  def getByConstraint(self, json):
-    try:
-      daoMessage = self.messages.getByConstraint(json['landlord_id'], json['tenant_id'], json['msg_send_date'], json['landlord_sent_msg'])
       if daoMessage:
         return jsonify(daoMessage)
       else:

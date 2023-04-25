@@ -33,14 +33,6 @@ class Messages:
     cursor.close()
     return res
 
-  def getByConstraint(self, landlord, tenant, date, landlord_sent_msg):
-    query = 'SELECT * FROM messages WHERE landlord_id = %s AND tenant_id = %s AND msg_send_date = %s AND landlord_sent_msg = %s'
-    cursor = db.cursor(cursor_factory=RealDictCursor)
-    cursor.execute(query, (landlord, tenant, date, landlord_sent_msg))
-    res = cursor.fetchone()
-    cursor.close()
-    return res
-
   def read(self, landlord, tenant, access):
     if access == 'landlord':
       landlord_sent_msg = False

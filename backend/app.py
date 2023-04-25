@@ -95,17 +95,13 @@ MESSAGES (LANDLORDS AND TENANTS)
 def getAllMessages():
   return MessageHandler().getAll()
 
+@app.route('/api/messages', methods=['GET'])
+def getMessageByLandlordId():
+    return MessageHandler().getByUserId()
+
 @app.route('/api/messages', methods=['POST'])
 def getMessageById():
     return MessageHandler().getById(request.json)
-
-@app.route('/api/messages/landlord')
-def getMessageByLandlordId():
-    return MessageHandler().getByLandlordId()
-
-@app.route('/api/messages/tenant')
-def getMessageByTenantId():
-    return MessageHandler().getByTenantId()
 
 @app.route('/api/messages/unique', methods=['POST'])
 def getMessageByConstraint():
