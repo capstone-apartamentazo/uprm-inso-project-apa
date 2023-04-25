@@ -2,6 +2,8 @@ import getConfig from 'next/config';
 import { type } from 'os';
 import { useRouter } from 'next/router'
 import { useEffect } from 'react';
+import { resolve } from 'path';
+import { ApiError } from 'next/dist/server/api-utils';
 
 
 const { publicRuntimeConfig } = getConfig();
@@ -11,7 +13,7 @@ const { name } = publicRuntimeConfig.site;
 const Login = () => {
 	
 	const router = useRouter()
-	useEffect
+	
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
@@ -25,7 +27,7 @@ const Login = () => {
 		console.log(data);
 		const JSONdata = JSON.stringify(data);
 		console.log(JSONdata);
-		const endpoint = 'https://api.apartamentazo.com/api/landlords/login';
+		const endpoint = 'http://127.0.0.1:5000/api/landlords/login';
 
 		const options = {
 			method: 'POST',
@@ -36,12 +38,26 @@ const Login = () => {
 		};
 
 		await fetch(endpoint, options)
-		.then((response) => response.json())
+		.then((response) => {
+			//console.log(response);
+			if (!response.ok){
+				//console.log(response)
+				throw ApiError
+			}else{
+				return response.json()
+			}
+		})
+			
 		.then(result =>{
-			localStorage.setItem('token', result["access_token"]);
-			localStorage.setItem('type', data.type)
+			const objc = {"token":(result['access_token']), "type":data.type, 'id':5};
+			const stringified = JSON.stringify(objc)
+			localStorage.setItem("data",stringified)
 
-			console.log(localStorage.getItem('token'));
+			// localStorage.setItem('token', result["access_token"]);
+			// localStorage.setItem('type', data.type)
+			// localStorage.setItem('id', 1)
+			console.log()
+			console.log(JSON.parse(localStorage.getItem('data')!).token === ("Bearer "+result['access_token']));
 			alert(`Logged in success`);
 			//router.push('#');
 
@@ -49,6 +65,7 @@ const Login = () => {
 
 		})
 		.catch((error) => {
+			console.log('error');
 			console.log(error)
 		  });
 		  

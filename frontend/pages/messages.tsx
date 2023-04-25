@@ -5,8 +5,14 @@ import Image from 'next/image';
 import { GetServerSideProps } from 'next'
 import axios from 'axios';
 import { Container } from '@nextui-org/react';
+import { useState, useEffect } from 'react'
 
 
+
+
+interface Conversations {
+    messages: Message[]
+}
 
 interface Message {
     Content: string
@@ -23,7 +29,83 @@ interface Props {
 }
 
 
+interface data {
+    token: string,
+    type: string,
+    id: number
+}
+
 const Messages: React.FC<Props> = ({ messages }) => {
+    const [conversations, setConversations] = useState<Conversations[]>([])
+
+    useEffect(() => {
+
+        const fetchData = async () => {
+            var body = {}
+            var data: data = { token: '', type: '', id: 0 }
+
+            console.log(JSON.parse(localStorage.getItem("data")!))
+            if (localStorage.getItem('data') != null) {
+                data = JSON.parse(localStorage.getItem('data')!)
+
+
+                var endpoint = '';
+                //if (localStorage.getItem("type") != null) {
+                if (data.type == 'landlord') {
+                    endpoint = "http://127.0.0.1:5000/api/messages/landlord"
+                    body = {
+                        'landlord_id': data.id
+                    }
+                }
+                if (data.type == 'tenant') {
+                    endpoint = "http://127.0.0.1:5000/api/messages/tenant"
+                    body = {
+                        'tenant_id': data.id
+                    }
+                }
+
+                const JSONdata = JSON.stringify(body);
+                console.log(data.token);
+                //if (localStorage.getItem("token") != null) {
+
+                const options = {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer '+data.token,
+                        'Content-Type': 'application/json',
+                    },
+                    //body: JSONdata
+                    
+                };
+
+                await fetch(endpoint, options)
+                    .then((response) => {
+                        console.log(response);
+                        return response.json()
+                    })
+                    .then(result => {
+                        //localStorage.setItem('token', result["access_token"]);
+                        //localStorage.setItem('type', data.type)
+
+                        console.log(result);
+                        //alert(`Logged in success`);
+                        //router.push('#');
+                    })
+                    .catch((error) => {
+                        
+                        console.log('error'+error)
+                    });
+
+
+                //}
+
+                //}
+            }
+            setConversations([])
+        }
+
+        fetchData()
+    }, [])
     return (
         <Layout>
             <main className='flex flex-col flex-nowrap mt-32 '>
@@ -42,7 +124,7 @@ const Messages: React.FC<Props> = ({ messages }) => {
                             <Conversation userName='Marcos' userImg='/images/person.png' body='helloo' date="1m ago" read={true}></Conversation>
 
                         </div>
-                        
+
                     </div>
 
                     <div className='grid grid-rows-auto  w-4/6 h-96 mr-6 gap-1 ring-1 ring-stone-200 rounded-lg overflow-hidden shadow-lg'>
@@ -110,9 +192,13 @@ const Messages: React.FC<Props> = ({ messages }) => {
 };
 
 export const getServerSideProps: GetServerSideProps<Props> = async () => {
-    const res = await axios.get<Message[]>('http://api.apartamentazo.com/api/messages/all')
+
+
+    const res = await axios.get<Message[]>('https://api.apartamentazo.com/api/messages/all')
     const messages = res.data
     return { props: { messages } }
+
+
 }
 
 export default Messages
