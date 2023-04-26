@@ -43,3 +43,16 @@ class SharedAmenities:
     db.commit()
     cursor.close()
     return res
+
+  # TODO filter by bedrooms and bathrooms
+  def filter(self, amenities, offset):
+    query = 'SELECT accm_id, accm_title, accm_street, accm_number, accm_city, accm_state, accm_country, accm_zipcode, accm_description, COUNT(unit_id) AS number_of_units \
+            FROM accommodations NATURAL INNER JOIN units NATURAL INNER JOIN shared_amenities \
+            WHERE (%s) \
+            AND deleted_flag = false \
+            GROUP BY accm_id ORDER BY accm_id DESC LIMIT 10 OFFSET %s'
+    cursor = db.cursor(cursor_factory=RealDictCursor)
+    cursor.execute(query %(amenities, offset))
+    res = cursor.fetchall()
+    cursor.close()
+    return res

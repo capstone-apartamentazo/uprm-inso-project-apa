@@ -417,8 +417,13 @@ def removeLease():
   return None
 
 """
-SEARCH (ACCOMMODATIONS)
+SEARCH AND FILTER (ACCOMMODATIONS & UNITS)
 """
 @app.route('/api/search', methods=['POST'])
 def searchAccommodations():
   return AccommodationHandler().search(request.json)
+
+@app.route('/api/filter/shared/amenities', methods=['POST'])
+def filterBySharedAmenities():
+  return SharedAmenitiesHandler().filter(request.json)
+

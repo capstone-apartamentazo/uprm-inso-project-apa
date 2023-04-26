@@ -46,6 +46,36 @@ class SharedAmenitiesHandler:
       logger.exception(e)
       return jsonify('Error Occured'), 400
 
+  def filter(self, json):
+    try:
+      amenities = str()
+      include = str()
+      if json['kitchen']:
+        amenities = amenities.join('kitchen = true')
+        include = ' and '
+      if json['washer']:
+        amenities = include.join([amenities, 'washer = true'])
+        include = ' and '
+      if json['dryer']:
+        amenities = include.join([amenities, 'dryer = true'])
+        include = ' and '
+      if json['internet']:
+        amenities = include.join([amenities, 'internet = true'])
+        include = ' and '
+      if json['pets_allowed']:
+        amenities = include.join([amenities, 'pets_allowed = true'])
+      if not len(amenities.strip()):
+        return jsonify('No Amenities to Filter')
+      daoAmenities = self.amenities.filter(amenities, json['offset'])
+      if daoAmenities:
+        return jsonify([row for row in daoAmenities])
+      else:
+        return jsonify('Accommodations Not Found')
+    except (Exception, pgerror) as e:
+      db.rollback()
+      logger.exception(e)
+      return jsonify('Error Occured'), 400
+
   @praetorian.auth_required
   def addSharedAmenities(self, json):
     try:
