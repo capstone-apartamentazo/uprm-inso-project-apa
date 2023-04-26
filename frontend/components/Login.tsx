@@ -77,7 +77,8 @@ const Login = () => {
 				//console.log()
 				//console.log(JSON.parse(localStorage.getItem('data')!).token === ("Bearer "+result['access_token']));
 				alert(`Logged in success`);
-				//router.push('#');
+				router.replace('/');
+				router.reload();
 
 
 
