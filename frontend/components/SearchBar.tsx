@@ -4,10 +4,15 @@ import { useRouter } from 'next/router';
 const { publicRuntimeConfig } = getConfig();
 const { name } = publicRuntimeConfig.site;
 
-const SearchBar = ({ className, width }) => {
+interface Props{
+	className: string,
+	width: string
+}
+
+const SearchBar: React.FC<Props> = ({ className, width }) => {
 	const router = useRouter();
 
-	const handleSearch = (event) => {
+	const handleSearch = (event: any) => {
 		event.preventDefault();
 
 		router.push({
