@@ -3,7 +3,6 @@ import { type } from 'os';
 import { useRouter } from 'next/router'
 import { useEffect } from 'react';
 import { resolve } from 'path';
-import { ApiError } from 'next/dist/server/api-utils';
 
 
 const { publicRuntimeConfig } = getConfig();
@@ -33,7 +32,7 @@ const Login = () => {
 			
 		};
 
-		
+
 		var endpoint = 'http://127.0.0.1:5000/api/tenants/login';
 		if(isLandlord){
 			endpoint = 'http://127.0.0.1:5000/api/landlords/login';
