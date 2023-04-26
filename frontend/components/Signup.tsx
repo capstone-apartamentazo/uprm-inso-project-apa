@@ -4,7 +4,7 @@ const { publicRuntimeConfig } = getConfig();
 const { name } = publicRuntimeConfig.site;
 
 const Signup = () => {
-	const handleSubmit = async (event) => {
+	const handleSubmit = async (event: any) => {
 		event.preventDefault();
 		if (event.target.password.value == event.target.cpassword.value) {
 
