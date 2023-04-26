@@ -4,14 +4,14 @@ import SearchBar from './SearchBar';
 export default function Hero() {
 	const router = useRouter();
 
-	const handleSearch = (event) => {
-		event.preventDefault();
+	// const handleSearch = (event) => {
+	// 	event.preventDefault();
 
-		router.push({
-			pathname: '/listings/results',
-			query: { search: event.target.search.value },
-		});
-	};
+	// 	router.push({
+	// 		pathname: '/listings/results',
+	// 		query: { search: event.target.search.value },
+	// 	});
+	// };
 	return (
 		<section className='text-center bg-transparent text-white mb-48'>
 			<svg xmlns='http://www.w3.org/2000/svg' className='absolute block w-full' style={{ margin: 'auto', zIndex: '-10' }} height='700' preserveAspectRatio='none' viewBox='0 0 1920 880'>
