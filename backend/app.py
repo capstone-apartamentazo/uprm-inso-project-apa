@@ -169,12 +169,10 @@ SHARED AMENITIES (ACCOMMODATIONS)
 def getAllSharedAmenities():
   return SharedAmenitiesHandler().getAll()
 
-# TODO
 @app.route('/api/shared/amenities', methods=['POST'])
 def getSharedAmenitiesById():
     return SharedAmenitiesHandler().getById(request.json)
 
-# TODO
 @app.route('/api/accommodations/amenities', methods=['POST'])
 def getSharedAmenitiesByAccommodationId():
     return SharedAmenitiesHandler().getByAccommodationId(request.json)
@@ -204,12 +202,12 @@ def getNoticeById():
 def getNoticesByAccommodationId():
     return NoticeHandler().getByAccommodationId(request.json)
 
-# TODO add restrictions when creating notices
+# TODO limit title character count
 @app.route('/api/notices/add', methods=['POST'])
 def addNotice():
   return NoticeHandler().addNotice(request.json)
 
-# TODO add restrictions when updating notices
+# TODO limit title character count
 @app.route('/api/notices', methods=['PUT'])
 def updateNotice():
     return NoticeHandler().updateNotice(request.json)
