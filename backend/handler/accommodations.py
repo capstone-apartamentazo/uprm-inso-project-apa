@@ -3,6 +3,10 @@ from backend.dao.accommodations import Accommodations
 from backend.dao.shared_amenities import SharedAmenities
 from backend.dao.landlords import Landlords
 import re
+from backend.handler.notices import NoticeHandler
+from backend.handler.reviews import ReviewHandler
+from backend.handler.shared_amenities import SharedAmenitiesHandler
+from backend.handler.units import UnitHandler
 
 class AccommodationHandler:
   def __init__(self):
@@ -106,7 +110,35 @@ class AccommodationHandler:
     else:
       # returns reason why input was invalid
       return jsonify(reason), 400
-    
+
+  def deleteAccommodation(self, json):
+    accm_id = json['accm_id']
+    valid, reason = self.checkAccmID(accm_id)
+    if not valid:
+      return jsonify(reason), 400
+    else:
+      deletedAccommodation = self.accommodations.deleteAccommodation(accm_id)
+      SharedAmenitiesHandler().deleteSharedAmenitiesCascade(accm_id)
+      ReviewHandler().deleteReviewCascade(accm_id)
+      UnitHandler().deleteUnitCascade(accm_id)
+      NoticeHandler().deleteNoticeCascade(accm_id)
+      if deletedAccommodation:
+        return jsonify(self.dictionary(deletedAccommodation)), 200
+      else:
+        return jsonify('Error deleting Accommodation'), 405
+  
+  def deleteAccommodationCascade(self, landlord_id):    
+    deletedAccommodation = self.accommodations.deleteAccommodation(landlord_id)
+    for accm in deletedAccommodation:
+      SharedAmenitiesHandler().deleteSharedAmenitiesCascade(accm[0])
+      ReviewHandler().deleteReviewCascade(accm[0])
+      UnitHandler().deleteUnitCascade(accm[0])
+      NoticeHandler().deleteNoticeCascade(accm[0])
+    if deletedAccommodation:
+      return jsonify([self.dictionary(row) for row in deletedAccommodation])
+    else:
+      return jsonify('No Accommodation found')
+
   def checkInput(self, title, street, number, city, state, country, zip):
     # strip function removes any spaces given
     try:

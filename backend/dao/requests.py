@@ -77,3 +77,30 @@ class Requests:
     db.commit()
     cursor.close()
     return res
+
+  def deleteRequest(self, identifier):
+      query = 'UPDATE requests SET deleted_flag = true WHERE request_id = %s RETURNING *'
+      cursor = db.cursor()
+      cursor.execute(query %(identifier))
+      res = cursor.fetchone()
+      db.commit()
+      cursor.close()
+      return res
+  
+  def deleteRequestCascade(self, identifier):
+      query = 'UPDATE requests SET deleted_flag = true WHERE tenant_id = %s RETURNING *'
+      cursor = db.cursor()
+      cursor.execute(query %(identifier))
+      res = cursor.fetchone()
+      db.commit()
+      cursor.close()
+      return res
+  
+  def deleteRequestCascadeUnit(self, identifier):
+      query = 'UPDATE requests SET deleted_flag = true WHERE unit_id = %s RETURNING *'
+      cursor = db.cursor()
+      cursor.execute(query %(identifier))
+      res = cursor.fetchone()
+      db.commit()
+      cursor.close()
+      return res

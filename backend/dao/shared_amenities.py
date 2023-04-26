@@ -42,3 +42,12 @@ class SharedAmenities:
     db.commit()
     cursor.close()
     return res
+  
+  def deleteSharedAmenitiesCascade(self, identifier):
+    query = 'UPDATE shared_amenities SET deleted_flag = true WHERE accm_id = %s RETURNING *'
+    cursor = db.cursor()
+    cursor.execute(query %(identifier))
+    res = cursor.fetchone()
+    db.commit()
+    cursor.close()
+    return res

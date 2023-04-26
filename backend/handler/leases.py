@@ -79,3 +79,41 @@ class LeaseHandler:
       return jsonify(self.dictionary(daoLease)), 200
     else:
       return jsonify('Error updating Current Tenant from Lease'), 405
+    
+  def deleteLease(self, json):
+    lease_id = json['lease_id']
+    valid, reason = self.checkLeaseID(lease_id)
+    if not valid:
+      return jsonify(reason), 400
+    else:
+      deletedLease = self.leases.deleteLease(lease_id)
+      
+      if deletedLease:
+        return jsonify(self.dictionary(deletedLease)), 200
+      else:
+        return jsonify('Error deleting Lease'), 405
+  
+  def deleteLeaseCascade(self, tenant_id):
+    deletedLease = self.leases.deleteLeaseCascade(tenant_id)
+    
+    if deletedLease:
+      return jsonify(self.dictionary(deletedLease)), 200
+    else:
+      return jsonify('Error deleting Lease'), 405
+    
+  def deleteLeaseCascadeUnit(self, unit_id):
+    deletedLease = self.leases.deleteLeaseCascadeUnit(unit_id)
+    
+    if deletedLease:
+      return jsonify(self.dictionary(deletedLease)), 200
+    else:
+      return jsonify('Error deleting Lease'), 405
+
+  def checkLeaseID(self, lease_id):
+    try:
+      if not self.leases.getById(lease_id):
+        return False, 'Lease Not Found'
+    except:
+      return False, 'Invalid Input'
+    else:
+      return True , ''

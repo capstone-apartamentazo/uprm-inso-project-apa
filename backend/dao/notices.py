@@ -42,3 +42,21 @@ class Notices:
     db.commit()
     cursor.close()
     return res
+  
+  def deleteNotice(self, identifier):
+    query = 'UPDATE notices SET deleted_flag = true WHERE notice_id = %s RETURNING *'
+    cursor = db.cursor()
+    cursor.execute(query, (identifier))
+    res = cursor.fetchone()
+    db.commit()
+    cursor.close()
+    return res
+  
+  def deleteNoticeCascade(self, identifier):
+    query = 'UPDATE notices SET deleted_flag = true WHERE accm_id = %s RETURNING *'
+    cursor = db.cursor()
+    cursor.execute(query %(identifier))
+    res = cursor.fetchall()
+    db.commit()
+    cursor.close()
+    return res

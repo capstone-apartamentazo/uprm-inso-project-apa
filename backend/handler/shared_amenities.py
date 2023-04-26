@@ -62,3 +62,33 @@ class SharedAmenitiesHandler:
       return jsonify(self.dictionary(updatedAmenities)), 200
     else:
       return jsonify('Error updating Shared Amenities'), 500
+    
+  def deleteSharedAmenities(self, json):
+    shared_amenities_id = json['shared_amenities_id']
+    valid, reason = self.checkSharedAmenitiesID(shared_amenities_id)
+    if not valid:
+      return jsonify(reason), 400
+    else:
+      deletedSharedAmenities = self.amenities.deleteSharedAmenities(shared_amenities_id)
+      
+      if deletedSharedAmenities:
+        return jsonify(self.dictionary(deletedSharedAmenities)), 200
+      else:
+        return jsonify('Error deleting Shared Amenities'), 405
+      
+  def deleteSharedAmenitiesCascade(self, accm_id):
+    deletedSharedAmenities = self.amenities.deleteSharedAmenitiesCascade(accm_id)
+    
+    if deletedSharedAmenities:
+      return jsonify(self.dictionary(deletedSharedAmenities)), 200
+    else:
+      return jsonify('Error deleting Shared Amenities'), 405
+  
+  def checkSharedAmenitiesID(self, shared_amenities_id):
+    try:
+      if not self.amenities.getById(shared_amenities_id):
+        return False, 'Shared Amenities Not Found'
+    except:
+      return False, 'Invalid Input'
+    else:
+      return True , ''

@@ -20,7 +20,7 @@ herokuConfig = {
 
 # Connect to PostgreSQL database
 try:
-  pgConfig = herokuConfig
+  pgConfig = localConfig
   db = psycopg2.connect(
     host=pgConfig['host'],
     database=pgConfig['dbname'],

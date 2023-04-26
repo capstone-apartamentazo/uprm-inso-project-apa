@@ -76,3 +76,25 @@ class MessageHandler:
       return jsonify(self.dictionary(daoMessage)), 200
     else:
       return jsonify('Error updating Message'), 405
+  
+  def deleteMessage(self, json):
+    message_id = json['message_id']
+    valid, reason = self.checkMessageID(message_id)
+    if not valid:
+      return jsonify(reason), 400
+    else:
+      deletedMessage = self.messages.deleteMessage(message_id)
+      
+      if deletedMessage:
+        return jsonify(self.dictionary(deletedMessage)), 200
+      else:
+        return jsonify('Error deleting Message'), 405
+  
+  def checkMessageID(self, message_id):
+    try:
+      if not self.messages.getById(message_id):
+        return False, 'Message Not Found'
+    except:
+      return False, 'Invalid Input'
+    else:
+      return True , ''

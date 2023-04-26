@@ -61,3 +61,30 @@ class Leases:
     db.commit()
     cursor.close()
     return res
+
+  def deleteLease(self, identifier):
+      query = 'UPDATE requests SET deleted_flag = true WHERE lease_id = %s RETURNING *'
+      cursor = db.cursor()
+      cursor.execute(query %(identifier))
+      res = cursor.fetchone()
+      db.commit()
+      cursor.close()
+      return res
+  
+  def deleteLeaseCascade(self, identifier):
+      query = 'UPDATE requests SET deleted_flag = true WHERE tenant_id = %s RETURNING *'
+      cursor = db.cursor()
+      cursor.execute(query %(identifier))
+      res = cursor.fetchone()
+      db.commit()
+      cursor.close()
+      return res
+  
+  def deleteLeaseCascadeUnit(self, identifier):
+      query = 'UPDATE requests SET deleted_flag = true WHERE unit_id = %s RETURNING *'
+      cursor = db.cursor()
+      cursor.execute(query %(identifier))
+      res = cursor.fetchone()
+      db.commit()
+      cursor.close()
+      return res

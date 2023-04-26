@@ -43,3 +43,21 @@ class Units:
     db.commit()
     cursor.close()
     return res
+  
+  def deleteUnit(self, identifier):
+    query = 'UPDATE units SET deleted_flag = true WHERE accm_id = %s RETURNING *'
+    cursor = db.cursor()
+    cursor.execute(query, (identifier))
+    res = cursor.fetchone()
+    db.commit()
+    cursor.close()
+    return res
+  
+  def deleteUnitCascade(self, identifier):
+    query = 'UPDATE units SET deleted_flag = true WHERE accm_id = %s RETURNING *'
+    cursor = db.cursor()
+    cursor.execute(query %(identifier))
+    res = cursor.fetchall()
+    db.commit()
+    cursor.close()
+    return res

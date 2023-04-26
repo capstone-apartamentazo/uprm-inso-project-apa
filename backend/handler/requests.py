@@ -89,3 +89,41 @@ class RequestHandler:
       return jsonify(self.dictionary(daoRequest)), 200
     else:
       return jsonify('Error updating tenant approval in Request'), 405
+
+  def deleteRequest(self, json):
+    request_id = json['request_id']
+    valid, reason = self.checkRequestID(request_id)
+    if not valid:
+      return jsonify(reason), 400
+    else:
+      deletedRequest = self.requests.deleteRequest(request_id)
+      
+      if deletedRequest:
+        return jsonify(self.dictionary(deletedRequest)), 200
+      else:
+        return jsonify('Error deleting Request'), 405
+  
+  def deleteRequestCascade(self, tenant_id):
+    deletedRequest = self.requests.deleteRequestCascade(tenant_id)
+    
+    if deletedRequest:
+      return jsonify(self.dictionary(deletedRequest)), 200
+    else:
+      return jsonify('Error deleting Request'), 405
+    
+  def deleteRequestCascadeUnit(self, unit_id):
+    deletedRequest = self.requests.deleteRequestCascadeUnit(unit_id)
+    
+    if deletedRequest:
+      return jsonify(self.dictionary(deletedRequest)), 200
+    else:
+      return jsonify('Error deleting Request'), 405
+
+  def checkRequestID(self, request_id):
+    try:
+      if not self.requests.getById(request_id):
+        return False, 'Request Not Found'
+    except:
+      return False, 'Invalid Input'
+    else:
+      return True , ''

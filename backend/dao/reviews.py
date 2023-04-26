@@ -50,3 +50,21 @@ class Reviews:
     db.commit()
     cursor.close()
     return res
+
+  def deleteReview(self, identifier):
+    query = 'UPDATE reviews SET deleted_flag = true WHERE review_id = %s RETURNING *'
+    cursor = db.cursor()
+    cursor.execute(query, (identifier))
+    res = cursor.fetchone()
+    db.commit()
+    cursor.close()
+    return res
+  
+  def deleteReviewCascade(self, identifier):
+    query = 'UPDATE reviews SET deleted_flag = true WHERE accm_id = %s RETURNING *'
+    cursor = db.cursor()
+    cursor.execute(query %(identifier))
+    res = cursor.fetchone()
+    db.commit()
+    cursor.close()
+    return res

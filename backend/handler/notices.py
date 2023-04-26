@@ -54,3 +54,33 @@ class NoticeHandler:
       return jsonify(self.dictionary(updatedNotice)), 200
     else:
       return jsonify('Error updating Notice'), 500
+    
+  def deleteNotice(self, json):
+    notice_id = json['notice_id']
+    valid, reason = self.checkNoticeID(notice_id)
+    if not valid:
+      return jsonify(reason), 400
+    else:
+      deletedNotice = self.notices.deleteNotice(notice_id)
+      
+      if deletedNotice:
+        return jsonify(self.dictionary(deletedNotice)), 200
+      else:
+        return jsonify('Error deleting Notice'), 405
+  
+  def checkNoticeID(self, notice_id):
+    try:
+      if not self.notices.getById(notice_id):
+        return False, 'Notice Not Found'
+    except:
+      return False, 'Invalid Input'
+    else:
+      return True , ''
+    
+  def deleteNoticeCascade(self, accm_id):
+    deletedNotice = self.notices.deleteNoticeCascade(accm_id)
+      
+    if deletedNotice:
+      return jsonify(self.dictionary(deletedNotice)), 200
+    else:
+      return jsonify('Error deleting Notice'), 405

@@ -81,3 +81,33 @@ class ReviewHandler:
       return jsonify(self.dictionary(daoReview)), 200
     else:
       return jsonify('Error updating Review'), 500
+
+  def deleteReview(self, json):
+    review_id = json['review_id']
+    valid, reason = self.checkReviewID(review_id)
+    if not valid:
+      return jsonify(reason), 400
+    else:
+      deletedReview = self.reviews.deleteReview(review_id)
+      
+      if deletedReview:
+        return jsonify(self.dictionary(deletedReview)), 200
+      else:
+        return jsonify('Error deleting Review'), 405
+  
+  def checkReviewID(self, review_id):
+    try:
+      if not self.reviews.getById(review_id):
+        return False, 'Review Not Found'
+    except:
+      return False, 'Invalid Input'
+    else:
+      return True , ''
+    
+  def deleteReviewCascade(self, accm_id):
+    deletedReview = self.reviews.deleteReviewCascade(accm_id)
+    
+    if deletedReview:
+      return jsonify(self.dictionary(deletedReview)), 200
+    else:
+      return jsonify('Error deleting Review'), 405

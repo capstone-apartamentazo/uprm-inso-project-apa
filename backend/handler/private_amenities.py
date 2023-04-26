@@ -63,3 +63,34 @@ class PrivateAmenitiesHandler:
       return jsonify(self.dictionary(updatedAmenities)), 200
     else:
       return jsonify('Error updating Private Amenities'), 500
+    
+  def deletePrivateAmenities(self, json):
+    priv_amenities_id = json['priv_amenities_id']
+    valid, reason = self.checkPrivateAmenitiesID(priv_amenities_id)
+    if not valid:
+      return jsonify(reason), 400
+    else:
+      deletedPrivateAmenities = self.amenities.deletePrivateAmenities(priv_amenities_id)
+      
+      if deletedPrivateAmenities:
+        return jsonify(self.dictionary(deletedPrivateAmenities)), 200
+      else:
+        return jsonify('Error deleting Private Amenities'), 405
+  
+  def checkPrivateAmenitiesID(self, priv_amenities_id):
+    try:
+      if not self.amenities.getById(priv_amenities_id):
+        return False, 'Private Amenities Not Found'
+    except:
+      return False, 'Invalid Input'
+    else:
+      return True , ''
+
+  def deletePrivateAmenitiesCascade(self, json):
+    unit_id = json['unit_id']
+    deletedPrivateAmenities = self.amenities.deletePrivateAmenitiesCascade(unit_id)
+    
+    if deletedPrivateAmenities:
+      return jsonify(self.dictionary(deletedPrivateAmenities)), 200
+    else:
+      return jsonify('Error deleting Private Amenities'), 405

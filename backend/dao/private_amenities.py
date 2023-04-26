@@ -42,3 +42,21 @@ class PrivateAmenities:
     db.commit()
     cursor.close()
     return res
+  
+  def deletePrivateAmenities(self, identifier):
+    query = 'UPDATE private_amenities SET deleted_flag = true WHERE priv_amenities_id = %s RETURNING *'
+    cursor = db.cursor()
+    cursor.execute(query, (identifier))
+    res = cursor.fetchone()
+    db.commit()
+    cursor.close()
+    return res
+  
+  def deletePrivateAmenitiesCascade(self, identifier):
+    query = 'UPDATE private_amenities SET deleted_flag = true WHERE unit_id = %s RETURNING *'
+    cursor = db.cursor()
+    cursor.execute(query %(identifier))
+    res = cursor.fetchone()
+    db.commit()
+    cursor.close()
+    return res

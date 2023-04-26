@@ -1,6 +1,9 @@
 from flask import jsonify
 from backend.dao.tenants import Tenants
 import re
+from backend.handler.leases import LeaseHandler
+
+from backend.handler.requests import RequestHandler
 
 class TenantHandler:
   def __init__(self):
@@ -65,6 +68,30 @@ class TenantHandler:
     else:
       # returns reason why input was invalid
       return jsonify(reason), 400
+
+  def deleteTenant(self, json):
+    tenant_id = json['tenant_id']
+    valid, reason = self.checkTenantID(tenant_id)
+    if not valid:
+      return jsonify(reason), 400
+    else:
+      RequestHandler().deleteRequestCascade(tenant_id)
+      LeaseHandler().deleteLeaseCascade(tenant_id)
+      deletedTenant = self.tenants.deleteTenants(tenant_id)
+      
+      if deletedTenant:
+        return jsonify(self.dictionary(deletedTenant)), 200
+      else:
+        return jsonify('Error deleting Tenant'), 405
+      
+  def checkTenantID(self, tenant_id):
+    try:
+      if not self.tenants.getById(tenant_id):
+        return False, 'Tenant Not Found'
+    except:
+      return False, 'Invalid Input'
+    else:
+      return True , ''
 
   def checkInput(self, identifier, name, email, password, phone):
     # strip function removes any spaces given

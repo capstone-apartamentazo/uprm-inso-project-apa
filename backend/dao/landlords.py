@@ -11,7 +11,7 @@ class Landlords:
 
   def getById(self, identifier):
     cursor = db.cursor()
-    cursor.execute('SELECT * FROM landlords WHERE landlord_id = %s' %identifier)
+    cursor.execute('SELECT * FROM landlords WHERE landlord_id = %s AND deleted_flag = false' %identifier)
     res = cursor.fetchone()
     cursor.close()
     return res
@@ -63,6 +63,15 @@ class Landlords:
             RETURNING *'
     cursor = db.cursor()
     cursor.execute(query, (identifier, identifier))
+    res = cursor.fetchone()
+    db.commit()
+    cursor.close()
+    return res
+  
+  def deleteLandlord(self, identifier):
+    query = 'UPDATE landlords SET deleted_flag = true WHERE landlord_id = %s RETURNING *'
+    cursor = db.cursor()
+    cursor.execute(query %(identifier))
     res = cursor.fetchone()
     db.commit()
     cursor.close()

@@ -1,6 +1,9 @@
 from flask import jsonify
 from backend.dao.units import Units
 from backend.dao.private_amenities import PrivateAmenities
+from backend.handler.leases import LeaseHandler
+from backend.handler.private_amenities import PrivateAmenitiesHandler
+from backend.handler.requests import RequestHandler
 
 class UnitHandler:
   def __init__(self):
@@ -68,3 +71,38 @@ class UnitHandler:
       return jsonify(self.dictionary(daoUnit)), 200
     else:
       return jsonify('Error updating Unit'), 500
+    
+  def checkUnitID(self, unit_id):
+    try:
+      if not self.units.getById(unit_id):
+        return False, 'Unit Not Found'
+    except:
+      return False, 'Invalid Input'
+    else:
+      return True , ''
+    
+  def deleteUnit(self, json):
+    unit_id = json['unit_id']
+    valid, reason = self.checkUnitID(unit_id)
+    if not valid:
+      return jsonify(reason), 400
+    else:
+      deletedUnit = self.units.deleteUnit(unit_id)
+      PrivateAmenitiesHandler().deletePrivateAmenitiesCascade(unit_id)
+      RequestHandler().deleteRequestCascadeUnit(unit_id)
+      LeaseHandler().deleteLeaseCascadeUnit(unit_id)
+      if deletedUnit:
+        return jsonify(self.dictionary(deletedUnit)), 200
+      else:
+        return jsonify('Error deleting Unit'), 405
+    
+  def deleteUnitCascade(self, accm_id):
+    deletedUnit = self.units.deleteUnitCascade(accm_id)
+    for unit in deletedUnit:
+        PrivateAmenitiesHandler().deletePrivateAmenitiesCascade(unit[0])
+        RequestHandler().deleteRequestCascadeUnit(unit[0])
+        LeaseHandler().deleteLeaseCascadeUnit(unit[0])
+    if deletedUnit:
+      return jsonify(self.dictionary(deletedUnit)), 200
+    else:
+      return jsonify('Error deleting Unit'), 405
