@@ -2,16 +2,12 @@ from flask import jsonify
 from psycopg2 import Error as pgerror
 from util.config import db, logger, landlord_guard as guard
 from dao.accommodations import Accommodations
-from handler.shared_amenities import SharedAmenitiesHandler
-from handler.landlords import LandlordHandler
 import flask_praetorian as praetorian
 import re
 
 class AccommodationHandler:
   def __init__(self):
     self.accommodations = Accommodations()
-    self.amenities = SharedAmenitiesHandler()
-    self.landlords = LandlordHandler()
 
   def getAll(self):
     try:
@@ -73,15 +69,11 @@ class AccommodationHandler:
       zipcode = json['accm_zipcode']
       description = json['accm_description']
       landlordID = praetorian.current_user_id()
-      valid, reason = self.checkLandlordID(landlordID)
-      if not valid:
-        return jsonify(reason)
       valid, reason = self.checkInput(0, title, street, number, city, state, country, zipcode)
       # add accommodation if input is valid
       if valid:
         newAccommodation = self.accommodations.addAccommodation(title, street, number, city, state, country, zipcode, description, landlordID)
         if newAccommodation:
-          self.amenities.addSharedAmenities(newAccommodation)
           return jsonify(newAccommodation)
         else:
           return jsonify('Error adding Accommodation and Shared Amenities'), 400
@@ -150,14 +142,6 @@ class AccommodationHandler:
       return False, 'Enter a Valid Zip Code'
     if self.constraintExists(number, identifier):
       return False, 'Accommodation number already exists for landlord.'
-    else:
-      return True , ''
-
-  def checkLandlordID(self, landlordID):
-    json = { 'landlord_id': landlordID }
-    daoLandlord = self.landlords.getById(json)
-    if not daoLandlord:
-      return False, 'Landlord Not Found'
     else:
       return True , ''
 
