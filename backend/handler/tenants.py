@@ -37,7 +37,10 @@ class TenantHandler:
     email = json['tenant_email'].lower()
     password = json['tenant_password']
     tenant = guard.authenticate(email, password)
-    token = { 'access_token': guard.encode_jwt_token(tenant) }
+    token = {
+      'tenant_id': tenant.tid,
+      'access_token': guard.encode_jwt_token(tenant) 
+      }
     return jsonify(token)
   
   @praetorian.auth_required

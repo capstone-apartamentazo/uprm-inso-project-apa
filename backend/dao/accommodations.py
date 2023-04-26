@@ -25,8 +25,17 @@ class Accommodations:
     return res
 
   def addAccommodation(self, title, street, number, city, state, country, zipcode, description, landlord):
-    query = 'INSERT INTO accommodations (accm_title, accm_street, accm_number, accm_city, accm_state, accm_country, accm_zipcode, accm_description, landlord_id) \
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING *'
+    query = 'WITH new_accm AS ( \
+              INSERT INTO accommodations (accm_title, accm_street, accm_number, accm_city, accm_state, accm_country, accm_zipcode, accm_description, landlord_id) \
+              VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) \
+              RETURNING * \
+            ), \
+            new_amenities AS ( \
+              INSERT INTO shared_amenities (accm_id) \
+              SELECT accm_id FROM new_accm \
+              RETURNING * \
+            ) \
+            SELECT * FROM new_accm NATURAL INNER JOIN new_amenities'
     cursor = db.cursor(cursor_factory=RealDictCursor)
     cursor.execute(query, (title, street, number, city, state, country, zipcode, description, landlord))
     res = cursor.fetchone()
@@ -42,6 +51,15 @@ class Accommodations:
     cursor.execute(query, (title, street, number, city, state, country, zipcode, description, identifier))
     res = cursor.fetchone()
     db.commit()
+    cursor.close()
+    return res
+
+  # TODO add individual delete
+  def deleteAccommodationCascade(self, identifier):
+    query = 'UPDATE accommodations SET deleted_flag = true WHERE landlord_id = %s AND deleted_flag = false RETURNING *'
+    cursor = db.cursor(cursor_factory=RealDictCursor)
+    cursor.execute(query %(identifier))
+    res = cursor.fetchall()
     cursor.close()
     return res
 

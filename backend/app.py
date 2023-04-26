@@ -50,7 +50,7 @@ def updateLandlord():
 # TODO
 @app.route('/api/landlords', methods=['DELETE'])
 def removeLandlord():
-  return None
+  return LandlordHandler().deleteLandlord()
 
 """
 TENANTS
@@ -169,12 +169,10 @@ SHARED AMENITIES (ACCOMMODATIONS)
 def getAllSharedAmenities():
   return SharedAmenitiesHandler().getAll()
 
-# TODO
 @app.route('/api/shared/amenities', methods=['POST'])
 def getSharedAmenitiesById():
     return SharedAmenitiesHandler().getById(request.json)
 
-# TODO
 @app.route('/api/accommodations/amenities', methods=['POST'])
 def getSharedAmenitiesByAccommodationId():
     return SharedAmenitiesHandler().getByAccommodationId(request.json)
@@ -184,11 +182,6 @@ def getSharedAmenitiesByAccommodationId():
 def updateSharedAmenities():
     return SharedAmenitiesHandler().updateSharedAmenities(request.json)
 
-# TODO
-@app.route('/api/accommodations/amenities', methods=['DELETE'])
-def removeSharedAmenities():
-  return None
-
 """
 NOTICES (ACCOMMODATIONS)
 """
@@ -196,20 +189,22 @@ NOTICES (ACCOMMODATIONS)
 def getAllNotices():
   return NoticeHandler().getAll()
 
+# TODO set for only tenants and landlords with relation to accm from notice
 @app.route('/api/notices', methods=['POST'])
 def getNoticeById():
     return NoticeHandler().getById(request.json)
 
+# TODO set for only tenants and landlords with relation to accm from notice
 @app.route('/api/accommodations/notices', methods=['POST'])
 def getNoticesByAccommodationId():
     return NoticeHandler().getByAccommodationId(request.json)
 
-# TODO add restrictions when creating notices
+# TODO limit title character count
 @app.route('/api/notices/add', methods=['POST'])
 def addNotice():
   return NoticeHandler().addNotice(request.json)
 
-# TODO add restrictions when updating notices
+# TODO limit title character count
 @app.route('/api/notices', methods=['PUT'])
 def updateNotice():
     return NoticeHandler().updateNotice(request.json)
@@ -417,8 +412,13 @@ def removeLease():
   return None
 
 """
-SEARCH (ACCOMMODATIONS)
+SEARCH AND FILTER (ACCOMMODATIONS & UNITS)
 """
 @app.route('/api/search', methods=['POST'])
 def searchAccommodations():
   return AccommodationHandler().search(request.json)
+
+@app.route('/api/filter/shared/amenities', methods=['POST'])
+def filterBySharedAmenities():
+  return SharedAmenitiesHandler().filter(request.json)
+

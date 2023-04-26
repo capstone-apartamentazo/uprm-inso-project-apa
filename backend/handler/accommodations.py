@@ -3,7 +3,6 @@ from psycopg2 import Error as pgerror
 from util.config import db, logger, landlord_guard as guard
 from dao.accommodations import Accommodations
 from handler.shared_amenities import SharedAmenitiesHandler
-from handler.landlords import LandlordHandler
 import flask_praetorian as praetorian
 import re
 
@@ -11,7 +10,6 @@ class AccommodationHandler:
   def __init__(self):
     self.accommodations = Accommodations()
     self.amenities = SharedAmenitiesHandler()
-    self.landlords = LandlordHandler()
 
   def getAll(self):
     try:
@@ -73,15 +71,11 @@ class AccommodationHandler:
       zipcode = json['accm_zipcode']
       description = json['accm_description']
       landlordID = praetorian.current_user_id()
-      valid, reason = self.checkLandlordID(landlordID)
-      if not valid:
-        return jsonify(reason)
       valid, reason = self.checkInput(0, title, street, number, city, state, country, zipcode)
       # add accommodation if input is valid
       if valid:
         newAccommodation = self.accommodations.addAccommodation(title, street, number, city, state, country, zipcode, description, landlordID)
         if newAccommodation:
-          self.amenities.addSharedAmenities(newAccommodation)
           return jsonify(newAccommodation)
         else:
           return jsonify('Error adding Accommodation and Shared Amenities'), 400
@@ -123,6 +117,24 @@ class AccommodationHandler:
       db.rollback()
       logger.exception(e)
       return jsonify('Error Occured'), 400
+
+  # TODO add individual delete function
+  @praetorian.auth_required
+  def deleteAccommodationCascade(self, landlord_id):
+    try:
+      deletedAccommodation = self.accommodations.deleteAccommodationCascade(landlord_id)
+      for accm in deletedAccommodation:
+        deletedAmenities = self.amenities.deleteSharedAmenities(accm['accm_id'])
+        # ReviewHandler().deleteReviewCascade(accm['accm_id'])
+        # UnitHandler().deleteUnitCascade(accm['accm_id'])
+        # NoticeHandler().deleteNoticeCascade(accm['accm_id'])
+        if not deletedAmenities:
+          return False
+      return True
+    except (Exception, pgerror) as e:
+      db.rollback()
+      logger.exception(e)
+      return jsonify('Error Occured'), 400
     
   def checkInput(self, identifier, title, street, number, city, state, country, zipcode):
     # strip function removes any spaces given
@@ -153,19 +165,12 @@ class AccommodationHandler:
     else:
       return True , ''
 
-  def checkLandlordID(self, landlordID):
-    json = { 'landlord_id': landlordID }
-    daoLandlord = self.landlords.getById(json)
-    if not daoLandlord:
-      return False, 'Landlord Not Found'
-    else:
-      return True , ''
-
   def checkAccmID(self, accmID):
     daoAccommodation = self.accommodations.getById(accmID)
+    role = praetorian.current_rolenames().pop()
     if not daoAccommodation:
       return False, 'Accommodation Not Found'
-    if daoAccommodation['landlord_id'] != praetorian.current_user_id():
+    if daoAccommodation['landlord_id'] != praetorian.current_user_id() or role != 'landlord':
       return False, 'Accommodation is not own by Landlord'
     else:
       return True , ''

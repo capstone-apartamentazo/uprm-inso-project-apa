@@ -75,3 +75,11 @@ class Landlords:
     db.commit()
     cursor.close()
     return res
+
+  def deleteLandlord(self, identifier):
+    query = 'UPDATE landlords SET deleted_flag = true WHERE landlord_id = %s RETURNING *'
+    cursor = db.cursor(cursor_factory=RealDictCursor)
+    cursor.execute(query %(identifier))
+    res = cursor.fetchone()
+    cursor.close()
+    return res

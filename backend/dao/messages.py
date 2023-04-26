@@ -34,9 +34,8 @@ class Messages:
     return res
 
   def read(self, landlord, tenant, access):
-    if access == 'landlord':
-      landlord_sent_msg = False
-    else:
+    landlord_sent_msg = False
+    if access == 'tenant':
       landlord_sent_msg = True
     query = 'UPDATE messages SET msg_read = true \
             WHERE landlord_id = %s AND tenant_id = %s AND landlord_sent_msg = %s AND msg_read = false'
