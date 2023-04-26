@@ -194,10 +194,12 @@ NOTICES (ACCOMMODATIONS)
 def getAllNotices():
   return NoticeHandler().getAll()
 
+# TODO set for only tenants and landlords with relation to accm from notice
 @app.route('/api/notices', methods=['POST'])
 def getNoticeById():
     return NoticeHandler().getById(request.json)
 
+# TODO set for only tenants and landlords with relation to accm from notice
 @app.route('/api/accommodations/notices', methods=['POST'])
 def getNoticesByAccommodationId():
     return NoticeHandler().getByAccommodationId(request.json)
