@@ -18,22 +18,33 @@ const Login = () => {
 	const handleSubmit = async (event) => {
 		event.preventDefault();
 
-
-
-		const data = {
-			"landlord_email": event.target.email.value,
-			"landlord_password": event.target.password.value,
-			"landlord": event.target.landlord.checked,
-		};
+		var data = {}
+		const isLandlord = event.target.landlord.checked
+		
 
 		
 		//console.log(data);
-		const JSONdata = JSON.stringify(data);
+		
 		//console.log(JSONdata);
+
+		data = {
+			"tenant_email": event.target.email.value,
+			"tenant_password": event.target.password.value,
+			
+		};
+
+		
 		var endpoint = 'http://127.0.0.1:5000/api/tenants/login';
-		if(data.landlord){
+		if(isLandlord){
 			endpoint = 'http://127.0.0.1:5000/api/landlords/login';
+			data = {
+				"landlord_email": event.target.email.value,
+				"landlord_password": event.target.password.value,
+				
+			};
 		}
+		
+		const JSONdata = JSON.stringify(data);
 
 		const options = {
 			method: 'POST',
@@ -42,7 +53,7 @@ const Login = () => {
 			},
 			body: JSONdata
 		};
-		console.log(data.landlord)
+		console.log(JSONdata)
 		await fetch(endpoint, options)
 			.then((response) => {
 				//console.log(response);
@@ -57,7 +68,7 @@ const Login = () => {
 
 			.then(result => {
 				//alert(result);
-				const objc = { "token": (result['access_token']), "type": data.landlord, 'id': 5 };
+				const objc = { "token": (result['access_token']), "isLandlord": isLandlord, 'id': 5 };
 				const stringified = JSON.stringify(objc)
 				localStorage.setItem("data", stringified)
 				
