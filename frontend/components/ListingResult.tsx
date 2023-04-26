@@ -19,14 +19,14 @@ const unit = {
 	price: '400',
 	available: 'Available',
 };
-
-function handleClick(id, active, setActive) {
+const [active, setActive] = useState(false);
+function handleClick(id:string, active:boolean) {
 	active ? setActive(false) : setActive(true);
 }
 const ListingResult: React.FC<Props> = ({ title, address, features, description, price, href, id }) => {
-	const [active, setActive] = useState(false);
+	
 	return (
-		<div id={id} className='w-full' onClick={() => handleClick(id, active, setActive)}>
+		<div id={id} className='w-full' onClick={() => handleClick(id, active)}>
 			<div className={`card card-side bg-base-100 h-56 w-full shadow-lg transition ease-in-out hover:-translate-y-1 hover:scale-10 duration-150 cursor-pointer ${active ? 'border-[1px] border-accent' : ''}`}>
 				<figure className='p-4 rounded-2xl h-56 w-56'>
 					<img src='https://images.pexels.com/photos/439391/pexels-photo-439391.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' className='rounded-xl h-48 w-48' alt='Listing' />
