@@ -30,13 +30,13 @@ interface Props {
 
 interface data {
     token: string,
-    type: string,
+    isLandlord: boolean,
     id: number
 }
 
 const Messages: React.FC<Props> = ({ messages }) => {
     const [conversations, setConversations] = useState<Message[]>([])
-    var data: data = { token: '', type: '', id: 0 }
+    var data: data = { token: '', isLandlord: false, id: 0 }
 
 
     useEffect(() => {
@@ -111,6 +111,26 @@ const Messages: React.FC<Props> = ({ messages }) => {
 
         fetchData()
     }, [])
+
+
+    var convObjcts = {}
+
+    try
+    {
+        convObjcts = conversations.map((msg,index) => <Conversation key={msg.message_id} userName={'' + msg.tenant_id} userImg='/images/person.png' body={msg.msg_content} date={msg.msg_send_date} read={msg.msg_read}></Conversation>
+
+
+
+
+            //<Conversation userName={msg.Content} userImg='/images/person.png' body={msg.Content} date="2d ago" read={false}></Conversation>
+
+            // <Conversation userName='Marcos' userImg='/images/person.png' body='helloo' date="1m ago" read={true}></Conversation>
+
+        );}
+        catch (error){
+            console.log(error);
+            convObjcts = <h1>Empty!</h1>
+        }
     return (
         <Layout>
             <main className='flex flex-col flex-nowrap mt-32 '>
@@ -126,19 +146,8 @@ const Messages: React.FC<Props> = ({ messages }) => {
                         </div>
                         <div  className='overflow-scroll mx-2 overscroll-contain'>
 
-                            {conversations.map((msg) => (
-
-                                <Conversation key={msg.message_id} userName={'' + msg.tenant_id} userImg='/images/person.png' body={msg.msg_content} date={msg.msg_send_date} read={msg.msg_read}></Conversation>
-
-
-
-
-                                //<Conversation userName={msg.Content} userImg='/images/person.png' body={msg.Content} date="2d ago" read={false}></Conversation>
-
-                                // <Conversation userName='Marcos' userImg='/images/person.png' body='helloo' date="1m ago" read={true}></Conversation>
-
-                            ))}
-
+                            
+                        {convObjcts}
 
 
                         </div>
