@@ -116,7 +116,7 @@ const Messages: React.FC<Props> = ({ messages }) => {
             <main className='flex flex-col flex-nowrap mt-32 '>
 
                 <div className='flex flex-row flex-nowrap'>
-                    <div className='grid grid-rows-auto gap-1 ml-10 mr-6 basis-1/4 auto-rows-min h-96 ring-1 ring-stone-200 rounded-lg shadow-lg overflow-hidden'>
+                    <div className='grid grid-rows-auto gap-1 ml-10 mr-6 basis-1/4  h-128 ring-1 ring-stone-200 rounded-lg shadow-lg overflow-hidden'>
                         <div>
                             <div className='h-16 pl-4 pt-4  shadow-md'>
                                 <h1 className=' text-3xl font-bold text-left '>
@@ -124,7 +124,7 @@ const Messages: React.FC<Props> = ({ messages }) => {
                                 </h1>
                             </div>
                         </div>
-                        <div className='overflow-auto mx-2'>
+                        <div  className='overflow-scroll mx-2 overscroll-contain'>
 
                             {conversations.map((msg) => (
 
@@ -145,7 +145,7 @@ const Messages: React.FC<Props> = ({ messages }) => {
 
                     </div>
 
-                    <div className='grid grid-rows-auto  w-4/6 h-96 mr-6 gap-1 ring-1 ring-stone-200 rounded-lg overflow-hidden shadow-lg'>
+                    <div className='grid grid-rows-auto  w-4/6 h-128 mr-6 gap-1 ring-1 ring-stone-200 rounded-lg overflow-hidden shadow-lg'>
                         <div>
                             <div className='flex flex-row flex-nowrap h-16 bg-white   drop-shadow-md items-center '>
 
@@ -159,7 +159,7 @@ const Messages: React.FC<Props> = ({ messages }) => {
                                 <h1 className='font-semibold text-xl'>{messages.at(1)?.landlord_sent_msg ? "messages.at(1)?.['Landlord ID'](Landlord Name)" : "messages.at(1)?.['Tenant ID'](Tenant Name)"}</h1>
                             </div>
                         </div>
-                        <div className='overflow-auto mx-4 '>
+                        <div className='overflow-auto mx-4 overscroll-contain'>
 
 
 
