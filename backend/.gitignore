@@ -1,5 +1,5 @@
 __pycache__/
-capstone/
+localdb/
 *.log
 *.sql
 .env

@@ -37,7 +37,10 @@ class LandlordHandler:
     email = json['landlord_email'].lower()
     password = json['landlord_password']
     landlord = guard.authenticate(email, password)
-    token = { 'access_token': guard.encode_jwt_token(landlord) }
+    token = {
+      'landlord_id': landlord.lid,
+      'access_token': guard.encode_jwt_token(landlord) 
+      }
     return jsonify(token)
   
   @praetorian.auth_required
