@@ -17,7 +17,9 @@ export default function Navbar(path: any) {
 
 	const logout = async () => {
 		localStorage.removeItem('data');
-		router.replace('/')
+		router.replace('/');
+		router.reload();
+
 	}
 	// INFO: Signed out / Default Navigation Bar
 	var defaultBar = (
