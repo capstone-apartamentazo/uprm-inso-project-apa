@@ -3,10 +3,13 @@ import Image from 'next/image';
 import apartamentazo from '../public/images/apartamentazo.png';
 import Login from './Login';
 import Signup from './SignUp';
+import { sign } from 'crypto';
+import { useEffect, useState } from 'react';
 
 export default function Navbar(path: any) {
 	var classes = '';
-	var navBar = <></>;
+	//var navBar = <></>;
+	const [navBar, setNavBar] = useState(<></>)
 	// INFO: Signed out / Default Navigation Bar
 	var defaultBar = (
 		<ul className='menu menu-horizontal px-1 gap-4'>
@@ -22,6 +25,7 @@ export default function Navbar(path: any) {
 			</li>
 		</ul>
 	);
+
 
 	// INFO: Navigation Bar for Signed In users
 	var signedInBar = (
@@ -68,28 +72,45 @@ export default function Navbar(path: any) {
 		</div>
 	);
 
-	switch (path.path) {
-		case '/':
-			classes = 'bg-transparent';
-			navBar = defaultBar;
-			break;
-		case '/profile':
-			classes = 'shadow-md bg-white';
-			navBar = signedInBar;
-			break;
-		case '/about':
-			classes = '';
-			navBar = defaultBar;
-			break;
-		case '/404':
-			classes = 'shadow-md';
-			navBar = defaultBar;
-			break;
-		default:
-			classes = 'bg-transparent';
-			navBar = defaultBar;
-	}
+	// switch (path.path) {
+	// 	case '/':
+	// 		classes = 'bg-transparent';
+	// 		navBar = defaultBar;
+	// 		break;
+	// 	case '/profile':
+	// 		classes = 'shadow-md bg-white';
+	// 		navBar = signedInBar;
+	// 		break;
+	// 	case '/about':
+	// 		classes = '';
+	// 		navBar = defaultBar;
+	// 		break;
+	// 	case '/404':
+	// 		classes = 'shadow-md';
+	// 		navBar = defaultBar;
+	// 		break;
+	// 	default:
+	// 		classes = 'bg-transparent';
+	// 		navBar = defaultBar;
+	// }
 	/* bg-opacity-30 backdrop-filter backdrop-blur-lg */
+
+	
+	var data: {}
+	useEffect(() => {
+		if(localStorage.getItem('data') != null){
+			data = localStorage.getItem('data')!
+			setNavBar(signedInBar);
+			
+		}else{
+			setNavBar(defaultBar);
+			
+		}
+		
+	}, [])
+
+	
+
 
 	return (
 		<div className={`navbar text-primary-content fixed px-16 py-5 ${classes} z-10`}>
