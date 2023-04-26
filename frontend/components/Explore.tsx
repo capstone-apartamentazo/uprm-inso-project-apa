@@ -2,19 +2,35 @@ import Listing from './Listing';
 import { useListings } from '../useListings';
 import Link from 'next/link';
 
+interface Listing{
+	'Accommodation ID': number,
+	'Accommodation Title': string,
+	'Street': string,
+	'City': string
+
+}
+
 export default function Explore() {
-	const { data, error } = useListings('accommodations/all');
+	const { data, error } = useListings('accommodations/all',null);
 
 	// TODO: Add loading cards, default error cards
 	if (error) return <div>Failed to load</div>;
 	if (!data) return <div>Loading...</div>;
 
 	const top = data.slice(0, 4);
-	let listings = [];
+	var listings = {}
 
-	top.map((accm) => {
-		listings.push(<Listing key={accm['Accommodation ID']} title={accm['Accommodation Title']} address={accm['Street'] + ', ' + accm['City']} features={'Water & Internet included'} price={'$800'} href={''} />);
-	});
+	try{
+		listings = top.map((accm:Listing) => {
+			<Listing key={accm['Accommodation ID']} title={accm['Accommodation Title']} address={accm['Street'] + ', ' + accm['City']} features={'Water & Internet included'} price={'$800'} href={''} />
+		});
+
+	}catch(error){
+		listings = {}
+		console.log(error)
+	}
+
+	
 
 	return (
 		<section className='text-center m-10'>
