@@ -147,9 +147,10 @@ class AccommodationHandler:
 
   def checkAccmID(self, accmID):
     daoAccommodation = self.accommodations.getById(accmID)
+    role = praetorian.current_rolenames().pop()
     if not daoAccommodation:
       return False, 'Accommodation Not Found'
-    if daoAccommodation['landlord_id'] != praetorian.current_user_id():
+    if daoAccommodation['landlord_id'] != praetorian.current_user_id() or role != 'landlord':
       return False, 'Accommodation is not own by Landlord'
     else:
       return True , ''
