@@ -2,7 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import apartamentazo from '../public/images/apartamentazo.png';
 import Login from './Login';
-import Signup from './SignUp';
+import Signup from './Signup';
 import { sign } from 'crypto';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router'
