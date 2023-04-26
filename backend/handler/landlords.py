@@ -2,12 +2,14 @@ from flask import jsonify
 from psycopg2 import Error as pgerror
 from util.config import db, logger, landlord_guard as guard
 from dao.landlords import Landlords
+from handler.accommodations import AccommodationHandler
 import flask_praetorian as praetorian
 import re
 
 class LandlordHandler:
   def __init__(self):
     self.landlords = Landlords()
+    self.accommodations = AccommodationHandler()
 
   def getAll(self):
     try:
@@ -107,6 +109,23 @@ class LandlordHandler:
         return jsonify(daoLandlord)
       else:
         return jsonify('Error updating Landlord Rating')
+    except (Exception, pgerror) as e:
+      db.rollback()
+      logger.exception(e)
+      return jsonify('Error Occured'), 400
+
+  @praetorian.auth_required
+  def deleteLandlord(self):
+    try:
+      landlord_id = praetorian.current_user_id()
+      deletedLandlord = self.landlords.deleteLandlord(landlord_id)
+      deletedAccm = self.accommodations.deleteAccommodationCascade(landlord_id)
+      if deletedLandlord and deletedAccm:
+        db.commit()
+        return jsonify(deletedLandlord)
+      else:
+        db.rollback()
+        return jsonify('Error deleting Landlord'), 400
     except (Exception, pgerror) as e:
       db.rollback()
       logger.exception(e)

@@ -113,6 +113,21 @@ class SharedAmenitiesHandler:
       logger.exception(e)
       return jsonify('Error Occured'), 400
 
+  @praetorian.auth_required
+  def deleteSharedAmenities(self, accm_id):
+    try:
+      valid, reason = self.checkAccm(accm_id)
+      if not valid:
+        return False
+      deletedSharedAmenities = self.amenities.deleteSharedAmenities(accm_id)
+      if not deletedSharedAmenities:
+        return False
+      return True
+    except (Exception, pgerror) as e:
+      db.rollback()
+      logger.exception(e)
+      return jsonify('Error Occured'), 400
+
   def checkAmenities(self, identifier):
     daoAmenities = self.amenities.getById(identifier)
     if not daoAmenities:

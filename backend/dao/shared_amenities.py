@@ -44,6 +44,14 @@ class SharedAmenities:
     cursor.close()
     return res
 
+  def deleteSharedAmenities(self, identifier):
+    query = 'UPDATE shared_amenities SET deleted_flag = true WHERE accm_id = %s RETURNING *'
+    cursor = db.cursor(cursor_factory=RealDictCursor)
+    cursor.execute(query %(identifier))
+    res = cursor.fetchone()
+    cursor.close()
+    return res
+
   # TODO filter by bedrooms and bathrooms
   def filter(self, amenities, offset):
     query = 'SELECT accm_id, accm_title, accm_street, accm_number, accm_city, accm_state, accm_country, accm_zipcode, accm_description, COUNT(unit_id) AS number_of_units \

@@ -54,6 +54,15 @@ class Accommodations:
     cursor.close()
     return res
 
+  # TODO add individual delete
+  def deleteAccommodationCascade(self, identifier):
+    query = 'UPDATE accommodations SET deleted_flag = true WHERE landlord_id = %s AND deleted_flag = false RETURNING *'
+    cursor = db.cursor(cursor_factory=RealDictCursor)
+    cursor.execute(query %(identifier))
+    res = cursor.fetchall()
+    cursor.close()
+    return res
+
   def getByConstraint(self, landlord, number, identifier):
     query = 'SELECT accm_number, landlord_id FROM accommodations \
             WHERE accm_number = \'%s\' AND landlord_id = %s AND NOT accm_id = %s'

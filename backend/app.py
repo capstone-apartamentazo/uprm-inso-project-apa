@@ -50,7 +50,7 @@ def updateLandlord():
 # TODO
 @app.route('/api/landlords', methods=['DELETE'])
 def removeLandlord():
-  return None
+  return LandlordHandler().deleteLandlord()
 
 """
 TENANTS
@@ -181,11 +181,6 @@ def getSharedAmenitiesByAccommodationId():
 @app.route('/api/accommodations/amenities', methods=['PUT'])
 def updateSharedAmenities():
     return SharedAmenitiesHandler().updateSharedAmenities(request.json)
-
-# TODO
-@app.route('/api/accommodations/amenities', methods=['DELETE'])
-def removeSharedAmenities():
-  return None
 
 """
 NOTICES (ACCOMMODATIONS)
