@@ -24,9 +24,9 @@ const Login = () => {
 			"landlord_password": event.target.password.value,
 			"type": "landlord"
 		};
-		console.log(data);
+		//console.log(data);
 		const JSONdata = JSON.stringify(data);
-		console.log(JSONdata);
+		//console.log(JSONdata);
 		const endpoint = 'http://127.0.0.1:5000/api/landlords/login';
 
 		const options = {
@@ -41,14 +41,16 @@ const Login = () => {
 		.then((response) => {
 			//console.log(response);
 			if (!response.ok){
-				//console.log(response)
-				throw ApiError
+				console.log(response)
+				//alert("first error")
+				throw new Error("Email or password not match!");
 			}else{
 				return response.json()
 			}
 		})
 			
 		.then(result =>{
+			//alert(result);
 			const objc = {"token":(result['access_token']), "type":data.type, 'id':5};
 			const stringified = JSON.stringify(objc)
 			localStorage.setItem("data",stringified)
@@ -56,8 +58,8 @@ const Login = () => {
 			// localStorage.setItem('token', result["access_token"]);
 			// localStorage.setItem('type', data.type)
 			// localStorage.setItem('id', 1)
-			console.log()
-			console.log(JSON.parse(localStorage.getItem('data')!).token === ("Bearer "+result['access_token']));
+			//console.log()
+			//console.log(JSON.parse(localStorage.getItem('data')!).token === ("Bearer "+result['access_token']));
 			alert(`Logged in success`);
 			//router.push('#');
 
@@ -65,8 +67,8 @@ const Login = () => {
 
 		})
 		.catch((error) => {
-			console.log('error');
-			console.log(error)
+			console.log(error);
+			alert(error);
 		  });
 		  
 	};
