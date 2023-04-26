@@ -5,11 +5,20 @@ import Login from './Login';
 import Signup from './SignUp';
 import { sign } from 'crypto';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router'
+
 
 export default function Navbar(path: any) {
+	const router = useRouter()
+
 	var classes = '';
 	//var navBar = <></>;
 	const [navBar, setNavBar] = useState(<></>)
+
+	const logout = async () => {
+		localStorage.removeItem('data');
+		router.replace('/')
+	}
 	// INFO: Signed out / Default Navigation Bar
 	var defaultBar = (
 		<ul className='menu menu-horizontal px-1 gap-4'>
@@ -31,7 +40,7 @@ export default function Navbar(path: any) {
 	var signedInBar = (
 		<div className='menu menu-horizontal px-1 gap-4'>
 			<li>
-				<Link href={''} className='text-accent normal-case font-semibold'>
+				<Link href={'/'} className='text-accent normal-case font-semibold'>
 					<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' strokeWidth={1.5} stroke='currentColor' className='w-5 h-5 -mr-1'>
 						<path
 							strokeLinecap='round'
@@ -43,7 +52,7 @@ export default function Navbar(path: any) {
 				</Link>
 			</li>
 			<li>
-				<Link href={''} className='normal-case font-semibold'>
+				<Link href={'/messages'} className='normal-case font-semibold'>
 					<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' strokeWidth={1.5} stroke='currentColor' className='w-5 h-5 -mr-1'>
 						<path
 							strokeLinecap='round'
@@ -62,10 +71,10 @@ export default function Navbar(path: any) {
 				</label>
 				<ul tabIndex={0} className='mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-auto items-center'>
 					<li>
-						<a className='justify-between'>Profile</a>
+						<Link href='/profile' className='justify-between'>Profile</Link>
 					</li>
 					<li>
-						<a>Logout</a>
+						<a onClick={logout}>Logout</a>
 					</li>
 				</ul>
 			</div>
