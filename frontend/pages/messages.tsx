@@ -117,7 +117,7 @@ const Messages: React.FC<Props> = ({ messages }) => {
 
     try
     {
-        convObjcts = conversations.map((msg,index) => <Conversation key={msg.message_id} userName={'' + msg.tenant_id} userImg='/images/person.png' body={msg.msg_content} date={msg.msg_send_date} read={msg.msg_read}></Conversation>
+        convObjcts = conversations.map((msg,index) => <Conversation key={msg.message_id} userName={'' + (data.isLandlord ? msg.tenant_id:msg.landlord_id)} userImg='/images/person.png' body={msg.msg_content} date={msg.msg_send_date} read={msg.msg_read}></Conversation>
 
 
 
