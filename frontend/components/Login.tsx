@@ -67,7 +67,7 @@ const Login = () => {
 
 			.then(result => {
 				//alert(result);
-				const objc = { "token": (result['access_token']), "isLandlord": isLandlord, 'id': 5 };
+				const objc = { "token": (result['access_token']), "isLandlord": isLandlord, 'id': (isLandlord ? result['landlord_id'] : result['tenant_id'] )};
 				const stringified = JSON.stringify(objc)
 				localStorage.setItem("data", stringified)
 				
