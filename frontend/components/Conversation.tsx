@@ -8,17 +8,18 @@ type Props = {
     body: string;
     date: string;
     read: boolean;
+    onClick: any;
 
 }
 
 
-const Message: React.FC<Props> = ({ userName, userImg, body, date, read }) => {
+const Message: React.FC<Props> = ({ userName, userImg, body, date, read, onClick }) => {
     const [iread, setRead] = useState(read);
 
 
     return (
 
-        <div onClick={() => setRead(true)} className="flex flex-nowrap flex-row rounded-md  items-center  cursor-pointer   mx-2 my-2 py-2  hover:bg-gray-100">
+        <div onClick={onClick} className="flex flex-nowrap flex-row rounded-md  items-center  cursor-pointer   mx-2 my-2 py-2  hover:bg-gray-100">
             <div className="items-center">
                 <div className="avatar pl-2 pr-4 py-2">
                     <div className=" w-10 rounded-full ring-1 ring-accent ring-offset-base-100 ring-offset-2 hover:shadow-lg hover:ring-2">
