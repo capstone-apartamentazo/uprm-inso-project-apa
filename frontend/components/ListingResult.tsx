@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
+import AccommodationUnits from './AccommodationUnits';
 
 type Props = {
 	title: string;
@@ -20,13 +21,22 @@ const unit = {
 	available: 'Available',
 };
 
-function handleClick(id, active, setActive) {
-	active ? setActive(false) : setActive(true);
-}
 const ListingResult: React.FC<Props> = ({ title, address, features, description, price, href, id }) => {
 	const [active, setActive] = useState(false);
+	const [units, setUnits] = useState([]);
+
+	function handleClick(id, setActive, setUnits) {
+		active ? setActive(false) : setActive(true);
+		var element = document.getElementById(id + '_units');
+		if (!element) setUnits(<AccommodationUnits accm_id={id} />);
+		else {
+			document.getElementById(id + '_units')?.classList.toggle('h-0');
+			document.getElementById(id + '_units')?.classList.toggle('h-full');
+		}
+	}
+
 	return (
-		<div id={id} className='w-full' onClick={() => handleClick(id, active, setActive)}>
+		<div id={id} className='w-full' onClick={() => handleClick(id, setActive, setUnits)}>
 			<div className={`card card-side bg-base-100 h-56 w-full shadow-lg transition ease-in-out hover:-translate-y-1 hover:scale-10 duration-150 cursor-pointer ${active ? 'border-[1px] border-accent' : ''}`}>
 				<figure className='p-4 rounded-2xl h-56 w-56'>
 					<img src='https://images.pexels.com/photos/439391/pexels-photo-439391.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' className='rounded-xl h-48 w-48' alt='Listing' />
@@ -41,97 +51,7 @@ const ListingResult: React.FC<Props> = ({ title, address, features, description,
 					</div>
 				</div>
 			</div>
-			<div id={id + '_units'} className={`${active ? 'h-96' : 'h-0'} card card-compact w-full shadow text-primary-content translate-y-1 bg-accent transition-all delay-150 duration-300 overflow-hidden w-full`}>
-				<div className='card-body p-0'>
-					<h3 className='card-title'>Accommodation Units</h3>
-					<div className='overflow-x-auto w-full'>
-						<table className='table w-full rounded-xl'>
-							<tbody>
-								{/* row 1 */}
-								<tr>
-									<td>
-										<div className='flex items-center space-x-3'>
-											<div>
-												<div className='font-bold'>Unit {unit.number}</div>
-												<div className='text-sm opacity-50'>{unit.available}</div>
-											</div>
-										</div>
-									</td>
-									<td>
-										{unit.description}
-										<br />
-										<span className='badge badge-ghost badge-sm'>{unit.amenities}</span>
-									</td>
-									<td className='font-bold'>${unit.price}/m</td>
-									<th>
-										<button className='btn btn-ghost btn-xs'>details</button>
-									</th>
-								</tr>
-								{/* row 2 */}
-								<tr>
-									<td>
-										<div className='flex items-center space-x-3'>
-											<div>
-												<div className='font-bold'>Unit {unit.number}</div>
-												<div className='text-sm opacity-50'>{unit.available}</div>
-											</div>
-										</div>
-									</td>
-									<td>
-										{unit.description}
-										<br />
-										<span className='badge badge-ghost badge-sm'>{unit.amenities}</span>
-									</td>
-									<td className='font-bold'>${unit.price}/m</td>
-									<th>
-										<button className='btn btn-ghost btn-xs'>details</button>
-									</th>
-								</tr>
-								{/* row 3 */}
-								<tr>
-									<td>
-										<div className='flex items-center space-x-3'>
-											<div>
-												<div className='font-bold'>Unit {unit.number}</div>
-												<div className='text-sm opacity-50'>{unit.available}</div>
-											</div>
-										</div>
-									</td>
-									<td>
-										{unit.description}
-										<br />
-										<span className='badge badge-ghost badge-sm'>{unit.amenities}</span>
-									</td>
-									<td className='font-bold'>${unit.price}/m</td>
-									<th>
-										<button className='btn btn-ghost btn-xs'>details</button>
-									</th>
-								</tr>
-								{/* row 4 */}
-								<tr>
-									<td>
-										<div className='flex items-center space-x-3'>
-											<div>
-												<div className='font-bold'>Unit {unit.number}</div>
-												<div className='text-sm opacity-50'>{unit.available}</div>
-											</div>
-										</div>
-									</td>
-									<td>
-										{unit.description}
-										<br />
-										<span className='badge badge-ghost badge-sm'>{unit.amenities}</span>
-									</td>
-									<td className='font-bold'>${unit.price}/m</td>
-									<th>
-										<button className='btn btn-ghost btn-xs'>details</button>
-									</th>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</div>
+			{units}
 		</div>
 	);
 };
