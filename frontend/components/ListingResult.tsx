@@ -25,7 +25,7 @@ const ListingResult: React.FC<Props> = ({ title, address, features, description,
 	const [active, setActive] = useState(false);
 	const [units, setUnits] = useState([]);
 
-	function handleClick(id, setActive, setUnits) {
+	function handleClick(id: string, setActive, setUnits) {
 		active ? setActive(false) : setActive(true);
 		var element = document.getElementById(id + '_units');
 		if (!element) setUnits(<AccommodationUnits accm_id={id} />);

@@ -14,7 +14,7 @@ from handler.leases import LeaseHandler
 
 @app.route('/')
 def home():
-  return "Hello World"
+  return 'Hello World'
 
 """
 LANDLORDS
@@ -50,7 +50,7 @@ def updateLandlord():
 # TODO
 @app.route('/api/landlords', methods=['DELETE'])
 def removeLandlord():
-  return None
+  return LandlordHandler().deleteLandlord()
 
 """
 TENANTS
@@ -63,10 +63,17 @@ def getAllTenants():
 def getTenantById():
     return TenantHandler().getById(request.json)
 
-# TODO
 @app.route('/api/tenants/login', methods=['POST'])
 def loginTenant():
-  return None
+  return TenantHandler().login(request.json)
+
+@app.route('/api/tenants/protected')
+def protectedTenant():
+  return TenantHandler().protected()
+
+@app.route('/api/tenants/refresh')
+def refreshTenant():
+  return TenantHandler().refresh()
 
 @app.route('/api/tenants/new', methods=['POST'])
 def addTenant():
@@ -88,17 +95,13 @@ MESSAGES (LANDLORDS AND TENANTS)
 def getAllMessages():
   return MessageHandler().getAll()
 
+@app.route('/api/messages', methods=['GET'])
+def getMessageByLandlordId():
+    return MessageHandler().getByUserId()
+
 @app.route('/api/messages', methods=['POST'])
 def getMessageById():
     return MessageHandler().getById(request.json)
-
-@app.route('/api/messages/landlord', methods=['POST'])
-def getMessageByLandlordId():
-    return MessageHandler().getByLandlordId(request.json)
-
-@app.route('/api/messages/tenant', methods=['POST'])
-def getMessageByTenantId():
-    return MessageHandler().getByTenantId(request.json)
 
 @app.route('/api/messages/unique', methods=['POST'])
 def getMessageByConstraint():
@@ -166,12 +169,10 @@ SHARED AMENITIES (ACCOMMODATIONS)
 def getAllSharedAmenities():
   return SharedAmenitiesHandler().getAll()
 
-# TODO
 @app.route('/api/shared/amenities', methods=['POST'])
 def getSharedAmenitiesById():
     return SharedAmenitiesHandler().getById(request.json)
 
-# TODO
 @app.route('/api/accommodations/amenities', methods=['POST'])
 def getSharedAmenitiesByAccommodationId():
     return SharedAmenitiesHandler().getByAccommodationId(request.json)
@@ -181,11 +182,6 @@ def getSharedAmenitiesByAccommodationId():
 def updateSharedAmenities():
     return SharedAmenitiesHandler().updateSharedAmenities(request.json)
 
-# TODO
-@app.route('/api/accommodations/amenities', methods=['DELETE'])
-def removeSharedAmenities():
-  return None
-
 """
 NOTICES (ACCOMMODATIONS)
 """
@@ -193,20 +189,22 @@ NOTICES (ACCOMMODATIONS)
 def getAllNotices():
   return NoticeHandler().getAll()
 
+# TODO set for only tenants and landlords with relation to accm from notice
 @app.route('/api/notices', methods=['POST'])
 def getNoticeById():
     return NoticeHandler().getById(request.json)
 
+# TODO set for only tenants and landlords with relation to accm from notice
 @app.route('/api/accommodations/notices', methods=['POST'])
 def getNoticesByAccommodationId():
     return NoticeHandler().getByAccommodationId(request.json)
 
-# TODO add restrictions when creating notices
+# TODO limit title character count
 @app.route('/api/notices/add', methods=['POST'])
 def addNotice():
   return NoticeHandler().addNotice(request.json)
 
-# TODO add restrictions when updating notices
+# TODO limit title character count
 @app.route('/api/notices', methods=['PUT'])
 def updateNotice():
     return NoticeHandler().updateNotice(request.json)
@@ -414,8 +412,13 @@ def removeLease():
   return None
 
 """
-SEARCH (ACCOMMODATIONS)
+SEARCH AND FILTER (ACCOMMODATIONS & UNITS)
 """
 @app.route('/api/search', methods=['POST'])
 def searchAccommodations():
   return AccommodationHandler().search(request.json)
+
+@app.route('/api/filter/shared/amenities', methods=['POST'])
+def filterBySharedAmenities():
+  return SharedAmenitiesHandler().filter(request.json)
+
