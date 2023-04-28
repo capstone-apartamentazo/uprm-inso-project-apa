@@ -34,7 +34,6 @@ const Listings = () => {
 				})
 				.then((data) => {
 					data.map((accm: any) => {
-						console.log(accm);
 						allListings.push(
 							<div key={accm} className='col-start-1 row-span-2 p-2'>
 								<ListingResult key={accm} title={accm.accm_title} address={accm.accm_street + ', ' + accm.accm_city} features={'2 bed • 2 baths'} description={accm.accm_description} price={'$800'} href={''} id={accm.accm_id} />{' '}

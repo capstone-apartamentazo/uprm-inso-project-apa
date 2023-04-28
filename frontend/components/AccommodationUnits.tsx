@@ -8,7 +8,17 @@ const unit = {
 	available: 'Available',
 };
 
-type Unit = { 'Unit Number': string; Available: boolean; Price: string };
+type Unit = {
+	accm_id: number;
+	available: boolean;
+	contract_duration: number;
+	date_available: string;
+	deleted_flag: boolean;
+	price: number;
+	shared: boolean;
+	unit_id: number;
+	unit_number: string;
+};
 
 const AccommodationUnits = (accm_id: any) => {
 	let allUnits: any = [];
@@ -35,14 +45,13 @@ const AccommodationUnits = (accm_id: any) => {
 				})
 				.then((data) => {
 					data.map((accm: Unit) => {
-						console.log(accm);
 						allUnits.push(
 							<tr>
 								<td>
 									<div className='flex items-center space-x-3'>
 										<div>
-											<div className='font-bold'>Unit {accm['Unit Number']}</div>
-											<div className='text-sm opacity-50'>{accm['Available'] ? 'Available' : 'Unavailable'}</div>
+											<div className='font-bold'>Unit {accm.unit_number}</div>
+											<div className='text-sm opacity-50'>{accm.available ? 'Available' : 'Unavailable'}</div>
 										</div>
 									</div>
 								</td>
@@ -51,7 +60,7 @@ const AccommodationUnits = (accm_id: any) => {
 									<br />
 									<span className='badge badge-ghost badge-sm'>{unit.amenities}</span>
 								</td>
-								<td className='font-bold'>${accm['Price']}/m</td>
+								<td className='font-bold'>${accm.price}/m</td>
 								<th>
 									<button className='btn btn-ghost btn-xs'>details</button>
 								</th>
