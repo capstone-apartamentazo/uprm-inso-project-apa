@@ -1,5 +1,3 @@
-import Link from 'next/link';
-import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import AccommodationUnits from './AccommodationUnits';
 
@@ -25,9 +23,10 @@ const ListingResult: React.FC<Props> = ({ title, address, features, description,
 	const [active, setActive] = useState(false);
 	const [units, setUnits] = useState([]);
 
-	function handleClick(id: string, setActive, setUnits) {
+	function handleClick(id: string, setActive: any, setUnits: any) {
 		active ? setActive(false) : setActive(true);
 		var element = document.getElementById(id + '_units');
+
 		if (!element) setUnits(<AccommodationUnits accm_id={id} />);
 		else {
 			document.getElementById(id + '_units')?.classList.toggle('h-0');
