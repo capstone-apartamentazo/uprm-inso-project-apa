@@ -111,7 +111,7 @@ const Messages: React.FC<Props> = ({ }) => {
     function handleSelection(landlord_id: number, tenant_id: number) {
         //console.log('test')
         if (storage?.isLandlord) {
-            console.log(storage.isLandlord);
+            //console.log(storage.isLandlord);
             setSelected(tenant_id);
         } else {
             setSelected(landlord_id);

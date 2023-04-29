@@ -2,6 +2,19 @@ import Layout from '@/components/Layout';
 import Listing from '@/components/Listing';
 import Review from '@/components/Review';
 import Image from 'next/image';
+import { useState, useEffect } from 'react';
+import useSWR, { mutate } from 'swr';
+import axios from 'axios';
+import { useRouter } from 'next/router'
+
+
+
+interface Storage {
+    token: string,
+    isLandlord: boolean,
+    id: number
+}
+
 
 const uname = 'Bruce Wayne';
 const rating = '4';
@@ -11,6 +24,68 @@ const languages = ['Spanish', 'English'];
 const reviewCount = 2;
 
 const Profile = () => {
+	const [storage, setStorage] = useState<Storage>({ token: '', isLandlord: false, id: 0 })
+	const router = useRouter()
+
+	useEffect(() => {
+
+
+        if (localStorage.getItem('data') != null) {
+            setStorage(JSON.parse(localStorage.getItem('data')!))
+            var endpoint = 'http://127.0.0.1:5000/api/tenants/refresh'
+            if (JSON.parse(localStorage.getItem('data')!).isLandlord) {
+                endpoint = 'http://127.0.0.1:5000/api/landlords/refresh'
+
+            }
+            axios({ method: 'get', url: endpoint, headers: { Authorization: `Bearer ${JSON.parse(localStorage.getItem('data')!).token}` } })
+                .then(res => res.data)
+                .then(result => {
+                    const obj = { 'token': result['access_token'], 'isLandlord': storage?.isLandlord, 'id': storage?.id };
+                    const stringOBJ = JSON.stringify(obj);
+                    localStorage.setItem('data', stringOBJ);
+                })
+                .then(() => {
+                    console.log(localStorage.getItem('data')!)
+                    setStorage(JSON.parse(localStorage.getItem('data')!))
+                }
+
+                )
+                .catch(err => {
+                    //localStorage.removeItem('data');
+                    console.error(err);
+                })
+        } else {
+            router.replace('/')
+        }
+    }, [])
+	var endpoint = `http://127.0.0.1:5000/api/tenants/${storage.id}`
+	if(storage.isLandlord){
+		endpoint = `http://127.0.0.1:5000/api/landlords/${storage.id}`
+	}
+	
+
+	const { data: user, error: userError, isLoading: isLoadingUser } = useSWR((storage.token != '') ? (storage.isLandlord ?  `http://127.0.0.1:5000/api/landlords/${storage.id}` : `http://127.0.0.1:5000/api/tenants/${storage.id}`) : null, (url:any) => fetch(url, {
+        headers: {
+            Authorization: `Bearer ${storage?.token}`
+        }
+    }).then(res => {
+        
+        return res.json()
+    }));
+	if(userError){
+		console.error(userError);
+	}
+	if(!user){
+		console.log(user);
+	}
+	if(isLoadingUser){
+		return (<h1>Loading...</h1>)
+	}
+	if(storage.id ==0){
+		return (
+			<h1>Waiting for storage data...</h1>
+		)
+	}
 	return (
 		<Layout>
 			<main className='flex flex-row flex-nowrap pt-24'>
@@ -24,8 +99,8 @@ const Profile = () => {
 							</div>
 						</div>
 						<div className=' '>
-							<h5 className='mb-2 text-2xl pt-2 font-bold leading-tight text-neutral-800 dark:text-neutral-50'>{uname}</h5>
-							<p className=' font-semibold pb-6 text-neutral-600 dark:text-neutral-200 '>Rating: {rating}/5</p>
+							<h5 className='mb-2 text-2xl pt-2 font-bold leading-tight text-neutral-800 dark:text-neutral-50'>{storage.isLandlord ? user.landlord_name : user.tenant_name}</h5>
+							<p className=' font-semibold pb-6 text-neutral-600 dark:text-neutral-200 '>Rating: {storage.isLandlord ? user.landlord_rating : user.tenant_rating}/5</p>
 						</div>
 					</div>
 					<div className='flex justify-center pt-4'>
@@ -33,11 +108,9 @@ const Profile = () => {
 							<div className='p-6'>
 								<h5 className='mb-2 text-xl font-medium leading-tight text-neutral-800 dark:text-neutral-50'>Details:</h5>
 								<ul>
-									<li className=' text-neutral-600 dark:text-neutral-200 '>Joined in {joined}</li>
-									<li className=' text-neutral-600 dark:text-neutral-200 '>Lives in {location}</li>
-									<li className=' text-neutral-600 dark:text-neutral-200 '>
-										Speaks {languages[0]}, {languages[1]}
-									</li>
+									<li className=' text-neutral-600 dark:text-neutral-200 '>Phone:  {storage.isLandlord ? user.landlord_phone : user.tenant_phone}</li>
+									<li className=' text-neutral-600 dark:text-neutral-200 '> {''  + storage.isLandlord ? 'Account type: Landlord' : ''}</li>
+									
 								</ul>
 							</div>
 						</div>
