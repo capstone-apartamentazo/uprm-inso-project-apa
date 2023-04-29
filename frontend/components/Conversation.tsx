@@ -1,42 +1,59 @@
 import React from 'react'
 import { useEffect, useState } from 'react'
 
+interface Message {
+    "deleted_flag": boolean,
+    "landlord_id": number,
+    "landlord_sent_msg": boolean,
+    "message_id": number,
+    "msg_content": string,
+    "msg_read": boolean,
+    "msg_send_date": string,
+    "tenant_id": number
+}
+
 
 type Props = {
-    userName: string;
-    userImg: string;
-    body: string;
-    date: string;
-    read: boolean;
-    onClick: any;
+    // userName: string;
+    // userImg: string;
+    // body: string;
+    // date: string;
+    // read: boolean;
+    // onClick: any;
+    msg: Message,
+    isLandlord:boolean,
+    onClick:any
+    
+    
 
 }
 
 
-const Message: React.FC<Props> = ({ userName, userImg, body, date, read, onClick }) => {
-    const [iread, setRead] = useState(read);
 
-
+const Conversation: React.FC<Props> = ({ msg,isLandlord, onClick }) => {
+    var iSent = ((isLandlord&&msg.landlord_sent_msg)||(!(isLandlord||msg.landlord_sent_msg)))
+    var needRead = ((iSent||msg.msg_read))
+    //console.log(needRead)
     return (
 
-        <div onClick={onClick} className="flex flex-nowrap flex-row rounded-md  items-center  cursor-pointer   mx-2 my-2 py-2  hover:bg-gray-100">
+        <div onClick={onClick}  className="flex flex-nowrap flex-row rounded-md  items-center  cursor-pointer   mx-2 my-2 py-2  hover:bg-gray-100">
             <div className="items-center">
                 <div className="avatar pl-2 pr-4 py-2">
                     <div className=" w-10 rounded-full ring-1 ring-accent ring-offset-base-100 ring-offset-2 hover:shadow-lg hover:ring-2">
-                        <a href='' className=''><img className='aspect-square' src={userImg} /></a>
+                        <a href='' className=''><img className='aspect-square' src={'/images/person.png'} /></a>
                     </div>
                 </div>
 
             </div>
             <div className='flex flex-col items-start'>
                 <div className='flex flex-row'>
-                    <h1 className={'' + (iread ? 'font-semibold' : 'font-bold')}>{userName}</h1>
+                    <h1 className={'' + (needRead ? 'font-semibold' : 'font-bold')}>{((isLandlord&&msg.landlord_sent_msg)||(!(isLandlord||msg.landlord_sent_msg)))? msg.tenant_id : msg.landlord_id}</h1>
                     <h1 className='text-black font-extrabold px-1'>·</h1>
-                    <h1 className={'' + (iread ? 'text-neutral-600 pr-1 font-normal' : 'text-neutral-600 pr-2 font-semibold')}>{date}</h1>
-                    <h1 className='items-center'><span className={" " + (iread ? 'hidden' : 'badge badge-accent badge-sm text-white font-semibold')}>NEW</span></h1>
+                    <p className={'' + (needRead ? 'text-neutral-600 pr-1 font-normal truncate w-36' : 'text-neutral-600 pr-2 font-semibold truncate w-36 ')}>{msg.msg_send_date}</p>
+                    <h1 className='items-center'><span className={" " + (needRead ? 'hidden' : 'badge badge-accent badge-sm text-white font-semibold mr-1')}>NEW</span></h1>
                 </div>
 
-                <h2 className={'' + (iread ? 'font-normal' : 'font-semibold')}>{body}</h2>
+                <h2 className={'' + (needRead ? 'font-normal' : 'font-semibold')}>{msg.msg_content}</h2>
             </div>
 
         </div>
@@ -48,4 +65,4 @@ const Message: React.FC<Props> = ({ userName, userImg, body, date, read, onClick
     )
 
 }
-export default Message;
+export default Conversation;
