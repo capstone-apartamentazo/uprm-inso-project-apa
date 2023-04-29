@@ -66,7 +66,7 @@ def getAllTenants():
 @app.route('/api/tenants/<int:u_id>', methods=['GET'])
 def getTenantById(u_id):
     if request.method == 'GET':
-      TenantHandler().getById(u_id)
+      return TenantHandler().getById(u_id)
     else:
       return jsonify(Error="Method not allowed."), 405
 
