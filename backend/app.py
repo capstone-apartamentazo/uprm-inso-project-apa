@@ -1,4 +1,4 @@
-from flask import request
+from flask import request,jsonify
 from util.config import app
 from handler.landlords import LandlordHandler
 from handler.tenants import TenantHandler
@@ -107,9 +107,12 @@ def getMessageById():
 def getMessageByConstraint():
     return MessageHandler().getByConstraint(request.json)
 
-@app.route('/api/messages/conversation', methods=['POST'])
-def getConversation():
-    return MessageHandler().getConversation(request.json)
+@app.route('/api/messages/conversation/<int:u_id>', methods=['GET'])
+def getConversation(u_id):
+    if request.method == 'GET':
+      return MessageHandler().getConversation(u_id)
+    else:
+      return jsonify(Error="Method not allowed."), 405
 
 @app.route('/api/landlord/sends/message', methods=['POST'])
 def landlordSendsMessage():
