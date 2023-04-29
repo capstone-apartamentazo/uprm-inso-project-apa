@@ -1,5 +1,5 @@
 import Layout from '@/components/Layout';
-import Listing from '@/components/Listing';
+import Listing from '@/components/Accommodation';
 import Conversation from '@/components/Conversation';
 // import MessageC from '@/components/Message';
 import Image from 'next/image';

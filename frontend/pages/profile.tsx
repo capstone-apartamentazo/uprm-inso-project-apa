@@ -1,5 +1,5 @@
 import Layout from '@/components/Layout';
-import Listing from '@/components/Listing';
+import Listing from '@/components/Accommodation';
 import Review from '@/components/Review';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
@@ -7,6 +7,7 @@ import useSWR, { mutate } from 'swr';
 import axios from 'axios';
 import { useRouter } from 'next/router'
 import Link from 'next/link';
+import AccommodationList from '@/components/AccommodationList';
 
 
 
@@ -60,22 +61,21 @@ const Profile = () => {
 			router.replace('/')
 		}
 	}, [])
-	var endpoint = `http://127.0.0.1:5000/api/tenants/${storage.id}`
-	if (storage.isLandlord) {
-		endpoint = `http://127.0.0.1:5000/api/landlords/${storage.id}`
-	}
+	// var endpoint = `http://127.0.0.1:5000/api/tenants/${storage.id}`
+	// if (storage.isLandlord) {
+	// 	endpoint = `http://127.0.0.1:5000/api/landlords/${storage.id}`
+	// }
 
 
 	const { data: user, error: userError, isLoading: isLoadingUser } = useSWR((storage.token != '') ? (storage.isLandlord ? `http://127.0.0.1:5000/api/landlords/${storage.id}` : `http://127.0.0.1:5000/api/tenants/${storage.id}`) : null, (url: any) => fetch(url, {
 		headers: {
 			Authorization: `Bearer ${storage?.token}`
 		}
-	}).then(res => {
-
-		return res.json()
-	}));
+	}).then(res => res.json()));
+	
 	if (userError) {
 		console.error(userError);
+		
 	}
 	if (!user) {
 		console.log(user);
@@ -85,9 +85,13 @@ const Profile = () => {
 	}
 	if (storage.id == 0) {
 		return (
-			<h1>Waiting for storage data...</h1>
-		)
+			<div>
+				<h1>Error found</h1>
+				<button onClick={() => {localStorage.removeItem('data')}} className="btn border-2 mr-4">Logout</button>
+			</div>
+        )
 	}
+
 	return (
 		<Layout>
 			<main className='flex flex-row flex-nowrap pt-24'>
@@ -120,37 +124,19 @@ const Profile = () => {
 				</div>
 				<div className='flex flex-col flex-initial basis-5/6 pt-10 pl-4 w-9/12 '>
 					<div className='rounded-md p-6 '>
-						<div>
+						<div className='relative'>
 							<h1 className=' text-3xl font-bold text-left  '>
 
 								<a href='/' className='hover:underline'>
-									Units
+									Accommodations
 								</a>
 							</h1>
+							<div className='flex absolute inset-y-0 right-0 items-center bg-accent rounded-md px-4 mr-4 hover:opacity-90'>
+								<Link href='' className='font-semibold text-white '>Add Accommodation</Link>
+							</div>
 						</div>
-						<div className='flex flex-nowrap gap-4 pl-4 pt-4 pr-4 pb-4'>
-							<Listing title='Bosque 1' address='calle bosque' features='1 bed' price='$200/month' href='/' />
-							<Listing title='Bosque 1' address='calle bosque' features='1 bed' price='$200/month' href='/' />
-							<Listing title='Bosque 1' address='calle bosque' features='1 bed' price='$200/month' href='/' />
-							<Listing title='Bosque 1' address='calle bosque' features='1 bed' price='$200/month' href='/' />
-
-							<Listing title='Bosque 1' address='calle bosque' features='1 bed' price='$200/month' href='/' />
-							<Link href='/' className=' flex flex-col bg-white justify-center  w-40 rounded-md  shadow-md ring-1 ring-stone-200 transition ease-in-out delay-50 hover:-translate-y-1 hover:scale-10 duration-200 cursor-pointer'>
-								<div className='text-center '>
-									<h1 className='font-semibold text-xl text-black'>All Units</h1>
-
-
-								</div>
-								<div className='flex flex-col items-center'>
-									<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" className="w-6 h-6 stroke-black">
-										<path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
-									</svg>
-								</div>
-
-							</Link>
-
-
-						</div>
+						<AccommodationList></AccommodationList>
+						
 					</div>
 
 					<div className='rounded-md p-6 max-w-full'>
@@ -173,27 +159,26 @@ const Profile = () => {
 
 export default Profile;
 /*
-<div className='carousel w-full pl-4 pt-4 pr-4 pb-4 space-x-4 rounded-box overscroll-auto'>
-							
-							<div className='carousel-item pl-1'>
-								<Listing title='Bosque 1' address='calle bosque' features='1 bed' price='$200/month' href='/' />{' '}
-							</div>
-							<div className='carousel-item'>
-								<Listing title='Bosque 1' address='calle bosque' features='1 bed' price='$200/month' href='/' />{' '}
-							</div>
-							<div className='carousel-item'>
-								<Listing title='Bosque 1' address='calle bosque' features='1 bed' price='$200/month' href='/' />{' '}
-							</div>
-							<div className='carousel-item'>
-								<Listing title='Bosque 1' address='calle bosque' features='1 bed' price='$200/month' href='/' />{' '}
-							</div>
-							<div className='carousel-item'>
-								<Listing title='Bosque 1' address='calle bosque' features='1 bed' price='$200/month' href='/' />{' '}
-							</div>
-							<div className='carousel-item'>
-								<Listing title='Bosque 1' address='calle bosque' features='1 bed' price='$200/month' href='/' />{' '}
-							</div>
-							<div className='carousel-item'>
-								<Listing title='Bosque 1' address='calle bosque' features='1 bed' price='$200/month' href='/' />{' '}
-							</div>
+<div className='flex flex-nowrap gap-4  pt-4 pr-4 pb-4'>
+							<Listing title='Bosque 1' address='calle bosque' features='1 bed' price='$200/month' href='/' />
+							<Listing title='Bosque 1' address='calle bosque' features='1 bed' price='$200/month' href='/' />
+							<Listing title='Bosque 1' address='calle bosque' features='1 bed' price='$200/month' href='/' />
+							<Listing title='Bosque 1' address='calle bosque' features='1 bed' price='$200/month' href='/' />
+
+							<Listing title='Bosque 1' address='calle bosque' features='1 bed' price='$200/month' href='/' />
+							<Link href='/' className=' flex flex-col bg-white justify-center  w-40 rounded-md  shadow-md ring-1 ring-stone-200 transition ease-in-out delay-50 hover:-translate-y-1 hover:scale-10 duration-200 cursor-pointer'>
+								<div className='text-center '>
+									<h1 className='font-semibold text-xl text-black'>All Units</h1>
+
+
+								</div>
+								<div className='flex flex-col items-center'>
+									<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" className="w-6 h-6 stroke-black">
+										<path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+									</svg>
+								</div>
+
+							</Link>
+
+
 						</div>*/

@@ -23,9 +23,9 @@ class AccommodationHandler:
       logger.exception(e)
       return jsonify('Error Occured'), 400
 
-  def getById(self, json):
+  def getById(self, a_id):
     try:
-      daoAccommodation = self.accommodations.getById(json['accm_id'])
+      daoAccommodation = self.accommodations.getById(a_id)
       if daoAccommodation:
         return jsonify(daoAccommodation)
       else:
@@ -35,9 +35,9 @@ class AccommodationHandler:
       logger.exception(e)
       return jsonify('Error Occured'), 400
 
-  def getByLandlordId(self, json):
+  def getByLandlordId(self, u_id):
     try:
-      daoAccommodations = self.accommodations.getByLandlordId(json['landlord_id'])
+      daoAccommodations = self.accommodations.getByLandlordId(u_id)
       if daoAccommodations:
         return jsonify([row for row in daoAccommodations])
       else:

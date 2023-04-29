@@ -150,14 +150,19 @@ ACCOMMODATIONS (LANDLORDS)
 def getAllAccommodations():
   return AccommodationHandler().getAll()
 
-@app.route('/api/accommodations', methods=['POST'])
-def getAccommodationById():
-    return AccommodationHandler().getById(request.json)
+@app.route('/api/accommodations/<int:a_id>', methods=['GET'])
+def getAccommodationById(a_id):
+    if request.method == 'GET':
+      return AccommodationHandler().getById(a_id)
+    else:
+      return jsonify(Error="Method not allowed."), 405
 
-@app.route('/api/accommodations/landlord', methods=['POST'])
-def getAccommodationByLandlordId():
-    return AccommodationHandler().getByLandlordId(request.json)
-
+@app.route('/api/accommodations/landlord/<int:u_id>', methods=['GET'])
+def getAccommodationByLandlordId(u_id):
+  if request.method == 'GET':
+    return AccommodationHandler().getByLandlordId(u_id)
+  else:
+    return jsonify(Error="Method not allowed."), 405
 @app.route('/api/accommodations/new', methods=['POST'])
 def addAccommodation():
   return AccommodationHandler().addAccommodation(request.json)

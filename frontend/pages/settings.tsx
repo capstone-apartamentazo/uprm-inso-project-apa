@@ -1,5 +1,5 @@
 import Layout from '@/components/Layout';
-import Listing from '@/components/Listing';
+import Listing from '@/components/Accommodation';
 import Conversation from '@/components/Conversation';
 import Image from 'next/image';
 import { GetServerSideProps } from 'next'
