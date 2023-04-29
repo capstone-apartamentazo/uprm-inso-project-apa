@@ -3,11 +3,6 @@ import useSWR from 'swr';
 const baseUrl = 'https://api.apartamentazo.com/api/';
 const fetcher = (...args: Parameters<typeof fetch>) => fetch(...args).then((res) => res.json());
 
-// export default async function fetcher<JSON = any>(input: RequestInfo, init?: RequestInit): Promise<JSON> {
-// 	const res = await fetch(input, init);
-// 	return res.json();
-// }
-
 export const useListings = (path: string) => {
 	if (!path) {
 		throw new Error('Path is required');

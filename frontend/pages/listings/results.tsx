@@ -33,6 +33,7 @@ const Listings = () => {
 					return data.json();
 				})
 				.then((data) => {
+					console.log(data);
 					data.map((accm: any) => {
 						allListings.push(
 							<div key={accm} className='col-start-1 row-span-2 p-2'>

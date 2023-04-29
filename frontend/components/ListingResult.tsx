@@ -30,7 +30,7 @@ const ListingResult: React.FC<Props> = ({ title, address, features, description,
 		if (!element) setUnits(<AccommodationUnits accm_id={id} />);
 		else {
 			document.getElementById(id + '_units')?.classList.toggle('h-0');
-			document.getElementById(id + '_units')?.classList.toggle('h-full');
+			document.getElementById(id + '_units')?.classList.toggle('h-96');
 		}
 	}
 

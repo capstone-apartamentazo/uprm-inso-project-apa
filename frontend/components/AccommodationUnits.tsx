@@ -82,7 +82,7 @@ const AccommodationUnits = (accm_id: any) => {
 	}, [accm_id.accm_id]);
 
 	return (
-		<div id={accm_id.accm_id + '_units'} className={`h-full card card-compact shadow text-primary-content translate-y-1 bg-accent transition-all delay-150 duration-300 overflow-hidden w-full`}>
+		<div id={accm_id.accm_id + '_units'} className={`h-96 card card-compact shadow text-primary-content translate-y-1 bg-accent transition-all delay-150 duration-300 overflow-hidden w-full`}>
 			<div className='card-body p-0'>
 				<h3 className='card-title'>Accommodation Units</h3>
 				<div className='overflow-x-auto w-full'>
