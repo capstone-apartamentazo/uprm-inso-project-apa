@@ -63,3 +63,11 @@ class Tenants:
     res = cursor.fetchone()
     cursor.close()
     return res
+  
+  def deleteTenant(self, identifier):
+    query = 'UPDATE tenants SET deleted_flag = true WHERE tenant_id = %s RETURNING *'
+    cursor = db.cursor(cursor_factory=RealDictCursor)
+    cursor.execute(query %(identifier))
+    res = cursor.fetchone()
+    cursor.close()
+    return res

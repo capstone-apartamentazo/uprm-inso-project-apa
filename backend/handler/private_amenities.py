@@ -84,6 +84,15 @@ class PrivateAmenitiesHandler:
       db.rollback()
       logger.exception(e)
       return jsonify('Error Occured'), 400
+    
+  @praetorian.auth_required
+  def deletePrivAmenitiesCascade(self, unit_id):
+    try:
+      self.amenities.deletePrivAmenitiesCascade(unit_id)
+    except (Exception, pgerror) as e:
+      db.rollback()
+      logger.exception(e)
+      return jsonify('Error Occured'), 400
 
   def checkAmenities(self, identifier):
     daoAmenities = self.amenities.getById(identifier)

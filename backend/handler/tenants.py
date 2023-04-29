@@ -1,5 +1,7 @@
 from flask import jsonify
 from psycopg2 import Error as pgerror
+#from backend.handler.leases import LeaseHandler
+#from backend.handler.requests import RequestHandler
 from util.config import db, logger, tenant_guard as guard
 from dao.tenants import Tenants
 import flask_praetorian as praetorian
@@ -8,6 +10,8 @@ import re
 class TenantHandler:
   def __init__(self):
     self.tenants = Tenants()
+    #self.request = RequestHandler()
+    #self.lease = LeaseHandler()
 
   def getAll(self):
     try:
@@ -27,7 +31,7 @@ class TenantHandler:
       if daoTenant:
         return jsonify(daoTenant)
       else:
-        return jsonify('Landlord Not Found')
+        return jsonify('Tenant Not Found')
     except (Exception, pgerror) as e:
       db.rollback()
       logger.exception(e)
@@ -94,6 +98,24 @@ class TenantHandler:
       else:
         # returns reason why input was invalid
         return jsonify(reason), 400
+    except (Exception, pgerror) as e:
+      db.rollback()
+      logger.exception(e)
+      return jsonify('Error Occured'), 400
+  
+  @praetorian.auth_required
+  def deleteTenant(self):
+    try:
+      tenant_id = praetorian.current_user_id()
+      deletedTenant = self.tenants.deleteTenant(tenant_id)
+      # deletedRequest = self.request.deleteRequestCascade(tenant_id)
+      # deletedLease = self.lease.deleteLeaseCascade(tenant_id)
+      if deletedTenant:
+        db.commit()
+        return jsonify(deletedTenant)
+      else:
+        db.rollback()
+        return jsonify('Error deleting Tenant'), 400
     except (Exception, pgerror) as e:
       db.rollback()
       logger.exception(e)

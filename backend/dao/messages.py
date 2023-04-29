@@ -69,3 +69,11 @@ class Messages:
     db.commit()
     cursor.close()
     return res
+  
+  def deleteMessage(self, identifier):
+    query = 'UPDATE messages SET deleted_flag = true WHERE message_id  = %s AND deleted_flag = false RETURNING *'
+    cursor = db.cursor(cursor_factory=RealDictCursor)
+    cursor.execute(query %(identifier))
+    res = cursor.fetchall()
+    cursor.close()
+    return res
