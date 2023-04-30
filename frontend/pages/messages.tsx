@@ -77,32 +77,34 @@ const Messages: React.FC<Props> = ({ }) => {
 
         if (localStorage.getItem('data') != null) {
             setStorage(JSON.parse(localStorage.getItem('data')!))
-            var endpoint = 'http://127.0.0.1:5000/api/tenants/refresh'
-            if (JSON.parse(localStorage.getItem('data')!).isLandlord) {
-                endpoint = 'http://127.0.0.1:5000/api/landlords/refresh'
+            if (!(storage.id == 0)) {
+                var endpoint = 'http://127.0.0.1:5000/api/tenants/refresh'
+                if (JSON.parse(localStorage.getItem('data')!).isLandlord) {
+                    endpoint = 'http://127.0.0.1:5000/api/landlords/refresh'
 
-            }
-            axios({ method: 'get', url: endpoint, headers: { Authorization: `Bearer ${JSON.parse(localStorage.getItem('data')!).token}` } })
-                .then(res => {
-                    return res.data
-                    //const obj = {'token':res.data,}
-                    //localStorage.setItem('data',res.data)
-                })
-                .then(result => {
-                    const obj = { 'token': result['access_token'], 'isLandlord': storage?.isLandlord, 'id': storage?.id };
-                    const stringOBJ = JSON.stringify(obj);
-                    localStorage.setItem('data', stringOBJ);
-                })
-                .then(() => {
-                    console.log(localStorage.getItem('data')!)
-                    setStorage(JSON.parse(localStorage.getItem('data')!))
                 }
+                axios({ method: 'get', url: endpoint, headers: { Authorization: `Bearer ${JSON.parse(localStorage.getItem('data')!).token}` } })
+                    .then(res => {
+                        return res.data
+                        //const obj = {'token':res.data,}
+                        //localStorage.setItem('data',res.data)
+                    })
+                    .then(result => {
+                        const obj = { 'token': result['access_token'], 'isLandlord': storage?.isLandlord, 'id': storage?.id };
+                        const stringOBJ = JSON.stringify(obj);
+                        localStorage.setItem('data', stringOBJ);
+                    })
+                    .then(() => {
+                        console.log(localStorage.getItem('data')!)
+                        setStorage(JSON.parse(localStorage.getItem('data')!))
+                    }
 
-                )
-                .catch(err => {
-                    //localStorage.removeItem('data');
-                    console.error(err);
-                })
+                    )
+                    .catch(err => {
+                        //localStorage.removeItem('data');
+                        console.error(err);
+                    })
+            }
         } else {
             router.replace('/')
         }
@@ -121,7 +123,7 @@ const Messages: React.FC<Props> = ({ }) => {
 
     const handleSubmit = async (event: any) => {
         event.preventDefault();
-        
+
         var data = {}
         var endpoint = 'http://127.0.0.1:5000/api/tenant/sends/message';
         if (storage.isLandlord) {
@@ -177,7 +179,7 @@ const Messages: React.FC<Props> = ({ }) => {
             Authorization: `Bearer ${storage?.token}`
         }
     }).then(res => {
-        
+
 
         return res.json()
     }));
@@ -328,7 +330,7 @@ const Messages: React.FC<Props> = ({ }) => {
                             <form onSubmit={handleSubmit} className=' form-control flex flex-row justify-center my-2'>
                                 <input type="text" id='msg' name='msg' placeholder="Type here" className="input flex-grow mx-4 ring-primary ring-2 ring-offset-2 focus:outline-none focus:border-0 focus:ring-primary focus:ring-2 focus:ring-offset-2" required />
 
-                                <button disabled={selected<=0} type='submit' className="btn btn-circle  btn-primary border-2 mr-4">
+                                <button disabled={selected <= 0} type='submit' className="btn btn-circle  btn-primary border-2 mr-4">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6 stroke-white ">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
                                     </svg>
