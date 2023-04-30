@@ -4,7 +4,6 @@ import Conversation from '@/components/Conversation';
 import Image from 'next/image';
 import { GetServerSideProps } from 'next'
 import axios from 'axios';
-import { Container } from '@nextui-org/react';
 import Link from 'next/link';
 
 
