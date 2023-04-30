@@ -84,8 +84,9 @@ const AccommodationList: React.FC<Props> = ({  }) => {
 
 
     return (
-        <div className='flex flex-nowrap gap-4  pt-4 pr-4 pb-4'>
-            {acms.map((msg: Message) => (
+        <div className='flex  gap-4  pt-4 pr-4 pb-4'>
+            {acms.slice(0,4).map((msg: Message) => (
+                
 				<Listing title='Bosque 1' address='calle bosque' features='1 bed' price='$200/month' href='/' />
 
             ))}
