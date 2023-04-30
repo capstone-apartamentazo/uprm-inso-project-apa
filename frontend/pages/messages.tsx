@@ -217,9 +217,9 @@ const Messages: React.FC<Props> = ({ }) => {
                                         </h1>
                                     </div>
                                 </div>
-                                <div className='bg-primary row-span-4'>
+                                <div className=''>
                                     <div>
-                                        <h1>Your mailbox is empty</h1>
+                                        <h1 className='mx-4 mt-2 text-lg font-medium'>Your mailbox is empty</h1>
 
                                     </div>
 
@@ -227,7 +227,7 @@ const Messages: React.FC<Props> = ({ }) => {
                                 </div>
                             </div>
 
-                            <div className='grid grid-rows-auto  w-4/6 h-128 mr-6 gap-1 ring-1 ring-stone-200 rounded-lg overflow-hidden shadow-lg'>
+                            <div className='grid grid-rows-auto relative w-4/6 h-128 mr-6 gap-1 ring-1 ring-stone-200 rounded-lg overflow-hidden shadow-lg opacity-50'>
                                 <div>
                                     <div className='flex flex-row flex-nowrap h-16 bg-white   drop-shadow-md items-center '>
 
@@ -248,16 +248,16 @@ const Messages: React.FC<Props> = ({ }) => {
                                 </div>
 
 
-                                <div className='flex flex-row justify-center my-3'>
+                                <div className='absolute inset-x-0 bottom-0'>
+                                    <form onSubmit={handleSubmit} className=' form-control flex flex-row justify-center my-3'>
+                                        <input readOnly maxLength={255} type="text" id='msg' name='msg' placeholder="" className="input flex-grow mx-4 ring-primary ring-2 ring-offset-2 focus:outline-none focus:border-0 focus:ring-primary focus:ring-2 focus:ring-offset-2" required />
 
-                                    <input type="text" placeholder="Type here" className="input disabled flex-grow mx-4 ring-primary ring-2 ring-offset-2 focus:outline-none focus:border-0 focus:ring-primary focus:ring-2 focus:ring-offset-2" />
-
-                                    <button className="btn btn-circle disabled  btn-primary border-2 mr-4">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6 stroke-white ">
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
-                                        </svg>
-                                    </button>
-
+                                        <button   type='submit' className="btn btn-circle  btn-primary border-2 mr-4 opacity-50">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6 stroke-white ">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+                                            </svg>
+                                        </button>
+                                    </form>
 
 
                                 </div>
@@ -303,7 +303,7 @@ const Messages: React.FC<Props> = ({ }) => {
                         </div>
                     </div>
 
-                    <div className='grid grid-rows-auto relative w-4/6 h-128 mr-6 gap-1 ring-1 ring-stone-200 rounded-lg overflow-hidden shadow-lg'>
+                    <div className={(selected<1) ?'grid grid-rows-auto relative w-4/6 h-128 mr-6 gap-1 ring-1 ring-stone-200 rounded-lg overflow-hidden shadow-lg opacity-50' :'grid grid-rows-auto relative w-4/6 h-128 mr-6 gap-1 ring-1 ring-stone-200 rounded-lg overflow-hidden shadow-lg' }>
                         <div className='absolute inset-x-0 top-0'>
                             <div className='flex flex-row flex-nowrap h-16 bg-white   drop-shadow-md items-center '>
 
@@ -314,7 +314,7 @@ const Messages: React.FC<Props> = ({ }) => {
                                 </div>
 
 
-                                <h1 className='font-semibold text-xl'>{'UserName'}</h1>
+                                <h1 className='font-semibold text-xl'>{(selected<1)?"":'UserName'}</h1>
                             </div>
                         </div>
 
@@ -327,9 +327,9 @@ const Messages: React.FC<Props> = ({ }) => {
 
                         <div className='absolute inset-x-0 bottom-0'>
                             <form onSubmit={handleSubmit} className=' form-control flex flex-row justify-center my-2'>
-                                <input maxLength={255} type="text" id='msg' name='msg' placeholder="Type here" className="input flex-grow mx-4 ring-primary ring-2 ring-offset-2 focus:outline-none focus:border-0 focus:ring-primary focus:ring-2 focus:ring-offset-2" required />
+                                <input readOnly={selected<1} maxLength={255} type="text" id='msg' name='msg' placeholder={(selected<1)?"":"Type here"} className="input flex-grow mx-4 ring-primary ring-2 ring-offset-2 focus:outline-none focus:border-0 focus:ring-primary focus:ring-2 focus:ring-offset-2" required />
 
-                                <button disabled={selected <= 0} type='submit' className="btn btn-circle  btn-primary border-2 mr-4">
+                                <button  type='submit' className={(selected<1)?"btn btn-circle  btn-primary border-2 mr-4 opacity-50": "btn btn-circle  btn-primary border-2 mr-4"}>
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6 stroke-white ">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
                                     </svg>

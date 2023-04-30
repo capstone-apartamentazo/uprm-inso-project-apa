@@ -12,7 +12,7 @@ const { name } = publicRuntimeConfig.site;
 const Login = () => {
 
 	const router = useRouter()
-	const [logError,setLogError] = useState(false)
+	const [logError, setLogError] = useState(false)
 
 
 	const handleSubmit = async (event: any) => {
@@ -77,8 +77,8 @@ const Login = () => {
 				// localStorage.setItem('id', 1)
 				//console.log()
 				//console.log(JSON.parse(localStorage.getItem('data')!).token === ("Bearer "+result['access_token']));
-				alert(`Logged in success`);
-				router.replace('/');
+				//alert(`Logged in success`);
+				router.replace('/#');
 				router.reload();
 
 
@@ -92,7 +92,8 @@ const Login = () => {
 
 	};
 	return (
-		<div className='text-center '>
+		<div className='text-center'>
+			
 
 			<label id='login-modal' className='modal cursor-pointer'>
 				<label className='modal-box relative flex' htmlFor=''>
@@ -124,7 +125,7 @@ const Login = () => {
 							</div>
 							<div className='flex-col'>
 								<h1 hidden={!logError} className='mb-4 text-red-600'>Email or password did not match</h1>
-								<button onClick={()=>setLogError(false)} type='submit' className='btn w-full text-white bg-accent hover:bg-accent'>
+								<button onClick={() => setLogError(false)} type='submit' className='btn w-full text-white bg-accent hover:bg-accent'>
 									Log In
 								</button>
 							</div>

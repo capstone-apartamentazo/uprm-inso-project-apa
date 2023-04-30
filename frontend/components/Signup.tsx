@@ -2,8 +2,12 @@ import getConfig from 'next/config';
 
 const { publicRuntimeConfig } = getConfig();
 const { name } = publicRuntimeConfig.site;
+import { useRouter } from 'next/router'
+
 
 const Signup = () => {
+	const router = useRouter()
+
 	const handleSubmit = async (event: any) => {
 		event.preventDefault();
 		if (event.target.password.value == event.target.cpassword.value) {
@@ -37,9 +41,12 @@ const Signup = () => {
 						//alert("first error")
 						throw new Error('Signup unsuccessful');
 					} else {
-						alert('Signup Successful');
 						return response.json();
 					}
+					
+				}).then((res)=>{
+					router.replace('/#login-modal');
+					router.reload();
 				})
 				.catch((error) => {
 					console.log(error);
