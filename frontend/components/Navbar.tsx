@@ -7,6 +7,15 @@ import { sign } from 'crypto';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router'
 
+import jwt from 'jwt-decode';
+import Cookies from 'universal-cookie';
+import { Storage } from 'Storage';
+import { Token } from 'Token';
+
+
+
+
+
 
 export default function Navbar(path: any) {
 	const router = useRouter()
@@ -16,7 +25,8 @@ export default function Navbar(path: any) {
 	const [navBar, setNavBar] = useState(<></>)
 
 	const logout = async () => {
-		localStorage.removeItem('data');
+		cookies.remove('jwt_authorization')
+		//localStorage.removeItem('data');
 		router.replace('/');
 		router.reload();
 
@@ -110,16 +120,28 @@ export default function Navbar(path: any) {
 	/* bg-opacity-30 backdrop-filter backdrop-blur-lg */
 
 	
-	var data: {}
+	const [storage,setStorage] = useState<Storage>({'token':null,'id':null,'isLandlord':null})
+
+	const cookies = new Cookies()
 	useEffect(() => {
-		if(localStorage.getItem('data') != null){
-			data = localStorage.getItem('data')!
+		try{
+			const token = cookies.get('jwt_authorization')
+			const decoded = jwt<Token>(token)
+			setStorage({'token':token,'id':decoded['id'],'isLandlord':((decoded['rls']=="landlord")?true:false)})
 			setNavBar(signedInBar);
-			
-		}else{
+		}catch (err){
 			setNavBar(defaultBar);
-			
+			console.log('No tokens found in cookies')
 		}
+
+		// if(localStorage.getItem('data') != null){
+		// 	data = localStorage.getItem('data')!
+		// 	setNavBar(signedInBar);
+			
+		// }else{
+		// 	setNavBar(defaultBar);
+			
+		// }
 		
 	}, [])
 

@@ -1,26 +1,16 @@
 import React from 'react'
 import { useEffect, useState } from 'react'
-
-interface Message {
-    "deleted_flag": boolean,
-    "landlord_id": number,
-    "landlord_sent_msg": boolean,
-    "message_id": number,
-    "msg_content": string,
-    "msg_read": boolean,
-    "msg_send_date": string,
-    "tenant_id": number
-}
+import { Msg } from 'Msg'
 
 
 type Props = {
-    message: Message,
-    isLandlord: boolean
+    message: Msg,
+    isLandlord: boolean | null
 }
 
 
 const Message: React.FC<Props> = ({ message, isLandlord }) => {
-    const [iread, setRead] = useState(message.msg_read);
+    //const [iread, setRead] = useState(message.msg_read);
     var iSent = ((isLandlord&&message.landlord_sent_msg)||(!(isLandlord||message.landlord_sent_msg)))
 
 

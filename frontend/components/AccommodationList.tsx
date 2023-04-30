@@ -2,29 +2,14 @@ import React from 'react'
 import { useEffect, useState } from 'react'
 import useSWR, { mutate } from 'swr';
 import MsgComp from '@/components/Message';
-import Listing from '@/components/Accommodation';
+import Accommodation from '@/components/Accommodation';
 import Link from 'next/link';
+import { Storage } from 'Storage';
 
-
-
-
-
-interface Message {
-    "deleted_flag": boolean,
-    "landlord_id": number,
-    "landlord_sent_msg": boolean,
-    "message_id": number,
-    "msg_content": string,
-    "msg_read": boolean,
-    "msg_send_date": string,
-    "tenant_id": number
-}
-interface Storage {
-    token: string,
-    isLandlord: boolean,
-    id: number
-}
-
+import jwt from 'jwt-decode';
+import Cookies from 'universal-cookie';
+import { Token } from 'Token';
+import { Accm } from 'Accm';
 
 type Props = {
 
@@ -33,21 +18,24 @@ type Props = {
 
 
 const AccommodationList: React.FC<Props> = ({  }) => {
-    const [storage, setStorage] = useState<Storage>({ token: '', isLandlord: false, id: 0 })
+    const [storage, setStorage] = useState<Storage>({ token: null, isLandlord: false, id: null })
     const [logged, setLogged] = useState(false)
-
+    const cookies = new Cookies()
     useEffect(() => {
-        if (localStorage.getItem('data') != null) {
-            setStorage(JSON.parse(localStorage.getItem('data')!))
-            setLogged(true)
-        }else{
+        try{
+            const token = cookies.get('jwt_authorization')
+			const decoded = jwt<Token>(token)
+			setStorage({'token':token,'id':decoded['id'],'isLandlord':((decoded['rls']=="landlord")?true:false)})
+            setLogged(true) 
+        }catch(err){
             setLogged(false)
+
         }
     }, [])
 
     
 
-    const { data: acms, error: acmsError, isLoading: isLoadingAcms } = useSWR((storage?.token != '') ? `http://127.0.0.1:5000/api/accommodations/landlord/${storage.id}` : null, (url: string) => fetch(url, {
+    const { data: acms, error: acmsError, isLoading: isLoadingAcms } = useSWR((storage?.token != null) ? `http://127.0.0.1:5000/api/accommodations/landlord/${storage.id}` : null, (url: string) => fetch(url, {
         headers: {
             Authorization: `Bearer ${storage?.token}`
         }
@@ -57,7 +45,7 @@ const AccommodationList: React.FC<Props> = ({  }) => {
         res.json()
     ));
 
-    if(!logged || storage?.token == ''){
+    if(!logged || storage?.token == null){
         return <h1>User logged out</h1>
     }
 
@@ -85,9 +73,9 @@ const AccommodationList: React.FC<Props> = ({  }) => {
 
     return (
         <div className='flex  gap-4  pt-4 pr-4 pb-4'>
-            {acms.slice(0,4).map((msg: Message) => (
+            {acms.slice(0,4).map((acm: Accm ) => (
                 
-				<Listing title='Bosque 1' address='calle bosque' features='1 bed' price='$200/month' href='/' />
+				<Accommodation title='Bosque 1' address='calle bosque' features='1 bed' price='$200/month' href='/' />
 
             ))}
             <Link href='/' className=' flex flex-col bg-white justify-center  w-40 rounded-md  shadow-md ring-1 ring-stone-200 transition ease-in-out delay-50 hover:-translate-y-1 hover:scale-10 duration-200 cursor-pointer'>

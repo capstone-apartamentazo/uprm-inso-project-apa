@@ -1,7 +1,6 @@
 import Layout from '@/components/Layout';
 import Listing from '@/components/Accommodation';
 import Conversation from '@/components/Conversation';
-// import MessageC from '@/components/Message';
 import Image from 'next/image';
 import { GetServerSideProps } from 'next'
 import axios from 'axios';
@@ -11,102 +10,63 @@ import MessageList from '@/components/MessageList';
 import ConversationList from '@/components/ConversationList';
 import { useRouter } from 'next/router'
 
+import jwt from 'jwt-decode';
+import Cookies from 'universal-cookie';
+import { Token } from 'Token';
+import { Storage } from 'Storage';
+import { Msg } from 'Msg';
 
 
-
-
-interface User {
-    "deleted_flag": false
-
-}
-interface Landlord extends User {
-    "landlord_email": string,
-    "landlord_id": number,
-    "landlord_name": string,
-    "landlord_password": string,
-    "landlord_phone": string,
-    "landlord_rating": string
-}
-
-interface Tenant extends User {
-    "tenant_email": string,
-    "tenant_id": number,
-    "tenant_name": string,
-    "tenant_password": string,
-    "tenant_phone": string,
-    "tenant_rating": string
-}
-
-
-interface Message {
-    "deleted_flag": boolean,
-    "landlord_id": number,
-    "landlord_sent_msg": boolean,
-    "message_id": number,
-    "msg_content": string,
-    "msg_read": boolean,
-    "msg_send_date": string,
-    "tenant_id": number
-}
 
 interface Props {
-    messages: Message[]
-}
-
-
-interface Storage {
-    token: string,
-    isLandlord: boolean,
-    id: number
+    messages: Msg[]
 }
 
 const Messages: React.FC<Props> = ({ }) => {
-    // const [conversations, setConversations] = useState<Message[]>([])
-    // var data: data = { token: '', isLandlord: false, id: 0 }
-    // const [user, setUser] = useState<User>()
-    // const [messages, setMessages] = useState<Message[]>([])
-    // const [currConvIds, setCurrConvIds] = useState({ 'tenant_id': 1, 'landlord_id': 1 })
-    //var currentConvoIds = { 'tenant_id': 0, 'landlord_id': 0 };
-    const [storage, setStorage] = useState<Storage>({ token: '', isLandlord: false, id: 0 })
+    const [storage, setStorage] = useState<Storage>({ token: null, isLandlord: null, id: null })
     const [selected, setSelected] = useState(0)
     const router = useRouter()
+    const cookies = new Cookies()
 
     useEffect(() => {
 
+        try{
+            const token = cookies.get('jwt_authorization')
+			const decoded = jwt<Token>(token)
+			setStorage({'token':token,'id':decoded['id'],'isLandlord':((decoded['rls']=="landlord")?true:false)})
+			var endpoint = 'http://127.0.0.1:5000/api/tenants/refresh'
+            if (storage.isLandlord) {
+                endpoint = 'http://127.0.0.1:5000/api/landlords/refresh'
 
-        if (localStorage.getItem('data') != null) {
-            setStorage(JSON.parse(localStorage.getItem('data')!))
-            if (!(storage.id == 0)) {
-                var endpoint = 'http://127.0.0.1:5000/api/tenants/refresh'
-                if (JSON.parse(localStorage.getItem('data')!).isLandlord) {
-                    endpoint = 'http://127.0.0.1:5000/api/landlords/refresh'
-
-                }
-                axios({ method: 'get', url: endpoint, headers: { Authorization: `Bearer ${JSON.parse(localStorage.getItem('data')!).token}` } })
+            }
+            axios({ method: 'get', url: endpoint, headers: { Authorization: `Bearer ${token}` } })
                     .then(res => {
                         return res.data
                         //const obj = {'token':res.data,}
                         //localStorage.setItem('data',res.data)
                     })
                     .then(result => {
-                        const obj = { 'token': result['access_token'], 'isLandlord': storage?.isLandlord, 'id': storage?.id };
-                        const stringOBJ = JSON.stringify(obj);
-                        localStorage.setItem('data', stringOBJ);
-                    })
-                    .then(() => {
-                        console.log(localStorage.getItem('data')!)
-                        setStorage(JSON.parse(localStorage.getItem('data')!))
-                    }
+                        const newToken = result['access_token']
+                        const newDecoded = jwt<Token>(newToken)
 
-                    )
+                        cookies.set("jwt_authorization", result['access_token'], {
+                            expires: new Date(newDecoded.exp*1000),
+                        })
+                        setStorage({'token':newToken,'id':newDecoded['id'],'isLandlord':((newDecoded['rls']=="landlord")?true:false)})
+                    })
                     .catch(err => {
                         //localStorage.removeItem('data');
+                        console.log('in')
                         console.error(err);
                     })
-            }
-        } else {
+        }catch(err){
             router.replace('/')
+            console.log('out')
+            console.error(err)
         }
+
+
+        
     }, [])
 
     function handleSelection(landlord_id: number, tenant_id: number) {
@@ -172,13 +132,12 @@ const Messages: React.FC<Props> = ({ }) => {
 
     }
 
-
-    const { data: convos, error: convoError, isLoading: isLoadingConvo } = useSWR((storage.token != '') ? 'http://127.0.0.1:5000/api/messages' : null, url => fetch(url, {
+    
+    const { data: convos, error: convoError, isLoading: isLoadingConvo } = useSWR((storage.token != null) ? 'http://127.0.0.1:5000/api/messages' : null, url => fetch(url, {
         headers: {
             Authorization: `Bearer ${storage?.token}`
         }
     }).then(res => {
-
 
         return res.json()
     }));
@@ -291,7 +250,7 @@ const Messages: React.FC<Props> = ({ }) => {
 
                             {
 
-                                convos.map((message: Message) => (
+                                convos.map((message: Msg) => (
 
                                     <Conversation onClick={() => handleSelection(message.landlord_id, message.tenant_id)} key={message.message_id} msg={message} isLandlord={storage.isLandlord}></Conversation>
 

@@ -9,18 +9,17 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router'
 import useSWR, { mutate } from 'swr';
 
+import jwt from 'jwt-decode';
+import Cookies from 'universal-cookie';
+import { Token } from 'Token';
+import { Storage } from 'Storage';
 
 
-
-interface Storage {
-    token: string,
-    isLandlord: boolean,
-    id: number
-}
 
 const Personal = () => {
     const [storage, setStorage] = useState<Storage>({ token: '', isLandlord: false, id: 0 })
     const router = useRouter()
+    const cookies = new Cookies()
 
     const [nameEdit, setNameEdit] = useState(false);
     const [phoneEdit, setPhoneEdit] = useState(false);
@@ -28,44 +27,45 @@ const Personal = () => {
     useEffect(() => {
 
 
-        if (localStorage.getItem('data') != null) {
-            setStorage(JSON.parse(localStorage.getItem('data')!))
-            if (!(storage.id == 0)) {
-                var endpoint = 'http://127.0.0.1:5000/api/tenants/refresh'
-                if (JSON.parse(localStorage.getItem('data')!).isLandlord) {
-                    endpoint = 'http://127.0.0.1:5000/api/landlords/refresh'
+        try{
+            const token = cookies.get('jwt_authorization')
+			const decoded = jwt<Token>(token)
+			setStorage({'token':token,'id':decoded['id'],'isLandlord':((decoded['rls']=="landlord")?true:false)})
+			var endpoint = 'http://127.0.0.1:5000/api/tenants/refresh'
+            if (storage.isLandlord) {
+                endpoint = 'http://127.0.0.1:5000/api/landlords/refresh'
 
-                }
-                axios({ method: 'get', url: endpoint, headers: { Authorization: `Bearer ${JSON.parse(localStorage.getItem('data')!).token}` } })
+            }
+            axios({ method: 'get', url: endpoint, headers: { Authorization: `Bearer ${token}` } })
                     .then(res => {
                         return res.data
                         //const obj = {'token':res.data,}
                         //localStorage.setItem('data',res.data)
                     })
                     .then(result => {
-                        const obj = { 'token': result['access_token'], 'isLandlord': storage?.isLandlord, 'id': storage?.id };
-                        const stringOBJ = JSON.stringify(obj);
-                        localStorage.setItem('data', stringOBJ);
-                    })
-                    .then(() => {
-                        console.log(localStorage.getItem('data')!)
-                        setStorage(JSON.parse(localStorage.getItem('data')!))
-                    }
+                        const newToken = result['access_token']
+                        const newDecoded = jwt<Token>(newToken)
 
-                    )
+                        cookies.set("jwt_authorization", result['access_token'], {
+                            expires: new Date(newDecoded.exp*1000),
+                        })
+                        setStorage({'token':newToken,'id':newDecoded['id'],'isLandlord':((newDecoded['rls']=="landlord")?true:false)})
+                    })
                     .catch(err => {
                         //localStorage.removeItem('data');
+                        console.log('in')
                         console.error(err);
                     })
-            }
-        } else {
+        }catch(err){
             router.replace('/')
+            console.log('out')
+            console.error(err)
         }
     }, [])
 
     
 
-    const { data: user, error: userError, isLoading: isLoadingUser } = useSWR((storage.token != '') ? (storage.isLandlord ? `http://127.0.0.1:5000/api/landlords/${storage.id}` : `http://127.0.0.1:5000/api/tenants/${storage.id}`) : null, (url: any) => fetch(url, {
+    const { data: user, error: userError, isLoading: isLoadingUser } = useSWR((storage.token != null) ? (storage.isLandlord ? `http://127.0.0.1:5000/api/landlords/${storage.id}` : `http://127.0.0.1:5000/api/tenants/${storage.id}`) : null, (url: any) => fetch(url, {
         headers: {
             Authorization: `Bearer ${storage?.token}`
         }
@@ -81,7 +81,7 @@ const Personal = () => {
     if (isLoadingUser) {
         return (<h1>Loading...</h1>)
     }
-    if (storage.id == 0) {
+    if (storage.id == null) {
         return (
             <div>
                 <h1>Error found</h1>

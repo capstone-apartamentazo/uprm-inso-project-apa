@@ -4,6 +4,10 @@ import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react';
 import { resolve } from 'path';
 
+import jwt from 'jwt-decode';
+import Cookies from 'universal-cookie';
+import { Token } from 'Token';
+
 
 const { publicRuntimeConfig } = getConfig();
 const { name } = publicRuntimeConfig.site;
@@ -12,6 +16,7 @@ const { name } = publicRuntimeConfig.site;
 const Login = () => {
 
 	const router = useRouter()
+	const cookies = new Cookies()
 	const [logError, setLogError] = useState(false)
 
 
@@ -68,9 +73,13 @@ const Login = () => {
 
 			.then(result => {
 				//alert(result);
-				const objc = { "token": (result['access_token']), "isLandlord": isLandlord, 'id': (isLandlord ? result['landlord_id'] : result['tenant_id']) };
-				const stringified = JSON.stringify(objc)
-				localStorage.setItem("data", stringified)
+				const decoded = jwt<Token>(result['access_token'])
+				cookies.set("jwt_authorization", result['access_token'], {
+					expires: new Date(decoded.exp*1000),
+				})
+				// const objc = { "token": (result['access_token']), "isLandlord": isLandlord, 'id': (isLandlord ? result['landlord_id'] : result['tenant_id']) };
+				// const stringified = JSON.stringify(objc)
+				// localStorage.setItem("data", stringified)
 
 				// localStorage.setItem('token', result["access_token"]);
 				// localStorage.setItem('type', data.type)

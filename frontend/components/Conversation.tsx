@@ -1,16 +1,7 @@
 import React from 'react'
 import { useEffect, useState } from 'react'
+import { Msg } from 'Msg'
 
-interface Message {
-    "deleted_flag": boolean,
-    "landlord_id": number,
-    "landlord_sent_msg": boolean,
-    "message_id": number,
-    "msg_content": string,
-    "msg_read": boolean,
-    "msg_send_date": string,
-    "tenant_id": number
-}
 
 
 type Props = {
@@ -20,8 +11,8 @@ type Props = {
     // date: string;
     // read: boolean;
     // onClick: any;
-    msg: Message,
-    isLandlord:boolean,
+    msg: Msg,
+    isLandlord:boolean|null,
     onClick:any
     
     
