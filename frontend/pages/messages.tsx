@@ -71,9 +71,10 @@ const Messages: React.FC<Props> = ({ }) => {
 
         
     }, [])
-
-    function handleSelection(landlord_id: number, tenant_id: number) {
+    const [selectedIndex, setSelectedIndex] = useState(-1)
+    function handleSelection(landlord_id: number, tenant_id: number, index:number) {
         //console.log('test')
+        setSelectedIndex(index)
         if (storage?.isLandlord) {
             //console.log(storage.isLandlord);
             setSelected(tenant_id);
@@ -253,9 +254,9 @@ const Messages: React.FC<Props> = ({ }) => {
 
                             {
 
-                                convos.map((message: Msg) => (
+                                convos.map((message: Msg, index: number) => (
 
-                                    <Conversation onClick={() => handleSelection(message.landlord_id, message.tenant_id)} key={message.message_id} msg={message} isLandlord={storage.isLandlord}></Conversation>
+                                    <Conversation onClick={() => handleSelection(message.landlord_id, message.tenant_id, index)} key={message.message_id} msg={message} isLandlord={storage.isLandlord}></Conversation>
 
 
 
@@ -265,7 +266,7 @@ const Messages: React.FC<Props> = ({ }) => {
                         </div>
                     </div>
 
-                    <div className={(selected<1) ?'grid grid-rows-auto relative w-4/6 h-128 mr-6 gap-1 ring-1 ring-stone-200 rounded-lg overflow-hidden shadow-lg opacity-50' :'grid grid-rows-auto relative w-4/6 h-128 mr-6 gap-1 ring-1 ring-stone-200 rounded-lg overflow-hidden shadow-lg' }>
+                    <div className={(selectedIndex<0) ?'grid grid-rows-auto relative w-4/6 h-128 mr-6 gap-1 ring-1 ring-stone-200 rounded-lg overflow-hidden shadow-lg opacity-50' :'grid grid-rows-auto relative w-4/6 h-128 mr-6 gap-1 ring-1 ring-stone-200 rounded-lg overflow-hidden shadow-lg' }>
                         <div className='absolute inset-x-0 top-0'>
                             <div className='flex flex-row flex-nowrap h-16 bg-white   drop-shadow-md items-center '>
 
@@ -276,7 +277,7 @@ const Messages: React.FC<Props> = ({ }) => {
                                 </div>
 
 
-                                <h1 className='font-semibold text-xl'>{(selected<1)?"":'UserName'}</h1>
+                                <h1 className='font-semibold text-xl'>{(selectedIndex<0)?"":(storage.isLandlord ? convos.at(selectedIndex).tenant_name:convos.at(selectedIndex).landlord_name)}</h1>
                             </div>
                         </div>
 
@@ -289,7 +290,7 @@ const Messages: React.FC<Props> = ({ }) => {
 
                         <div className='absolute inset-x-0 bottom-0'>
                             <form onSubmit={handleSubmit} className=' form-control flex flex-row justify-center my-2'>
-                                <input readOnly={selected<1} maxLength={255} type="text" id='msg' name='msg' placeholder={(selected<1)?"":"Type here"} className="input flex-grow mx-4 ring-primary ring-2 ring-offset-2 focus:outline-none focus:border-0 focus:ring-primary focus:ring-2 focus:ring-offset-2" required />
+                                <input readOnly={selectedIndex<0} maxLength={255} type="text" id='msg' name='msg' placeholder={(selectedIndex<0)?"":"Type here"} className="input flex-grow mx-4 ring-primary ring-2 ring-offset-2 focus:outline-none focus:border-0 focus:ring-primary focus:ring-2 focus:ring-offset-2" required />
 
                                 <button  type='submit' className={(selected<1)?"btn btn-circle  btn-primary border-2 mr-4 opacity-50": "btn btn-circle  btn-primary border-2 mr-4"}>
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6 stroke-white ">
