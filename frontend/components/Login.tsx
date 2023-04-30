@@ -1,7 +1,7 @@
 import getConfig from 'next/config';
 import { type } from 'os';
 import { useRouter } from 'next/router'
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { resolve } from 'path';
 
 
@@ -12,6 +12,7 @@ const { name } = publicRuntimeConfig.site;
 const Login = () => {
 
 	const router = useRouter()
+	const [logError,setLogError] = useState(false)
 
 
 	const handleSubmit = async (event: any) => {
@@ -19,30 +20,30 @@ const Login = () => {
 
 		var data = {}
 		const isLandlord = event.target.landlord.checked
-		
 
-		
+
+
 		//console.log(data);
-		
+
 		//console.log(JSONdata);
 
 		data = {
 			"tenant_email": event.target.email.value,
 			"tenant_password": event.target.password.value,
-			
+
 		};
 
 
 		var endpoint = 'http://127.0.0.1:5000/api/tenants/login';
-		if(isLandlord){
+		if (isLandlord) {
 			endpoint = 'http://127.0.0.1:5000/api/landlords/login';
 			data = {
 				"landlord_email": event.target.email.value,
 				"landlord_password": event.target.password.value,
-				
+
 			};
 		}
-		
+
 		const JSONdata = JSON.stringify(data);
 
 		const options = {
@@ -67,10 +68,10 @@ const Login = () => {
 
 			.then(result => {
 				//alert(result);
-				const objc = { "token": (result['access_token']), "isLandlord": isLandlord, 'id': (isLandlord ? result['landlord_id'] : result['tenant_id'] )};
+				const objc = { "token": (result['access_token']), "isLandlord": isLandlord, 'id': (isLandlord ? result['landlord_id'] : result['tenant_id']) };
 				const stringified = JSON.stringify(objc)
 				localStorage.setItem("data", stringified)
-				
+
 				// localStorage.setItem('token', result["access_token"]);
 				// localStorage.setItem('type', data.type)
 				// localStorage.setItem('id', 1)
@@ -84,8 +85,9 @@ const Login = () => {
 
 			})
 			.catch((error) => {
+				setLogError(true)
 				console.log(error);
-				alert(error);
+				//alert(error);
 			});
 
 	};
@@ -111,7 +113,7 @@ const Login = () => {
 							<div className='text-left'>
 								<div className='flex-row pb-5'>Account Type</div>
 								<div className='flex-row text-left justify-start'>
-									
+
 									<div className='mb-[0.125rem] mr-4 inline-block min-h-[1.5rem]  hover:cursor-pointer'>
 										<input type='checkbox' name='checkbox' className='hover:cursor-pointer  text-accent bg-gray-200 border-gray-200 focus:accent' id='landlord' value='landlord' />
 										<label className='mt-px inline-block pl-2 hover:cursor-pointer' htmlFor='landlord'>
@@ -120,10 +122,13 @@ const Login = () => {
 									</div>
 								</div>
 							</div>
+							<div className='flex-col'>
+								<h1 hidden={!logError} className='mb-4 text-red-600'>Email or password did not match</h1>
+								<button onClick={()=>setLogError(false)} type='submit' className='btn w-full text-white bg-accent hover:bg-accent'>
+									Log In
+								</button>
+							</div>
 
-							<button type='submit' className='btn text-white bg-accent hover:bg-accent'>
-								Log In
-							</button>
 						</form>
 						<p className='pb-16'>
 							Don't have an account?{' '}
