@@ -328,7 +328,7 @@ const Messages: React.FC<Props> = ({ }) => {
 
                         <div className='absolute inset-x-0 bottom-0'>
                             <form onSubmit={handleSubmit} className=' form-control flex flex-row justify-center my-2'>
-                                <input type="text" id='msg' name='msg' placeholder="Type here" className="input flex-grow mx-4 ring-primary ring-2 ring-offset-2 focus:outline-none focus:border-0 focus:ring-primary focus:ring-2 focus:ring-offset-2" required />
+                                <input maxLength={255} type="text" id='msg' name='msg' placeholder="Type here" className="input flex-grow mx-4 ring-primary ring-2 ring-offset-2 focus:outline-none focus:border-0 focus:ring-primary focus:ring-2 focus:ring-offset-2" required />
 
                                 <button disabled={selected <= 0} type='submit' className="btn btn-circle  btn-primary border-2 mr-4">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6 stroke-white ">
