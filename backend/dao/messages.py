@@ -45,7 +45,13 @@ class Messages:
     cursor.close()
 
   def getConversation(self, landlord, tenant):
-    query = 'SELECT * FROM messages WHERE landlord_id = %s AND tenant_id = %s ORDER BY msg_send_date'
+    query = 'SELECT message_id, landlord_id, tenant_id, msg_send_date, landlord_sent_msg, msg_content, msg_read, \
+              CASE WHEN landlord_sent_msg = true THEN landlord_name \
+              ELSE tenant_name \
+              END AS sender_name \
+            FROM messages \
+            NATURAL INNER JOIN landlords NATURAL INNER JOIN tenants \
+            WHERE landlord_id = %s AND tenant_id = %s ORDER BY msg_send_date'
     cursor = db.cursor(cursor_factory=RealDictCursor)
     cursor.execute(query, (landlord, tenant))
     res = cursor.fetchall()
@@ -67,5 +73,13 @@ class Messages:
     cursor.execute(query, (landlord, tenant, content))
     res = cursor.fetchone()
     db.commit()
+    cursor.close()
+    return res
+  
+  def deleteMessage(self, identifier):
+    query = 'UPDATE messages SET deleted_flag = true WHERE message_id  = %s AND deleted_flag = false RETURNING *'
+    cursor = db.cursor(cursor_factory=RealDictCursor)
+    cursor.execute(query %(identifier))
+    res = cursor.fetchall()
     cursor.close()
     return res

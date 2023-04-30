@@ -101,3 +101,12 @@ class MessageHandler:
       db.rollback()
       logger.exception(e)
       return jsonify('Error Occured'), 400
+    
+  @praetorian.auth_required
+  def deleteMessage(self, message_id):
+    try:
+      self.messages.deleteMessage(message_id)
+    except (Exception, pgerror) as e:
+      db.rollback()
+      logger.exception(e)
+      return jsonify('Error Occured'), 400

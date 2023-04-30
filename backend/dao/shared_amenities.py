@@ -44,7 +44,7 @@ class SharedAmenities:
     cursor.close()
     return res
 
-  def deleteSharedAmenities(self, identifier):
+  def deleteSharedAmenitiesCascade(self, identifier):
     query = 'UPDATE shared_amenities SET deleted_flag = true WHERE accm_id = %s RETURNING *'
     cursor = db.cursor(cursor_factory=RealDictCursor)
     cursor.execute(query %(identifier))

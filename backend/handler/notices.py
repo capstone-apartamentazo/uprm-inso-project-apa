@@ -79,6 +79,15 @@ class NoticeHandler:
       db.rollback()
       logger.exception(e)
       return jsonify('Error Occured'), 400
+    
+  @praetorian.auth_required
+  def deleteNoticeCascade(self, accm_id):
+    try:
+      self.notices.deleteNoticeCascade(accm_id)
+    except (Exception, pgerror) as e:
+      db.rollback()
+      logger.exception(e)
+      return jsonify('Error Occured'), 400
 
   def checkNotice(self, identifier):
     daoNotice = self.notices.getById(identifier)
