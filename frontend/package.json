@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start -p 3000"
+    "start": "next start -p $PORT"
   },
   "dependencies": {
     "@lottiefiles/lottie-player": "^1.7.1",
