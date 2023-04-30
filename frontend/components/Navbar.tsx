@@ -76,7 +76,10 @@ export default function Navbar(path: any) {
 						<Link href='/profile' className='justify-between'>Profile</Link>
 					</li>
 					<li>
-						<a onClick={logout}>Logout</a>
+						<Link href='/settings'>Settings</Link>
+					</li>
+					<li>
+						<div onClick={logout} className='cursor-pointer'>Logout</div>
 					</li>
 				</ul>
 			</div>
