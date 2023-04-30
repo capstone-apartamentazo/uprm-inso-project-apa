@@ -1,4 +1,4 @@
-from flask import request
+from flask import request,jsonify
 from util.config import app
 from handler.landlords import LandlordHandler
 from handler.tenants import TenantHandler
@@ -14,7 +14,7 @@ from handler.leases import LeaseHandler
 
 @app.route('/')
 def home():
-  return "Hello World"
+  return 'Hello World'
 
 """
 LANDLORDS
@@ -23,21 +23,30 @@ LANDLORDS
 def getAllLandlords():
   return LandlordHandler().getAll()
 
-@app.route('/api/landlords', methods=['POST'])
-def getLandlordById():
-    return LandlordHandler().getById(request.json)
+@app.route('/api/landlords/<int:u_id>', methods=['GET'])
+def getLandlordById(u_id):
+    if request.method == 'GET':
+      return LandlordHandler().getById(u_id)
+    else:
+      return jsonify(Error="Method not allowed."), 405
+    
 
-# TODO
 @app.route('/api/landlords/login', methods=['POST'])
 def loginLandlord():
   return LandlordHandler().login(request.json)
 
-# TODO add restrictions when creating user
+@app.route('/api/landlords/protected')
+def protectedLandlord():
+  return LandlordHandler().protected()
+
+@app.route('/api/landlords/refresh')
+def refreshLandlord():
+  return LandlordHandler().refresh()
+
 @app.route('/api/landlords/new', methods=['POST'])
 def addLandlord():
   return LandlordHandler().addLandlord(request.json)
 
-# TODO add restrictions when updating user
 @app.route('/api/landlords', methods=['PUT'])
 def updateLandlord():
     return LandlordHandler().updateLandlord(request.json)
@@ -45,7 +54,7 @@ def updateLandlord():
 # TODO
 @app.route('/api/landlords', methods=['DELETE'])
 def removeLandlord():
-  return None
+  return LandlordHandler().deleteLandlord()
 
 """
 TENANTS
@@ -54,21 +63,29 @@ TENANTS
 def getAllTenants():
   return TenantHandler().getAll()
 
-@app.route('/api/tenants', methods=['POST'])
-def getTenantById():
-    return TenantHandler().getById(request.json)
+@app.route('/api/tenants/<int:u_id>', methods=['GET'])
+def getTenantById(u_id):
+    if request.method == 'GET':
+      return TenantHandler().getById(u_id)
+    else:
+      return jsonify(Error="Method not allowed."), 405
 
-# TODO
 @app.route('/api/tenants/login', methods=['POST'])
 def loginTenant():
-  return None
+  return TenantHandler().login(request.json)
 
-# TODO add restrictions when creating user
+@app.route('/api/tenants/protected')
+def protectedTenant():
+  return TenantHandler().protected()
+
+@app.route('/api/tenants/refresh')
+def refreshTenant():
+  return TenantHandler().refresh()
+
 @app.route('/api/tenants/new', methods=['POST'])
 def addTenant():
   return TenantHandler().addTenant(request.json)
 
-# TODO add restrictions when updating user
 @app.route('/api/tenants', methods=['PUT'])
 def updateTenant():
     return TenantHandler().updateTenant(request.json)
@@ -78,13 +95,16 @@ def updateTenant():
 def removeTenant():
   return None
 
-# TODO modify messages table with unique constraints
 """
 MESSAGES (LANDLORDS AND TENANTS)
 """
 @app.route('/api/messages/all')
 def getAllMessages():
   return MessageHandler().getAll()
+
+@app.route('/api/messages', methods=['GET'])
+def getMessageByLandlordId():
+    return MessageHandler().getByUserId()
 
 @app.route('/api/messages', methods=['POST'])
 def getMessageById():
@@ -94,9 +114,12 @@ def getMessageById():
 def getMessageByConstraint():
     return MessageHandler().getByConstraint(request.json)
 
-@app.route('/api/messages/conversation', methods=['POST'])
-def getConversation():
-    return MessageHandler().getConversation(request.json)
+@app.route('/api/messages/conversation/<int:u_id>', methods=['GET'])
+def getConversation(u_id):
+    if request.method == 'GET':
+      return MessageHandler().getConversation(u_id)
+    else:
+      return jsonify(Error="Method not allowed."), 405
 
 @app.route('/api/landlord/sends/message', methods=['POST'])
 def landlordSendsMessage():
@@ -127,20 +150,23 @@ ACCOMMODATIONS (LANDLORDS)
 def getAllAccommodations():
   return AccommodationHandler().getAll()
 
-@app.route('/api/accommodations', methods=['POST'])
-def getAccommodationById():
-    return AccommodationHandler().getById(request.json)
+@app.route('/api/accommodations/<int:a_id>', methods=['GET'])
+def getAccommodationById(a_id):
+    if request.method == 'GET':
+      return AccommodationHandler().getById(a_id)
+    else:
+      return jsonify(Error="Method not allowed."), 405
 
-@app.route('/api/accommodations/landlord', methods=['POST'])
-def getAccommodationByLandlordId():
-    return AccommodationHandler().getByLandlordId(request.json)
-
-# TODO add restrictions when creating accommodation
+@app.route('/api/accommodations/landlord/<int:u_id>', methods=['GET'])
+def getAccommodationByLandlordId(u_id):
+  if request.method == 'GET':
+    return AccommodationHandler().getByLandlordId(u_id)
+  else:
+    return jsonify(Error="Method not allowed."), 405
 @app.route('/api/accommodations/new', methods=['POST'])
 def addAccommodation():
   return AccommodationHandler().addAccommodation(request.json)
 
-# TODO add restrictions when updating accommodation
 @app.route('/api/accommodations', methods=['PUT'])
 def updateAccommodation():
     return AccommodationHandler().updateAccommodation(request.json)
@@ -158,12 +184,10 @@ SHARED AMENITIES (ACCOMMODATIONS)
 def getAllSharedAmenities():
   return SharedAmenitiesHandler().getAll()
 
-# TODO
 @app.route('/api/shared/amenities', methods=['POST'])
 def getSharedAmenitiesById():
     return SharedAmenitiesHandler().getById(request.json)
 
-# TODO
 @app.route('/api/accommodations/amenities', methods=['POST'])
 def getSharedAmenitiesByAccommodationId():
     return SharedAmenitiesHandler().getByAccommodationId(request.json)
@@ -173,11 +197,6 @@ def getSharedAmenitiesByAccommodationId():
 def updateSharedAmenities():
     return SharedAmenitiesHandler().updateSharedAmenities(request.json)
 
-# TODO
-@app.route('/api/accommodations/amenities', methods=['DELETE'])
-def removeSharedAmenities():
-  return None
-
 """
 NOTICES (ACCOMMODATIONS)
 """
@@ -185,20 +204,22 @@ NOTICES (ACCOMMODATIONS)
 def getAllNotices():
   return NoticeHandler().getAll()
 
+# TODO set for only tenants and landlords with relation to accm from notice
 @app.route('/api/notices', methods=['POST'])
 def getNoticeById():
     return NoticeHandler().getById(request.json)
 
+# TODO set for only tenants and landlords with relation to accm from notice
 @app.route('/api/accommodations/notices', methods=['POST'])
 def getNoticesByAccommodationId():
     return NoticeHandler().getByAccommodationId(request.json)
 
-# TODO add restrictions when creating notices
+# TODO limit title character count
 @app.route('/api/notices/add', methods=['POST'])
 def addNotice():
   return NoticeHandler().addNotice(request.json)
 
-# TODO add restrictions when updating notices
+# TODO limit title character count
 @app.route('/api/notices', methods=['PUT'])
 def updateNotice():
     return NoticeHandler().updateNotice(request.json)
@@ -404,3 +425,15 @@ def updateCurrentTenant():
 @app.route('/api/leases', methods=['DELETE'])
 def removeLease():
   return None
+
+"""
+SEARCH AND FILTER (ACCOMMODATIONS & UNITS)
+"""
+@app.route('/api/search', methods=['POST'])
+def searchAccommodations():
+  return AccommodationHandler().search(request.json)
+
+@app.route('/api/filter/shared/amenities', methods=['POST'])
+def filterBySharedAmenities():
+  return SharedAmenitiesHandler().filter(request.json)
+

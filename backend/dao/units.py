@@ -1,31 +1,42 @@
 from util.config import db
+from psycopg2.extras import RealDictCursor
 
 class Units:
 
   def getAll(self):
-    cursor = db.cursor()
+    cursor = db.cursor(cursor_factory=RealDictCursor)
     cursor.execute('SELECT * FROM units')
     res = cursor.fetchall()
     cursor.close()
     return res
 
   def getById(self, identifier):
-    cursor = db.cursor()
+    cursor = db.cursor(cursor_factory=RealDictCursor)
     cursor.execute('SELECT * FROM units WHERE unit_id = %s AND deleted_flag = false' %(identifier))
     res = cursor.fetchone()
     cursor.close()
     return res
 
   def getByAccommodationId(self, accm):
-    cursor = db.cursor()
+    cursor = db.cursor(cursor_factory=RealDictCursor)
     cursor.execute('SELECT * FROM units WHERE accm_id = %s AND deleted_flag = false' %(accm))
     res = cursor.fetchall()
     cursor.close()
     return res
 
   def addUnit(self, number, shared, price, date_available, duration, accm):
-    query = 'INSERT INTO units (unit_number, shared, price, date_available, contract_duration, accm_id) VALUES (%s, %s, %s, %s, %s, %s) RETURNING *'
-    cursor = db.cursor()
+    query = 'WITH new_unit AS ( \
+              INSERT INTO units (unit_number, shared, price, date_available, contract_duration, accm_id) \
+              VALUES (%s, %s, %s, %s, %s, %s) \
+              RETURNING * \
+            ), \
+            new_amenities AS ( \
+              INSERT INTO private_amenities (unit_id) \
+              SELECT unit_id FROM new_unit \
+              RETURNING * \
+            ) \
+            SELECT * FROM new_unit NATURAL INNER JOIN new_amenities'
+    cursor = db.cursor(cursor_factory=RealDictCursor)
     cursor.execute(query, (number, shared, price, date_available, duration, accm))
     res = cursor.fetchone()
     db.commit()
@@ -37,9 +48,17 @@ class Units:
             SET unit_number = %s, available = %s, shared = %s, price = %s, date_available = %s, contract_duration = %s \
             WHERE unit_id = %s \
             RETURNING *'
-    cursor = db.cursor()
+    cursor = db.cursor(cursor_factory=RealDictCursor)
     cursor.execute(query, (number, available, shared, price, date_available, duration, identifier))
     res = cursor.fetchone()
     db.commit()
+    cursor.close()
+    return res
+
+  def deleteUnitCascade(self, identifier):
+    query = 'UPDATE units SET deleted_flag = true WHERE accm_id = %s AND deleted_flag = false RETURNING *'
+    cursor = db.cursor(cursor_factory=RealDictCursor)
+    cursor.execute(query %(identifier))
+    res = cursor.fetchall()
     cursor.close()
     return res

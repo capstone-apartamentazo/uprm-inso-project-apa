@@ -1,3 +1,5 @@
+import SearchBar from './SearchBar';
+
 export default function Hero() {
 	return (
 		<section className='text-center bg-transparent text-white mb-48'>
@@ -85,19 +87,8 @@ export default function Hero() {
 				</g>
 			</svg>
 			<h1 className='text-5xl mb-4 pt-48 font-semibold'>Apartamentazo</h1>
-			<h2 className='font-semibold mb-5 text-lg'>Helping you find your next college apartment</h2>
-
-			<form className='flex items-center justify-center'>
-				<label className='sr-only'>Search for a location...</label>
-				<div className='relative w-2/6'>
-					<input type='text' id='simple-search' className='bg-gray-50 bg-opacity-50 border border-accent text-gray-900 text-sm rounded-full focus:ring-accent focus:border-accent block w-full pl-5 p-2.5 ' placeholder='Search for a location...' required />
-					<div className='absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none'>
-						<svg aria-hidden='true' className='w-5 h-5 text-accent' fill='currentColor' viewBox='0 0 20 20'>
-							<path fillRule='evenodd' d='M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z' clipRule='evenodd'></path>
-						</svg>
-					</div>
-				</div>
-			</form>
+			<h2 className='font-semibold mb-5 text-lg '>Helping you find your next college apartment</h2>
+			<SearchBar className='flex justify-center items-center' width='w-2/6' />
 		</section>
 	);
 }

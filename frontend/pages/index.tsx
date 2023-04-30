@@ -1,9 +1,8 @@
 import getConfig from 'next/config';
 
 import Layout from '@/components/Layout';
-import Image from 'next/image';
 import Hero from '@/components/Hero';
-import Recent from '@/components/Recent';
+import Explore from '@/components/Explore';
 import Features from '@/components/Features';
 
 const { publicRuntimeConfig } = getConfig();
@@ -13,7 +12,7 @@ const Home = () => {
 	return (
 		<Layout>
 			<Hero />
-			<Recent />
+			<Explore />
 			<Features reverse='false' title='Simplifying your college apartment hunt' description='Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem quasi. In deleniti eaque aut repudiandae et a id nisi.' />
 			<Features reverse='true' title='Easy access to your landlord' description='Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem quasi. In deleniti eaque aut repudiandae et a id nisi.' />
 			<Features reverse='false' title='Payment reminders' description='Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem quasi. In deleniti eaque aut repudiandae et a id nisi.' />

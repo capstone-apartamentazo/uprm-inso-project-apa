@@ -1,56 +1,106 @@
 from flask import jsonify
+from psycopg2 import Error as pgerror
+from util.config import db, logger, landlord_guard as guard
 from dao.notices import Notices
+from dao.accommodations import Accommodations
+import flask_praetorian as praetorian
 
 class NoticeHandler:
   def __init__(self):
     self.notices = Notices()
-  
-  def dictionary(self, row):
-    data = {}
-    data['Notice ID'] = row[0]
-    data['Send Date'] = row[1]
-    data['Title'] = row[2]
-    data['Content'] = row[3]
-    data['Accommodation ID'] = row[4]
-    return data
+    self.accommodations = Accommodations()
 
   def getAll(self):
-    daoNotices = self.notices.getAll()
-    if daoNotices:
-      result = []
-      for row in daoNotices:
-        result.append(self.dictionary(row))
-      return jsonify(result), 200
-    else:
-      return jsonify('Error Occured'), 405
+    try:
+      daoNotices = self.notices.getAll()
+      if daoNotices:
+        return jsonify([row for row in daoNotices])
+      else:
+        return jsonify('Empty List')
+    except (Exception, pgerror) as e:
+      db.rollback()
+      logger.exception(e)
+      return jsonify('Error Occured'), 400
 
   def getById(self, json):
-    daoNotice = self.notices.getById(json['notice_id'])
-    if daoNotice:
-      return jsonify(self.dictionary(daoNotice)), 200
-    else:
-      return jsonify('Notice Not Found'), 405
+    try:
+      daoNotice = self.notices.getById(json['notice_id'])
+      if daoNotice:
+        return jsonify(daoNotice)
+      else:
+        return jsonify('Notice Not Found')
+    except (Exception, pgerror) as e:
+      db.rollback()
+      logger.exception(e)
+      return jsonify('Error Occured'), 400
 
   def getByAccommodationId(self, json):
-    daoNotices = self.notices.getByAccommodationId(json['accm_id'])
-    if daoNotices:
-      result = []
-      for row in daoNotices:
-        result.append(self.dictionary(row))
-      return jsonify(result), 200
-    else:
-      return jsonify('Notices Not Found'), 405
+    try:
+      daoNotices = self.notices.getByAccommodationId(json['accm_id'])
+      if daoNotices:
+        return jsonify([row for row in daoNotices])
+      else:
+        return jsonify('Notices Not Found')
+    except (Exception, pgerror) as e:
+      db.rollback()
+      logger.exception(e)
+      return jsonify('Error Occured'), 400
 
+  @praetorian.auth_required
   def addNotice(self, json):
-    daoNotice = self.notices.addNotice(json['notice_title'], json['notice_content'], json['accm_id'])
-    if daoNotice:
-      return jsonify(self.dictionary(daoNotice)), 200
-    else:
-      return jsonify('Error adding Notice'), 405
+    try:
+      accm_id = json['accm_id']
+      valid, reason = self.checkAccm(accm_id)
+      if not valid:
+        return jsonify(reason)
+      daoNotice = self.notices.addNotice(json['notice_title'], json['notice_content'], accm_id)
+      if daoNotice:
+        return jsonify(daoNotice)
+      else:
+        return jsonify('Error adding Notice'), 400
+    except (Exception, pgerror) as e:
+      db.rollback()
+      logger.exception(e)
+      return jsonify('Error Occured'), 400
 
+  @praetorian.auth_required
   def updateNotice(self, json):
-    updatedNotice = self.notices.updateNotice(json['notice_id'], json['notice_title'], json['notice_content'])
-    if updatedNotice:
-      return jsonify(self.dictionary(updatedNotice)), 200
+    try:
+      notice_id = json['notice_id']
+      valid, reason = self.checkNotice(notice_id)
+      if not valid:
+        return jsonify(reason)
+      updatedNotice = self.notices.updateNotice(notice_id, json['notice_title'], json['notice_content'])
+      if updatedNotice:
+        return jsonify(updatedNotice)
+      else:
+        return jsonify('Error updating Notice'), 400
+    except (Exception, pgerror) as e:
+      db.rollback()
+      logger.exception(e)
+      return jsonify('Error Occured'), 400
+    
+  @praetorian.auth_required
+  def deleteNoticeCascade(self, accm_id):
+    try:
+      self.notices.deleteNoticeCascade(accm_id)
+    except (Exception, pgerror) as e:
+      db.rollback()
+      logger.exception(e)
+      return jsonify('Error Occured'), 400
+
+  def checkNotice(self, identifier):
+    daoNotice = self.notices.getById(identifier)
+    if not daoNotice:
+      return False, 'Notice Not Found'
+    return self.checkAccm(daoNotice['accm_id'])
+
+  def checkAccm(self, identifier):
+    daoAccommodation = self.accommodations.getById(identifier)
+    role = praetorian.current_rolenames().pop()
+    if not daoAccommodation:
+      return False, 'Accommodation Not Found'
+    if daoAccommodation['landlord_id'] != praetorian.current_user_id() or role != 'landlord':
+      return False, 'Accommodation is not own by Landlord'
     else:
-      return jsonify('Error updating Notice'), 500
+      return True , ''

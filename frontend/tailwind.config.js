@@ -8,6 +8,9 @@ module.exports = {
 				secondary: '#326273',
 				accent: '#E39774',
 			},
+			height:{
+				'128': '32rem',
+			}
 		},
 	},
 	daisyui: {
