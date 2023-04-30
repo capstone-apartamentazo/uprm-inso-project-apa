@@ -6,41 +6,120 @@ import { GetServerSideProps } from 'next'
 import axios from 'axios';
 import { Container } from '@nextui-org/react';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router'
+import useSWR, { mutate } from 'swr';
 
+
+
+
+interface Storage {
+    token: string,
+    isLandlord: boolean,
+    id: number
+}
 
 const Personal = () => {
+    const [storage, setStorage] = useState<Storage>({ token: '', isLandlord: false, id: 0 })
+    const router = useRouter()
 
     const [nameEdit, setNameEdit] = useState(false);
     const [phoneEdit, setPhoneEdit] = useState(false);
 
-    function handleNameEdit(){
-        if (nameEdit){
-            if (document.getElementById("nameInput") != null){
+    useEffect(() => {
+
+
+        if (localStorage.getItem('data') != null) {
+            setStorage(JSON.parse(localStorage.getItem('data')!))
+            if (!(storage.id == 0)) {
+                var endpoint = 'http://127.0.0.1:5000/api/tenants/refresh'
+                if (JSON.parse(localStorage.getItem('data')!).isLandlord) {
+                    endpoint = 'http://127.0.0.1:5000/api/landlords/refresh'
+
+                }
+                axios({ method: 'get', url: endpoint, headers: { Authorization: `Bearer ${JSON.parse(localStorage.getItem('data')!).token}` } })
+                    .then(res => {
+                        return res.data
+                        //const obj = {'token':res.data,}
+                        //localStorage.setItem('data',res.data)
+                    })
+                    .then(result => {
+                        const obj = { 'token': result['access_token'], 'isLandlord': storage?.isLandlord, 'id': storage?.id };
+                        const stringOBJ = JSON.stringify(obj);
+                        localStorage.setItem('data', stringOBJ);
+                    })
+                    .then(() => {
+                        console.log(localStorage.getItem('data')!)
+                        setStorage(JSON.parse(localStorage.getItem('data')!))
+                    }
+
+                    )
+                    .catch(err => {
+                        //localStorage.removeItem('data');
+                        console.error(err);
+                    })
+            }
+        } else {
+            router.replace('/')
+        }
+    }, [])
+
+    
+
+    const { data: user, error: userError, isLoading: isLoadingUser } = useSWR((storage.token != '') ? (storage.isLandlord ? `http://127.0.0.1:5000/api/landlords/${storage.id}` : `http://127.0.0.1:5000/api/tenants/${storage.id}`) : null, (url: any) => fetch(url, {
+        headers: {
+            Authorization: `Bearer ${storage?.token}`
+        }
+    }).then(res => res.json()));
+
+    if (userError) {
+        console.error(userError);
+
+    }
+    if (!user) {
+        console.log(user);
+    }
+    if (isLoadingUser) {
+        return (<h1>Loading...</h1>)
+    }
+    if (storage.id == 0) {
+        return (
+            <div>
+                <h1>Error found</h1>
+				<button onClick={() => { localStorage.removeItem('data') }} className="btn border-2 mr-4">Logout</button>
+            </div>
+        )
+    }
+
+
+
+    function handleNameEdit() {
+        if (nameEdit) {
+            if (document.getElementById("nameInput") != null) {
                 console.log((document.getElementById("nameInput")! as HTMLInputElement).value);
                 (document.getElementById("nameInput")! as HTMLInputElement).value = "";
-            }else{
+            } else {
                 console.log("name form not found")
             }
             setNameEdit(!nameEdit);
-        }else{
+        } else {
             setNameEdit(!nameEdit);
         }
     }
-    function handlePhoneEdit(){
-        if (phoneEdit){
-            if (document.getElementById("phoneInput") != null){
+    function handlePhoneEdit() {
+        if (phoneEdit) {
+            if (document.getElementById("phoneInput") != null) {
                 console.log((document.getElementById("phoneInput")! as HTMLInputElement).value);
                 (document.getElementById("phoneInput")! as HTMLInputElement).value = "";
-            }else{
+            } else {
                 console.log("phone form not found")
             }
             setPhoneEdit(!phoneEdit);
-        }else{
+        } else {
             setPhoneEdit(!phoneEdit);
         }
-        
-        
+
+
 
 
     }
@@ -64,8 +143,8 @@ const Personal = () => {
                         <div className='flex flex-row'>
                             <div className='flex-grow'>
                                 <h1 className='font-semibold'>Name</h1>
-                                <h2 className={(nameEdit ? 'hidden' : '')}>Marcos Plaza</h2>
-                                <input type="text" placeholder="New name" id='nameInput' className={"" + (nameEdit ? 'input w-full max-w-xs' : 'hidden')} />
+                                <h2 className={(nameEdit ? '' : '')}>{storage.isLandlord ? user.landlord_name : user.tenant_name}</h2>
+                                <input type="text" placeholder="New name" id='nameInput' className={"" + (nameEdit ? 'input w-full max-w-xs ring-1 ring-stone-200' : 'hidden')} />
 
                             </div>
 
@@ -80,7 +159,7 @@ const Personal = () => {
                         <div className='flex flex-row items-center'>
                             <div className='flex-grow'>
                                 <h1 className='font-semibold'>Email</h1>
-                                <h2>marcos@gmail.com</h2>
+                                <h2>{storage.isLandlord ? user.landlord_email : user.tenant_email}</h2>
                             </div>
 
                         </div>
@@ -91,8 +170,8 @@ const Personal = () => {
                         <div className='flex flex-row'>
                             <div className='flex-grow'>
                                 <h1 className='font-semibold'>Phone Number</h1>
-                                <h2 className={(phoneEdit ? 'hidden' : '')}>787-111-0000</h2>
-                                <input type="text" placeholder="New phone number" id='phoneInput' className={"" + (phoneEdit ? 'input w-full max-w-xs' : 'hidden')} />
+                                <h2 className={(phoneEdit ? '' : '')}>{storage.isLandlord ? user.landlord_phone : user.tenant_phone}</h2>
+                                <input type="text" placeholder="New phone number" id='phoneInput' className={"" + (phoneEdit ? 'input w-full max-w-xs ring-1 ring-stone-200' : 'hidden')} />
 
                             </div>
 
@@ -108,12 +187,6 @@ const Personal = () => {
         </Layout>
     );
 };
-
-// export const getServerSideProps: GetServerSideProps<Props> = async () => {
-//     const res = await axios.get<Message[]>('http://api.apartamentazo.com/api/messages/all')
-//     const messages = res.data
-//     return { props: { messages } }
-// }
 
 export default Personal
 
