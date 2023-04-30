@@ -45,10 +45,7 @@ class Messages:
     cursor.close()
 
   def getConversation(self, landlord, tenant):
-    query = 'SELECT message_id, landlord_id, tenant_id, msg_send_date, landlord_sent_msg, msg_content, msg_read, \
-              CASE WHEN landlord_sent_msg = true THEN landlord_name \
-              ELSE tenant_name \
-              END AS sender_name \
+    query = 'SELECT message_id, landlord_id, tenant_id, msg_send_date, landlord_sent_msg, msg_content, msg_read, landlord_name, tenant_name \
             FROM messages \
             NATURAL INNER JOIN landlords NATURAL INNER JOIN tenants \
             WHERE landlord_id = %s AND tenant_id = %s ORDER BY msg_send_date'
