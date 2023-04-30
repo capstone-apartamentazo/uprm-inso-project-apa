@@ -10,7 +10,7 @@ import { Token } from 'Token';
 
 
 const { publicRuntimeConfig } = getConfig();
-const { name } = publicRuntimeConfig.site;
+const { url: host } = publicRuntimeConfig.site;
 
 
 const Login = () => {
@@ -39,9 +39,9 @@ const Login = () => {
 		};
 
 
-		var endpoint = 'http://127.0.0.1:5000/api/tenants/login';
+		var endpoint = `${host}/api/tenants/login`;
 		if (isLandlord) {
-			endpoint = 'http://127.0.0.1:5000/api/landlords/login';
+			endpoint = `${host}/api/landlords/login`;
 			data = {
 				"landlord_email": event.target.email.value,
 				"landlord_password": event.target.password.value,

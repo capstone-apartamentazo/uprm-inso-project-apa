@@ -15,28 +15,31 @@ import Cookies from 'universal-cookie';
 import { Token } from 'Token';
 import { Storage } from 'Storage';
 import { Msg } from 'Msg';
+import getConfig from 'next/config';
 
 
 
 interface Props {
     messages: Msg[]
 }
+const { publicRuntimeConfig } = getConfig();
+const { url: host } = publicRuntimeConfig.site;
 
 const Messages: React.FC<Props> = ({ }) => {
     const [storage, setStorage] = useState<Storage>({ token: null, isLandlord: null, id: null })
     const [selected, setSelected] = useState(0)
     const router = useRouter()
     const cookies = new Cookies()
-
+   
     useEffect(() => {
-
+        console.log(host)
         try{
             const token = cookies.get('jwt_authorization')
 			const decoded = jwt<Token>(token)
 			setStorage({'token':token,'id':decoded['id'],'isLandlord':((decoded['rls']=="landlord")?true:false)})
-			var endpoint = 'http://127.0.0.1:5000/api/tenants/refresh'
+			var endpoint = `${host}/api/tenants/refresh`
             if (storage.isLandlord) {
-                endpoint = 'http://127.0.0.1:5000/api/landlords/refresh'
+                endpoint = `${host}/api/landlords/refresh`
 
             }
             axios({ method: 'get', url: endpoint, headers: { Authorization: `Bearer ${token}` } })
@@ -84,9 +87,9 @@ const Messages: React.FC<Props> = ({ }) => {
         event.preventDefault();
 
         var data = {}
-        var endpoint = 'http://127.0.0.1:5000/api/tenant/sends/message';
+        var endpoint = `${host}/api/tenant/sends/message`;
         if (storage.isLandlord) {
-            endpoint = 'http://127.0.0.1:5000/api/landlord/sends/message';
+            endpoint = `${host}/api/landlord/sends/message`;
             data = {
                 'tenant_id': selected,
                 'msg_content': event.target.msg.value
@@ -116,8 +119,8 @@ const Messages: React.FC<Props> = ({ }) => {
                     //alert("first error")
                     throw new Error("Could not send message!");
                 } else {
-                    mutate('http://127.0.0.1:5000/api/messages');
-                    mutate(`http://127.0.0.1:5000/api/messages/conversation/${selected}`);
+                    mutate(`${host}/api/messages`);
+                    mutate(`${host}/api/messages/conversation/${selected}`);
                     event.target.msg.value = '';
                     return response.json();
                 }
@@ -133,7 +136,7 @@ const Messages: React.FC<Props> = ({ }) => {
     }
 
     
-    const { data: convos, error: convoError, isLoading: isLoadingConvo } = useSWR((storage.token != null) ? 'http://127.0.0.1:5000/api/messages' : null, url => fetch(url, {
+    const { data: convos, error: convoError, isLoading: isLoadingConvo } = useSWR((storage.token != null) ? `${host}/api/messages` : null, url => fetch(url, {
         headers: {
             Authorization: `Bearer ${storage?.token}`
         }

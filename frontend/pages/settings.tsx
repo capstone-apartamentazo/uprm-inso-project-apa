@@ -5,9 +5,27 @@ import Image from 'next/image';
 import { GetServerSideProps } from 'next'
 import axios from 'axios';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import Cookies from 'universal-cookie';
+import { Storage } from 'Storage';
+import { Token } from 'Token';
+import jwt from 'jwt-decode';
+import { useRouter } from 'next/router'
 
 
 const Settings = () => {
+    const cookies = new Cookies()
+    const router = useRouter()
+
+    useEffect(() => {
+        try{
+            const token = cookies.get('jwt_authorization')
+			const decoded = jwt<Token>(token)
+			
+        }catch(err){
+            router.replace('/')
+        }
+    }, [])
     return (
         <Layout>
             <main className='flex flex-col   max-w-full mt-32 mx-8'>

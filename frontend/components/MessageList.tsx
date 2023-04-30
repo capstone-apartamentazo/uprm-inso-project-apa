@@ -8,7 +8,10 @@ import { Storage } from 'Storage';
 import jwt from 'jwt-decode';
 import Cookies from 'universal-cookie';
 import { Token } from 'Token';
+import getConfig from 'next/config';
 
+const { publicRuntimeConfig } = getConfig();
+const { url: host } = publicRuntimeConfig.site;
 
 type Props = {
     u_id: number
@@ -35,7 +38,7 @@ const MessageList: React.FC<Props> = ({ u_id }) => {
 
     
 
-    const { data: messages, error: msgsError, isLoading: isLoadingMsgs } = useSWR((storage?.token != null) ? `http://127.0.0.1:5000/api/messages/conversation/${u_id}` : null, (url: string) => fetch(url, {
+    const { data: messages, error: msgsError, isLoading: isLoadingMsgs } = useSWR((storage?.token != null) ? `${host}/api/messages/conversation/${u_id}` : null, (url: string) => fetch(url, {
         headers: {
             Authorization: `Bearer ${storage?.token}`
         }

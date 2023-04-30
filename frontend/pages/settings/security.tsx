@@ -12,7 +12,10 @@ import jwt from 'jwt-decode';
 import Cookies from 'universal-cookie';
 import { Token } from 'Token';
 import { Storage } from 'Storage';
+import getConfig from 'next/config';
 
+const { publicRuntimeConfig } = getConfig();
+const { url: host } = publicRuntimeConfig.site;
 
 
 const Security = () => {
@@ -29,9 +32,9 @@ const Security = () => {
             const token = cookies.get('jwt_authorization')
 			const decoded = jwt<Token>(token)
 			setStorage({'token':token,'id':decoded['id'],'isLandlord':((decoded['rls']=="landlord")?true:false)})
-			var endpoint = 'http://127.0.0.1:5000/api/tenants/refresh'
+			var endpoint = `${host}/api/tenants/refresh`
             if (storage.isLandlord) {
-                endpoint = 'http://127.0.0.1:5000/api/landlords/refresh'
+                endpoint = `${host}/api/landlords/refresh`
 
             }
             axios({ method: 'get', url: endpoint, headers: { Authorization: `Bearer ${token}` } })
@@ -60,7 +63,7 @@ const Security = () => {
             console.error(err)
         }
     }, [])
-    const { data: user, error: userError, isLoading: isLoadingUser } = useSWR((storage.token != null) ? (storage.isLandlord ? `http://127.0.0.1:5000/api/landlords/${storage.id}` : `http://127.0.0.1:5000/api/tenants/${storage.id}`) : null, (url: any) => fetch(url, {
+    const { data: user, error: userError, isLoading: isLoadingUser } = useSWR((storage.token != null) ? (storage.isLandlord ? `${host}/api/landlords/${storage.id}` : `${host}/api/tenants/${storage.id}`) : null, (url: any) => fetch(url, {
         headers: {
             Authorization: `Bearer ${storage?.token}`
         }

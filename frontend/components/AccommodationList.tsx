@@ -10,6 +10,10 @@ import jwt from 'jwt-decode';
 import Cookies from 'universal-cookie';
 import { Token } from 'Token';
 import { Accm } from 'Accm';
+import getConfig from 'next/config';
+
+const { publicRuntimeConfig } = getConfig();
+const { url: host } = publicRuntimeConfig.site;
 
 type Props = {
 
@@ -35,7 +39,7 @@ const AccommodationList: React.FC<Props> = ({  }) => {
 
     
 
-    const { data: acms, error: acmsError, isLoading: isLoadingAcms } = useSWR((storage?.token != null) ? `http://127.0.0.1:5000/api/accommodations/landlord/${storage.id}` : null, (url: string) => fetch(url, {
+    const { data: acms, error: acmsError, isLoading: isLoadingAcms } = useSWR((storage?.token != null) ? `${host}/api/accommodations/landlord/${storage.id}` : null, (url: string) => fetch(url, {
         headers: {
             Authorization: `Bearer ${storage?.token}`
         }

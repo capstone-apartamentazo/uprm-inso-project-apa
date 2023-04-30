@@ -1,7 +1,7 @@
 import getConfig from 'next/config';
 
 const { publicRuntimeConfig } = getConfig();
-const { name } = publicRuntimeConfig.site;
+const { url: host } = publicRuntimeConfig.site;
 import { useRouter } from 'next/router'
 
 
@@ -20,9 +20,9 @@ const Signup = () => {
 
 			const JSONdata = JSON.stringify(data);
 			alert(`${JSONdata}`);
-			var endpoint = 'http://127.0.0.1:5000/api/tenants/new';
+			var endpoint = `${host}/api/tenants/new`;
 			if (event.target.inlineRadio2.checked) {
-				endpoint = 'http://127.0.0.1:5000/api/landlords/new';
+				endpoint = `${host}/api/landlords/new`;
 			}
 
 			const options = {

@@ -6,7 +6,10 @@ import MsgComp from '@/components/Message';
 import Listing from '@/components/Accommodation';
 import Link from 'next/link';
 import Review from '@/components/Review';
+import getConfig from 'next/config';
 
+const { publicRuntimeConfig } = getConfig();
+const { url: host } = publicRuntimeConfig.site;
 
 
 
@@ -49,7 +52,7 @@ const ReviewList: React.FC<Props> = ({  }) => {
 
     
 
-    const { data: acms, error: acmsError, isLoading: isLoadingAcms } = useSWR((storage?.token != '') ? `http://127.0.0.1:5000/api/accommodations/landlord/${storage.id}` : null, (url: string) => fetch(url, {
+    const { data: acms, error: acmsError, isLoading: isLoadingAcms } = useSWR((storage?.token != '') ? `${host}/api/accommodations/landlord/${storage.id}` : null, (url: string) => fetch(url, {
         headers: {
             Authorization: `Bearer ${storage?.token}`
         }
