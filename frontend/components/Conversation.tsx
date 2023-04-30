@@ -38,7 +38,7 @@ const Conversation: React.FC<Props> = ({ msg,isLandlord, onClick }) => {
             </div>
             <div className='flex flex-col items-start'>
                 <div className='flex flex-row'>
-                    <h1 className={'' + (needRead ? 'font-semibold' : 'font-bold')}>{((isLandlord&&msg.landlord_sent_msg)||(!(isLandlord||msg.landlord_sent_msg)))? msg.tenant_id : msg.landlord_id}</h1>
+                    <h1 className={'' + (needRead ? 'font-semibold' : 'font-bold')}>{msg.contact_name}</h1>
                     <h1 className='text-black font-extrabold px-1'>·</h1>
                     <p className={'' + (needRead ? 'text-neutral-600 pr-1 font-normal truncate w-36' : 'text-neutral-600 pr-2 font-semibold truncate w-36 ')}>{msg.msg_send_date}</p>
                     <h1 className='items-center'><span className={" " + (needRead ? 'hidden' : 'badge badge-accent badge-sm text-white font-semibold mr-1')}>NEW</span></h1>

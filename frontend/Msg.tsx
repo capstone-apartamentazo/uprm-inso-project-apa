@@ -6,5 +6,6 @@ export interface Msg {
     "msg_content": string,
     "msg_read": boolean,
     "msg_send_date": string,
-    "tenant_id": number
+    "tenant_id": number,
+    "contact_name": string
 }
