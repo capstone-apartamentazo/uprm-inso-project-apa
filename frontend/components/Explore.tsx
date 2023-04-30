@@ -2,35 +2,30 @@ import Listing from './Accommodation';
 import { useListings } from '../useListings';
 import Link from 'next/link';
 
-interface Listing{
-	'Accommodation ID': number,
-	'Accommodation Title': string,
-	'Street': string,
-	'City': string
-
+interface Listing {
+	'Accommodation ID': number;
+	'Accommodation Title': string;
+	Street: string;
+	City: string;
 }
 
 export default function Explore() {
-	const { data, error } = useListings('accommodations/all',null);
+	let listings: JSX.Element[] = [];
+	const { data, error } = useListings('accommodations/all');
 
 	// TODO: Add loading cards, default error cards
 	if (error) return <div>Failed to load</div>;
 	if (!data) return <div>Loading...</div>;
 
 	const top = data.slice(0, 4);
-	var listings = {}
 
-	try{
-		listings = top.map((accm:Listing) => {
-			<Listing key={accm['Accommodation ID']} title={accm['Accommodation Title']} address={accm['Street'] + ', ' + accm['City']} features={'Water & Internet included'} price={'$800'} href={''} />
+	try {
+		top.map((accm: Listing) => {
+			listings.push(<Listing key={accm['Accommodation ID']} title={accm['Accommodation Title']} address={accm['Street'] + ', ' + accm['City']} features={'Water & Internet included'} price={'$800'} href={''} />);
 		});
-
-	}catch(error){
-		listings = {}
-		console.log(error)
+	} catch (error) {
+		console.log(error);
 	}
-
-	
 
 	return (
 		<section className='text-center m-10'>

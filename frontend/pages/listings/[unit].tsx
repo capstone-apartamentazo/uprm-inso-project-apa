@@ -3,49 +3,45 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
 const Unit = () => {
-	let allListings = [];
-	const [listings, setListings] = useState([]);
+	let allUnits: any[] = [];
+	const [units, setUnits] = useState([]);
 	const [amount, setAmount] = useState([]);
 	const router = useRouter();
-	const { listing } = router.query;
+	const { unit } = router.query;
 
 	useEffect(() => {
-		if (listing) {
+		if (unit) {
 			const data = {
-				accm_id: listing,
+				accm_id: unit,
 			};
 			console.log(data);
-
 			const endpoint = 'http://127.0.0.1:5000/api/accommodations/units';
-
 			const options = {
 				method: 'POST',
 				headers: new Headers({ 'content-type': 'application/json' }),
 				body: JSON.stringify(data),
 			};
-
 			fetch(endpoint, options)
 				.then((data) => {
 					return data.json();
 				})
 				.then((data) => {
-					data.map((accm) => {
+					data.map((accm: any) => {
 						console.log(accm);
-						allListings.push();
+						allUnits.push();
 					});
-					setListings(allListings);
-					setAmount(allListings.length > 1 ? allListings.length + ' results' : allListings.length + ' result');
+					//setListings(allUnits);
+					//setAmount(allUnits.length > 1 ? allUnits.length + ' results' : allUnits.length + ' result');
 				})
 				.catch((err) => {
-					var noListings = [];
+					var noListings: any = [];
 					noListings.push(<div className='col-start-1 row-span-2 p-2'>No results found</div>);
-					setListings(noListings);
-					setAmount('No results');
+					setUnits(noListings);
+					//setAmount('No results');
 				});
-			setListings(listings);
+			setUnits(units);
 		}
-	}, [listing]);
-
+	}, [unit]);
 	return (
 		<Layout>
 			<section className='pt-24 pl-20'>
@@ -58,9 +54,8 @@ const Unit = () => {
 				<div className=''>Amenities</div>
 				<div className=''>Map</div>
 				<div className=''>Reviews</div>
-
 				<h1 className='text-5xl'>
-					Listing: {listing}
+					Listing: {unit}
 					<div></div>
 				</h1>
 			</section>

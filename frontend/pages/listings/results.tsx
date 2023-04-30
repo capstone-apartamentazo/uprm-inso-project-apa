@@ -5,10 +5,10 @@ import { useRouter } from 'next/router';
 import SearchBar from '../../components/SearchBar';
 
 const Listings = () => {
-	let allListings = [];
-	const [listings, setListings] = useState([]);
-	const [amount, setAmount] = useState([]);
-	const [location, setLocation] = useState([]);
+	let allListings: any = [];
+	const [listings, setListings] = useState<any | null>(null);
+	const [amount, setAmount] = useState<any | null>(null);
+	const [location, setLocation] = useState<any | null>(null);
 
 	const router = useRouter();
 	const { search } = router.query;
@@ -33,10 +33,11 @@ const Listings = () => {
 					return data.json();
 				})
 				.then((data) => {
-					data.map((accm) => {
+					console.log(data);
+					data.map((accm: any) => {
 						allListings.push(
 							<div key={accm} className='col-start-1 row-span-2 p-2'>
-								<ListingResult key={accm} title={accm['Accommodation Title']} address={accm['Street'] + ', ' + accm['City']} features={'2 bed • 2 baths'} description={accm['Description']} price={'$800'} href={''} id={accm['Accommodation ID']} />{' '}
+								<ListingResult key={accm} title={accm.accm_title} address={accm.accm_street + ', ' + accm.accm_city} features={'2 bed • 2 baths'} description={accm.accm_description} price={'$800'} href={''} id={accm.accm_id} />{' '}
 							</div>
 						);
 					});
@@ -45,7 +46,7 @@ const Listings = () => {
 					setLocation(search);
 				})
 				.catch((err) => {
-					var noListings = [];
+					var noListings: any = [];
 					noListings.push(<div className='col-start-1 row-span-2 p-2'>No results found</div>);
 					setListings(noListings);
 					setAmount('No results');
