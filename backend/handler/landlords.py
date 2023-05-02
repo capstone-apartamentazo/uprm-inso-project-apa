@@ -111,7 +111,6 @@ class LandlordHandler:
       image = Search().expression('folder:apartamentazo/landlords/landlord_{} AND tags:landlord'.format(landlord_id)).execute()
       return jsonify(image)
     except (Exception, pgerror) as e:
-      db.rollback()
       logger.exception(e)
       return jsonify('Error Occured'), 400
 

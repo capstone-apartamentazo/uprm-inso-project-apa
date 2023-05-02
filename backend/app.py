@@ -365,9 +365,9 @@ Cloudinary
 def getImageForLandlord(landlord_id):
   return LandlordHandler().getProfilePicture(landlord_id)
 
-# @app.route('/api/images/tenant/<int:tenant_id>')
-# def getImageForTenant(tenant_id):
-#   return SharedAmenitiesHandler().filter(request.json)
+@app.route('/api/images/tenant/<int:tenant_id>')
+def getImageForTenant(tenant_id):
+  return TenantHandler().getProfilePicture(tenant_id)
 
 # @app.route('/api/images/accommodation/<int:accm_id>')
 # def getImagesForAccommodation(accm_id):
