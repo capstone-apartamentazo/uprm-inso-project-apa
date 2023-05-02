@@ -377,18 +377,18 @@ def getImagesForAccommodation(accm_id):
 def getImagesForUnit(unit_id):
   return UnitHandler().getImages(unit_id)
 
-# @app.route('/api/images/landlord', methods=['POST'])
-# def filterBySharedAmenities():
-#   return SharedAmenitiesHandler().filter(request.json)
+@app.route('/api/images/landlord', methods=['POST'])
+def uploadImageForLandlord():
+  return LandlordHandler().uploadProfilePicture(request.json)
 
-# @app.route('/api/images/tenant', methods=['POST'])
-# def filterBySharedAmenities():
-#   return SharedAmenitiesHandler().filter(request.json)
+@app.route('/api/images/tenant', methods=['POST'])
+def uploadImageForTenant():
+  return TenantHandler().uploadProfilePicture(request.json)
 
-# @app.route('/api/images/accommodation', methods=['POST'])
-# def filterBySharedAmenities():
-#   return SharedAmenitiesHandler().filter(request.json)
+@app.route('/api/images/accommodation', methods=['POST'])
+def uploadImageForAccommodation():
+  return AccommodationHandler().uploadImages(request.json)
 
-# @app.route('/api/images/unit', methods=['POST'])
-# def filterBySharedAmenities():
-#   return SharedAmenitiesHandler().filter(request.json)
+@app.route('/api/images/unit', methods=['POST'])
+def uploadImageForUnit():
+  return UnitHandler().uploadImages(request.json)

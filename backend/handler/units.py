@@ -107,6 +107,24 @@ class UnitHandler:
       return jsonify('Error Occured'), 400
 
   @praetorian.auth_required
+  def uploadImages(self, json):
+    try:
+      unit_id = json['unit_id']
+      valid, reason = self.checkUnit(unit_id)
+      if not valid:
+        return jsonify(reason)
+      accm_id = self.units.getById(unit_id)['accm_id']
+      image = upload(
+        json['image'],
+        folder = 'apartamentazo/landlords/landlord_{}/accm_{}/unit_{}'.format(praetorian.current_user_id(), accm_id, unit_id),
+        tags='unit'
+      )
+      return jsonify(image)
+    except (Exception, pgerror) as e:
+      logger.exception(e)
+      return jsonify('Error Occured'), 400
+
+  @praetorian.auth_required
   def deleteUnitCascade(self, accm_id):
     try:
       deletedUnit = self.units.deleteUnitCascade(accm_id)

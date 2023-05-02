@@ -139,6 +139,23 @@ class AccommodationHandler:
       logger.exception(e)
       return jsonify('Error Occured'), 400
 
+  @praetorian.auth_required
+  def uploadImages(self, json):
+    try:
+      accm_id = json['accm_id']
+      valid, reason = self.checkAccmID(accm_id)
+      if not valid:
+        return jsonify(reason)
+      image = upload(
+        json['image'],
+        folder = 'apartamentazo/landlords/landlord_{}/accm_{}'.format(praetorian.current_user_id(), accm_id),
+        tags='accm'
+      )
+      return jsonify(image)
+    except (Exception, pgerror) as e:
+      logger.exception(e)
+      return jsonify('Error Occured'), 400
+
   # TODO add individual delete function
   @praetorian.auth_required
   def deleteAccommodationCascade(self, landlord_id):

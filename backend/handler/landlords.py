@@ -114,6 +114,19 @@ class LandlordHandler:
       logger.exception(e)
       return jsonify('Error Occured'), 400
 
+  @praetorian.auth_required
+  def uploadProfilePicture(self, json):
+    try:
+      image = upload(
+        json['image'],
+        folder = 'apartamentazo/landlords/landlord_{}'.format(praetorian.current_user_id()),
+        tags='landlord'
+      )
+      return jsonify(image)
+    except (Exception, pgerror) as e:
+      logger.exception(e)
+      return jsonify('Error Occured'), 400
+
   def updateRating(self, json):
     try:
       daoLandlord = self.landlords.updateRating(json['landlord_id'])

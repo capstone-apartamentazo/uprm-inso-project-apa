@@ -107,7 +107,21 @@ class TenantHandler:
     try:
       if not self.tenants.getById(tenant_id):
         return False, 'Tenant Not Found'
-      image = Search().expression('folder:apartamentazo/tenants/tenant_{} AND tags:tenant'.format(tenant_id)).execute()
+      image = Search().expression('folder:apartamentazo/tenants AND tags:tenant AND filename:tenant_{}'.format(tenant_id)).execute()
+      return jsonify(image)
+    except (Exception, pgerror) as e:
+      logger.exception(e)
+      return jsonify('Error Occured'), 400
+
+  @praetorian.auth_required
+  def uploadProfilePicture(self, json):
+    try:
+      image = upload(
+        json['image'],
+        folder = 'apartamentazo/tenants',
+        public_id = 'tenant_{}'.format(praetorian.current_user_id()),
+        tags='tenant'
+      )
       return jsonify(image)
     except (Exception, pgerror) as e:
       logger.exception(e)
