@@ -1,5 +1,6 @@
 __pycache__/
 localdb/
+photos/
 *.log
 *.sql
 .env
