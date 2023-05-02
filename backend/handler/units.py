@@ -1,5 +1,8 @@
 from flask import jsonify
 from psycopg2 import Error as pgerror
+from handler.leases import LeaseHandler
+from handler.private_amenities import PrivateAmenitiesHandler
+from handler.requests import RequestHandler
 from util.config import db, logger, landlord_guard as guard
 from dao.units import Units
 from dao.accommodations import Accommodations
@@ -10,6 +13,10 @@ class UnitHandler:
   def __init__(self):
     self.units = Units()
     self.accommodations = Accommodations()
+    self.pAmenities = PrivateAmenitiesHandler()
+    self.request = RequestHandler()
+    self.lease = LeaseHandler()
+
 
   def getAll(self):
     try:
@@ -78,6 +85,22 @@ class UnitHandler:
         return jsonify(daoUnit)
       else:
         return jsonify('Error updating Unit'), 400
+    except (Exception, pgerror) as e:
+      db.rollback()
+      logger.exception(e)
+      return jsonify('Error Occured'), 400
+    
+  @praetorian.auth_required
+  def deleteUnitCascade(self, accm_id):
+    try:
+      deletedUnit = self.units.deleteUnitCascade(accm_id)
+      for unit in deletedUnit:
+        deletedPrivAmenities = self.pAmenities.deletePrivAmenitiesCascade(unit['unit_id'])
+        deletedRequest = self.request.deleteRequestCascade(unit['unit_id'])
+        deletedLease = self.lease.deleteLeaseCascade(unit['unit_id'])
+        if not deletedPrivAmenities and deletedRequest and deletedLease:
+          return False
+      return True
     except (Exception, pgerror) as e:
       db.rollback()
       logger.exception(e)

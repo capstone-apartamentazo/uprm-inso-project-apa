@@ -1,5 +1,8 @@
 from flask import jsonify
 from psycopg2 import Error as pgerror
+from handler.notices import NoticeHandler
+from handler.reviews import ReviewHandler
+from handler.units import UnitHandler
 from util.config import db, logger, landlord_guard as guard
 from dao.accommodations import Accommodations
 from handler.shared_amenities import SharedAmenitiesHandler
@@ -10,6 +13,9 @@ class AccommodationHandler:
   def __init__(self):
     self.accommodations = Accommodations()
     self.amenities = SharedAmenitiesHandler()
+    self.review = ReviewHandler()
+    self.units = UnitHandler()
+    self.notice = NoticeHandler()
 
   def getAll(self):
     try:
@@ -23,9 +29,9 @@ class AccommodationHandler:
       logger.exception(e)
       return jsonify('Error Occured'), 400
 
-  def getById(self, json):
+  def getById(self, a_id):
     try:
-      daoAccommodation = self.accommodations.getById(json['accm_id'])
+      daoAccommodation = self.accommodations.getById(a_id)
       if daoAccommodation:
         return jsonify(daoAccommodation)
       else:
@@ -35,9 +41,9 @@ class AccommodationHandler:
       logger.exception(e)
       return jsonify('Error Occured'), 400
 
-  def getByLandlordId(self, json):
+  def getByLandlordId(self, u_id):
     try:
-      daoAccommodations = self.accommodations.getByLandlordId(json['landlord_id'])
+      daoAccommodations = self.accommodations.getByLandlordId(u_id)
       if daoAccommodations:
         return jsonify([row for row in daoAccommodations])
       else:
@@ -125,10 +131,10 @@ class AccommodationHandler:
       deletedAccommodation = self.accommodations.deleteAccommodationCascade(landlord_id)
       for accm in deletedAccommodation:
         deletedAmenities = self.amenities.deleteSharedAmenities(accm['accm_id'])
-        # ReviewHandler().deleteReviewCascade(accm['accm_id'])
-        # UnitHandler().deleteUnitCascade(accm['accm_id'])
-        # NoticeHandler().deleteNoticeCascade(accm['accm_id'])
-        if not deletedAmenities:
+        deletedReview = self.review.deleteReviewCascade(accm['accm_id'])
+        deletedUnit = self.units.deleteUnitCascade(accm['accm_id'])
+        deletedNotice = self.notice.deleteNoticeCascade(accm['accm_id'])
+        if not deletedAmenities and deletedReview and deletedUnit and deletedNotice:
           return False
       return True
     except (Exception, pgerror) as e:

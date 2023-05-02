@@ -1,9 +1,13 @@
 import getConfig from 'next/config';
 
 const { publicRuntimeConfig } = getConfig();
-const { name } = publicRuntimeConfig.site;
+const { url: host } = publicRuntimeConfig.site;
+import { useRouter } from 'next/router'
+
 
 const Signup = () => {
+	const router = useRouter()
+
 	const handleSubmit = async (event: any) => {
 		event.preventDefault();
 		if (event.target.password.value == event.target.cpassword.value) {
@@ -16,9 +20,9 @@ const Signup = () => {
 
 			const JSONdata = JSON.stringify(data);
 			alert(`${JSONdata}`);
-			var endpoint = 'http://127.0.0.1:5000/api/tenants/new';
+			var endpoint = `${host}/api/tenants/new`;
 			if (event.target.inlineRadio2.checked) {
-				endpoint = 'http://127.0.0.1:5000/api/landlords/new';
+				endpoint = `${host}/api/landlords/new`;
 			}
 
 			const options = {
@@ -37,9 +41,12 @@ const Signup = () => {
 						//alert("first error")
 						throw new Error('Signup unsuccessful');
 					} else {
-						alert('Signup Successful');
 						return response.json();
 					}
+					
+				}).then((res)=>{
+					router.replace('/#login-modal');
+					router.reload();
 				})
 				.catch((error) => {
 					console.log(error);
