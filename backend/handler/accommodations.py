@@ -7,6 +7,8 @@ from util.config import db, logger, landlord_guard as guard
 from dao.accommodations import Accommodations
 from handler.shared_amenities import SharedAmenitiesHandler
 import flask_praetorian as praetorian
+from cloudinary.uploader import upload
+from cloudinary.search import Search
 import re
 
 class AccommodationHandler:
@@ -121,6 +123,19 @@ class AccommodationHandler:
         return jsonify(reason)
     except (Exception, pgerror) as e:
       db.rollback()
+      logger.exception(e)
+      return jsonify('Error Occured'), 400
+
+  def getImages(self, accm_id):
+    try:
+      daoAccommodation = self.accommodations.getById(accm_id)
+      if not daoAccommodation:
+        return False, 'Accommodation Not Found'
+      landlord_id = daoAccommodation['landlord_id']
+      query = 'folder:apartamentazo/landlords/landlord_{}/accm_{} AND tags:accm'.format(landlord_id, accm_id)
+      image = Search().expression(query).execute()
+      return jsonify(image)
+    except (Exception, pgerror) as e:
       logger.exception(e)
       return jsonify('Error Occured'), 400
 

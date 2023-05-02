@@ -369,13 +369,13 @@ def getImageForLandlord(landlord_id):
 def getImageForTenant(tenant_id):
   return TenantHandler().getProfilePicture(tenant_id)
 
-# @app.route('/api/images/accommodation/<int:accm_id>')
-# def getImagesForAccommodation(accm_id):
-#   return SharedAmenitiesHandler().filter(request.json)
+@app.route('/api/images/accommodation/<int:accm_id>')
+def getImagesForAccommodation(accm_id):
+  return AccommodationHandler().getImages(accm_id)
 
-# @app.route('/api/images/unit/<int:unit_id>')
-# def getImagesForUnit(unit_id):
-#   return SharedAmenitiesHandler().filter(request.json)
+@app.route('/api/images/unit/<int:unit_id>')
+def getImagesForUnit(unit_id):
+  return UnitHandler().getImages(unit_id)
 
 # @app.route('/api/images/landlord', methods=['POST'])
 # def filterBySharedAmenities():
