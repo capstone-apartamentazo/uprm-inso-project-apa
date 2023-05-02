@@ -321,70 +321,6 @@ def removePrivateAmenities():
   return None
 
 """
-REQUESTS (UNITS AND TENANTS)
-"""
-@app.route('/api/requests/all')
-def getAllRequests():
-  return RequestHandler().getAll()
-
-@app.route('/api/requests', methods=['POST'])
-def getRequestById():
-    return RequestHandler().getById(request.json)
-
-@app.route('/api/units/requests', methods=['POST'])
-def getRequestsByUnitId():
-    return RequestHandler().getByUnitId(request.json)
-
-@app.route('/api/tenants/requests', methods=['POST'])
-def getRequestsByTenantId():
-    return RequestHandler().getByTenantId(request.json)
-
-# TODO
-@app.route('/api/requests/tour', methods=['POST'])
-def getAllRequestsWithTour():
-    return None
-
-# TODO
-@app.route('/api/units/requests/tour', methods=['POST'])
-def getRequestsByUnitIdWithTour():
-    return None
-
-# TODO
-@app.route('/api/tenants/requests/tour', methods=['POST'])
-def getRequestsByTenantIdWithTour():
-    return None
-
-# TODO add restrictions when creating requests
-@app.route('/api/requests/add', methods=['POST'])
-def addRequestWithoutTour():
-    return RequestHandler().addRequestWithoutTour(request.json)
-
-# TODO add restrictions when creating requests
-@app.route('/api/requests/tour/add', methods=['POST'])
-def addRequestWithTour():
-    return RequestHandler().addRequestWithTour(request.json)
-
-# TODO add restrictions when updating requests
-@app.route('/api/requests/tour', methods=['PUT'])
-def updateRequestTour():
-    return RequestHandler().updateRequestTour(request.json)
-
-# TODO add restrictions when updating requests
-@app.route('/api/requests/landlords/approval', methods=['PUT'])
-def updateLandlordApproval():
-    return RequestHandler().updateLandlordApproval(request.json)
-
-# TODO add restrictions when updating requests
-@app.route('/api/requests/tenants/approval', methods=['PUT'])
-def updateTenantApproval():
-    return RequestHandler().updateTenantApproval(request.json)
-
-# TODO
-@app.route('/api/requests', methods=['DELETE'])
-def removeRequest():
-  return None
-
-"""
 LEASES (UNITS AND TENANTS)
 """
 @app.route('/api/leases/all')
@@ -437,3 +373,37 @@ def searchAccommodations():
 def filterBySharedAmenities():
   return SharedAmenitiesHandler().filter(request.json)
 
+"""
+Cloudinary
+"""
+@app.route('/api/images/landlord/<int:landlord_id>')
+def getImageForLandlord(landlord_id):
+  return LandlordHandler().getProfilePicture(landlord_id)
+
+@app.route('/api/images/tenant/<int:tenant_id>')
+def getImageForTenant(tenant_id):
+  return TenantHandler().getProfilePicture(tenant_id)
+
+@app.route('/api/images/accommodation/<int:accm_id>')
+def getImagesForAccommodation(accm_id):
+  return AccommodationHandler().getImages(accm_id)
+
+@app.route('/api/images/unit/<int:unit_id>')
+def getImagesForUnit(unit_id):
+  return UnitHandler().getImages(unit_id)
+
+@app.route('/api/images/landlord', methods=['POST'])
+def uploadImageForLandlord():
+  return LandlordHandler().uploadProfilePicture(request.json)
+
+@app.route('/api/images/tenant', methods=['POST'])
+def uploadImageForTenant():
+  return TenantHandler().uploadProfilePicture(request.json)
+
+@app.route('/api/images/accommodation', methods=['POST'])
+def uploadImageForAccommodation():
+  return AccommodationHandler().uploadImages(request.json)
+
+@app.route('/api/images/unit', methods=['POST'])
+def uploadImageForUnit():
+  return UnitHandler().uploadImages(request.json)

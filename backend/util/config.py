@@ -5,6 +5,7 @@ from psycopg2 import connect, Error as pgerror
 from psycopg2.extras import RealDictCursor
 from dotenv import load_dotenv
 from os import environ
+import cloudinary
 import logging
 
 # load environment variables
@@ -15,12 +16,20 @@ try:
   database_url = environ.get('DATABASE_URL')
   db = connect(database_url)
 
-  print('Connection successful')
+  print('Database Connection Successful')
 
   cursor = db.cursor()
   cursor.execute('SELECT version()')
   print(cursor.fetchone())
   cursor.close()
+  
+  cloudinary = cloudinary.config( 
+    cloud_name = environ.get('CLOUDINARY_CLOUD_NAME'),
+    api_key = environ.get('CLOUDINARY_API_KEY'),
+    api_secret = environ.get('CLOUDINARY_API_SECRET'),
+    secure = True
+  )
+  print('Cloudinary Connection Successful ({})'.format(cloudinary.cloud_name))
 
 except pgerror:
   print('Error while connecting to PostgreSQL', pgerror)
