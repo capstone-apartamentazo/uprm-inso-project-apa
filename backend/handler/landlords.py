@@ -4,6 +4,8 @@ from util.config import db, logger, landlord_guard as guard
 from dao.landlords import Landlords
 from handler.accommodations import AccommodationHandler
 import flask_praetorian as praetorian
+from cloudinary.uploader import upload
+from cloudinary.search import Search
 import re
 
 class LandlordHandler:
@@ -97,6 +99,17 @@ class LandlordHandler:
       else:
         # returns reason why input was invalid
         return jsonify(reason), 400
+    except (Exception, pgerror) as e:
+      db.rollback()
+      logger.exception(e)
+      return jsonify('Error Occured'), 400
+
+  def getProfilePicture(self, landlord_id):
+    try:
+      if not self.landlords.getById(landlord_id):
+        return False, 'Landlord Not Found'
+      image = Search().expression('folder:apartamentazo/landlords/landlord_{} AND tags:landlord'.format(landlord_id)).execute()
+      return jsonify(image)
     except (Exception, pgerror) as e:
       db.rollback()
       logger.exception(e)
