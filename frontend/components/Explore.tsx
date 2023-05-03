@@ -28,7 +28,7 @@ export default function Explore() {
 	}
 
 	return (
-		<section className='text-center m-10'>
+		<section className='text-center m-10 mt-24'>
 			<h1 className='font-light text-4xl'>Explore Apartments in Mayagüez, PR</h1>
 			<div className='items-center flex justify-center my-10 gap-5 flex-wrap'>
 				{/* TODO: This section changes based on whether the user is signed in or not, is a landlord, or is a student */}
