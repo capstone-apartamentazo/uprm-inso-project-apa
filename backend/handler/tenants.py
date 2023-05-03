@@ -1,16 +1,16 @@
 from flask import jsonify
 from psycopg2 import Error as pgerror
 #from backend.handler.leases import LeaseHandler
-#from backend.handler.requests import RequestHandler
 from util.config import db, logger, tenant_guard as guard
 from dao.tenants import Tenants
 import flask_praetorian as praetorian
+from cloudinary.uploader import upload
+from cloudinary.search import Search
 import re
 
 class TenantHandler:
   def __init__(self):
     self.tenants = Tenants()
-    #self.request = RequestHandler()
     #self.lease = LeaseHandler()
 
   def getAll(self):
@@ -102,7 +102,31 @@ class TenantHandler:
       db.rollback()
       logger.exception(e)
       return jsonify('Error Occured'), 400
-  
+
+  def getProfilePicture(self, tenant_id):
+    try:
+      if not self.tenants.getById(tenant_id):
+        return False, 'Tenant Not Found'
+      image = Search().expression('folder:apartamentazo/tenants AND tags:tenant AND filename:tenant_{}'.format(tenant_id)).execute()
+      return jsonify(image)
+    except (Exception, pgerror) as e:
+      logger.exception(e)
+      return jsonify('Error Occured'), 400
+
+  @praetorian.auth_required
+  def uploadProfilePicture(self, json):
+    try:
+      image = upload(
+        json['image'],
+        folder = 'apartamentazo/tenants',
+        public_id = 'tenant_{}'.format(praetorian.current_user_id()),
+        tags='tenant'
+      )
+      return jsonify(image)
+    except (Exception, pgerror) as e:
+      logger.exception(e)
+      return jsonify('Error Occured'), 400
+
   @praetorian.auth_required
   def deleteTenant(self):
     try:
