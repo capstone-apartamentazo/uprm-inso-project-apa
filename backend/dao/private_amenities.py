@@ -32,13 +32,13 @@ class PrivateAmenities:
     cursor.close()
     return res
 
-  def updatePrivateAmenities(self, identifier, electricity, water, internet, bed, microwave, air_conditioner, parking, balcony):
+  def updatePrivateAmenities(self, identifier, bedrooms, bathrooms, electricity, water, internet, heater, private_washer, private_dryer, air_conditioner, parking, balcony):
     query = 'UPDATE private_amenities \
-            SET electricity = %s, water = %s, internet = %s, bed = %s, microwave = %s, air_conditioner = %s, parking = %s, balcony = %s \
+            SET bedrooms = %s, bathrooms = \'%s\', electricity = %s, water = %s, internet = %s, heater = %s, private_washer = %s, private_dryer = %s, air_conditioner = %s, parking = %s, balcony = %s \
             WHERE priv_amenities_id = %s \
             RETURNING *'
     cursor = db.cursor(cursor_factory=RealDictCursor)
-    cursor.execute(query, (electricity, water, internet, bed, microwave, air_conditioner, parking, balcony, identifier))
+    cursor.execute(query, (bedrooms, bathrooms, electricity, water, internet, heater, private_washer, private_dryer, air_conditioner, parking, balcony, identifier))
     res = cursor.fetchone()
     db.commit()
     cursor.close()

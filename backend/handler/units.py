@@ -3,7 +3,7 @@ from psycopg2 import Error as pgerror
 from handler.leases import LeaseHandler
 from handler.private_amenities import PrivateAmenitiesHandler
 from handler.requests import RequestHandler
-from util.config import db, logger, landlord_guard as guard
+from util.config import db, logger, gmaps, landlord_guard as guard
 from dao.units import Units
 from dao.accommodations import Accommodations
 import flask_praetorian as praetorian
@@ -63,7 +63,7 @@ class UnitHandler:
       valid, reason = self.checkAccm(accm_id)
       if not valid:
         return jsonify(reason)
-      daoUnit = self.units.addUnit(json['unit_number'], json['shared'], json['price'], json['date_available'], json['contract_duration'], accm_id)
+      daoUnit = self.units.addUnit(json['unit_number'], json['tenant_capacity'], json['price'], json['size'], json['date_available'], json['contract_duration'], accm_id)
       if daoUnit:
         return jsonify(daoUnit)
       else:
@@ -76,13 +76,18 @@ class UnitHandler:
   @praetorian.auth_required
   def updateUnit(self, json):
     try:
-      unit_id, number = json['unit_id'], json['unit_number']
-      available, shared, price = json['available'], json['shared'], json['price']
-      date_available, duration = json['date_available'], json['contract_duration']
+      unit_id = json['unit_id']
+      number = json['unit_number']
+      available = json['available']
+      tenant_capacity = json['tenant_capacity']
+      price = json['price']
+      size = json['size']
+      date_available = json['date_available']
+      duration = json['contract_duration']
       valid, reason = self.checkUnit(unit_id)
       if not valid:
         return jsonify(reason)
-      daoUnit = self.units.updateUnit(unit_id, number, available, shared, price, date_available, duration)
+      daoUnit = self.units.updateUnit(unit_id, number, available, tenant_capacity, price, size, date_available, duration)
       if daoUnit:
         return jsonify(daoUnit)
       else:
@@ -139,6 +144,25 @@ class UnitHandler:
       db.rollback()
       logger.exception(e)
       return jsonify('Error Occured'), 400
+
+  def score(self):
+    # fixed values of UPRM
+    uprm_coordinates = (18.21102, -67.14092)
+
+    # latitude and longitude from accm
+    accm_coordinates = (18.17435, -67.14418)
+
+    driving_dist_matrix = gmaps.distance_matrix(uprm_coordinates, accm_coordinates, mode='driving')['rows'][0]
+    walking_dist_matrix = gmaps.distance_matrix(uprm_coordinates, accm_coordinates, mode='walking')['rows'][0]
+
+    driving_duration = driving_dist_matrix['elements'][0]['duration']['value']
+    walking_duration = walking_dist_matrix['elements'][0]['duration']['value']
+
+    best_dist_matrix = walking_dist_matrix
+    if walking_duration > 1800:
+      best_dist_matrix = driving_dist_matrix
+
+    best_dist = best_dist_matrix['elements'][0]['distance']['value']
 
   def checkUnit(self, identifier):
     daoUnit = self.units.getById(identifier)

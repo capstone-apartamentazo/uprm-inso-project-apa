@@ -46,36 +46,6 @@ class SharedAmenitiesHandler:
       logger.exception(e)
       return jsonify('Error Occured'), 400
 
-  def filter(self, json):
-    try:
-      amenities = str()
-      include = str()
-      if json['kitchen']:
-        amenities = amenities.join('kitchen = true')
-        include = ' and '
-      if json['washer']:
-        amenities = include.join([amenities, 'washer = true'])
-        include = ' and '
-      if json['dryer']:
-        amenities = include.join([amenities, 'dryer = true'])
-        include = ' and '
-      if json['internet']:
-        amenities = include.join([amenities, 'internet = true'])
-        include = ' and '
-      if json['pets_allowed']:
-        amenities = include.join([amenities, 'pets_allowed = true'])
-      if not len(amenities.strip()):
-        return jsonify('No Amenities to Filter')
-      daoAmenities = self.amenities.filter(amenities, json['offset'])
-      if daoAmenities:
-        return jsonify([row for row in daoAmenities])
-      else:
-        return jsonify('Accommodations Not Found')
-    except (Exception, pgerror) as e:
-      db.rollback()
-      logger.exception(e)
-      return jsonify('Error Occured'), 400
-
   @praetorian.auth_required
   def addSharedAmenities(self, json):
     try:
@@ -97,13 +67,15 @@ class SharedAmenitiesHandler:
   def updateSharedAmenities(self, json):
     try:
       amenities_id = json['shared_amenities_id']
-      bedrooms, bathrooms = json['bedrooms'], json['bathrooms']
-      kitchen, washer, dryer = json['kitchen'], json['washer'], json['dryer']
-      internet, pets_allowed = json['internet'], json['pets_allowed']
+      kitchen = json['shared_kitchen']
+      bathroom = json['shared_bathroom']
+      washer = json['shared_washer']
+      dryer = json['shared_dryer']
+      pets_allowed = json['pets_allowed']
       valid, reason = self.checkAmenities(amenities_id)
       if not valid:
         return jsonify(reason)
-      updatedAmenities = self.amenities.updateSharedAmenities(amenities_id, bedrooms, bathrooms, kitchen, washer, dryer, internet, pets_allowed)
+      updatedAmenities = self.amenities.updateSharedAmenities(amenities_id, kitchen, bathroom, washer, dryer, pets_allowed)
       if updatedAmenities:
         return jsonify(updatedAmenities)
       else:

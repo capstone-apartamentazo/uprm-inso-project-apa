@@ -69,13 +69,21 @@ class PrivateAmenitiesHandler:
   def updatePrivateAmenities(self, json):
     try:
       amenities_id = json['priv_amenities_id']
-      electricity, water, internet = json['electricity'], json['water'], json['internet']
-      bed, microwave, air_conditioner = json['bed'], json['microwave'], json['air_conditioner']
-      parking, balcony = json['parking'], json['balcony']
+      bedrooms = json['bedrooms']
+      bathrooms = json['bathrooms']
+      electricity = json['electricity']
+      water = json['water']
+      internet = json['internet']
+      heater = json['heater']
+      private_washer = json['private_washer']
+      private_dryer = json['private_dryer']
+      air_conditioner = json['air_conditioner']
+      parking = json['parking']
+      balcony = json['balcony']
       valid, reason = self.checkAmenities(amenities_id)
       if not valid:
         return jsonify(reason)
-      updatedAmenities = self.amenities.updatePrivateAmenities(amenities_id, electricity, water, internet, bed, microwave, air_conditioner, parking, balcony)
+      updatedAmenities = self.amenities.updatePrivateAmenities(amenities_id, bedrooms, bathrooms, electricity, water, internet, heater, private_washer, private_dryer, air_conditioner, parking, balcony)
       if updatedAmenities:
         return jsonify(updatedAmenities)
       else:

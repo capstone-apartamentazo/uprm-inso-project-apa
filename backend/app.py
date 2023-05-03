@@ -354,12 +354,12 @@ SEARCH AND FILTER (ACCOMMODATIONS & UNITS)
 def searchAccommodations():
   return AccommodationHandler().search(request.json)
 
-@app.route('/api/filter/shared/amenities', methods=['POST'])
-def filterBySharedAmenities():
-  return SharedAmenitiesHandler().filter(request.json)
+@app.route('/api/filter/amenities', methods=['POST'])
+def filterByAmenities():
+  return AccommodationHandler().filter(request.json)
 
 """
-Cloudinary
+CLOUDINARY
 """
 @app.route('/api/images/landlord/<int:landlord_id>')
 def getImageForLandlord(landlord_id):

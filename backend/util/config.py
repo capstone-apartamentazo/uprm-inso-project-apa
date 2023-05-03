@@ -6,6 +6,7 @@ from psycopg2.extras import RealDictCursor
 from dotenv import load_dotenv
 from os import environ
 import cloudinary
+import googlemaps
 import logging
 
 # load environment variables
@@ -30,6 +31,8 @@ try:
     secure = True
   )
   print('Cloudinary Connection Successful ({})'.format(cloudinary.cloud_name))
+
+  gmaps = googlemaps.Client(key=environ.get('GOOGLE_API_KEY'))
 
 except pgerror:
   print('Error while connecting to PostgreSQL', pgerror)

@@ -24,10 +24,10 @@ class Units:
     cursor.close()
     return res
 
-  def addUnit(self, number, shared, price, date_available, duration, accm):
+  def addUnit(self, number, tenant_capacity, price, size, date_available, duration, accm):
     query = 'WITH new_unit AS ( \
-              INSERT INTO units (unit_number, shared, price, date_available, contract_duration, accm_id) \
-              VALUES (%s, %s, %s, %s, %s, %s) \
+              INSERT INTO units (unit_number, tenant_capacity, price, size, date_available, contract_duration, accm_id) \
+              VALUES (%s, %s, %s, %s, %s, %s, %s) \
               RETURNING * \
             ), \
             new_amenities AS ( \
@@ -37,19 +37,19 @@ class Units:
             ) \
             SELECT * FROM new_unit NATURAL INNER JOIN new_amenities'
     cursor = db.cursor(cursor_factory=RealDictCursor)
-    cursor.execute(query, (number, shared, price, date_available, duration, accm))
+    cursor.execute(query, (number, tenant_capacity, price, size, date_available, duration, accm))
     res = cursor.fetchone()
     db.commit()
     cursor.close()
     return res
 
-  def updateUnit(self, identifier, number, available, shared, price, date_available, duration):
+  def updateUnit(self, identifier, number, available, tenant_capacity, price, size, date_available, duration):
     query = 'UPDATE units \
-            SET unit_number = %s, available = %s, shared = %s, price = %s, date_available = %s, contract_duration = %s \
+            SET unit_number = %s, available = %s, tenant_capacity = %s, price = %s, size = %s, date_available = %s, contract_duration = %s \
             WHERE unit_id = %s \
             RETURNING *'
     cursor = db.cursor(cursor_factory=RealDictCursor)
-    cursor.execute(query, (number, available, shared, price, date_available, duration, identifier))
+    cursor.execute(query, (number, available, tenant_capacity, price, size, date_available, duration, identifier))
     res = cursor.fetchone()
     db.commit()
     cursor.close()

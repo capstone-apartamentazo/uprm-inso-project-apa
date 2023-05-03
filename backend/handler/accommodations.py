@@ -67,6 +67,50 @@ class AccommodationHandler:
       logger.exception(e)
       return jsonify('Error Occured'), 400
 
+  def filter(self, json):
+    try:
+      amenities = 'bedrooms >= {} and bathrooms >= {}'.format(json['bedrooms'], json['bathrooms'])
+      include = ' and '
+      if json['shared_kitchen']:
+        amenities = include.join([amenities, 'shared_kitchen = true'])
+      if json['shared_bathroom']:
+        amenities = include.join([amenities, 'shared_bathroom = true'])
+      if json['shared_washer']:
+        amenities = include.join([amenities, 'shared_washer = true'])
+      if json['shared_dryer']:
+        amenities = include.join([amenities, 'shared_dryer = true'])
+      if json['pets_allowed']:
+        amenities = include.join([amenities, 'pets_allowed = true'])
+      if json['electricity']:
+        amenities = include.join([amenities, 'electricity = true'])
+      if json['water']:
+        amenities = include.join([amenities, 'water = true'])
+      if json['internet']:
+        amenities = include.join([amenities, 'internet = true'])
+      if json['heater']:
+        amenities = include.join([amenities, 'heater = true'])
+      if json['private_washer']:
+        amenities = include.join([amenities, 'private_washer = true'])
+      if json['private_dryer']:
+        amenities = include.join([amenities, 'private_dryer = true'])
+      if json['air_conditioner']:
+        amenities = include.join([amenities, 'air_conditioner = true'])
+      if json['parking']:
+        amenities = include.join([amenities, 'parking = true'])
+      if json['balcony']:
+        amenities = include.join([amenities, 'balcony = true'])
+      if not len(amenities.strip()):
+        return jsonify('No Amenities to Filter')
+      daoAmenities = self.accommodations.filter(amenities, json['offset'])
+      if daoAmenities:
+        return jsonify([row for row in daoAmenities])
+      else:
+        return jsonify('Accommodations Not Found')
+    except (Exception, pgerror) as e:
+      db.rollback()
+      logger.exception(e)
+      return jsonify('Error Occured'), 400
+
   @praetorian.auth_required
   def addAccommodation(self, json):
     try:
@@ -77,12 +121,14 @@ class AccommodationHandler:
       state = json['accm_state']
       country = json['accm_country']
       zipcode = json['accm_zipcode']
+      latitude = json['latitude']
+      longitude = json['longitude']
       description = json['accm_description']
       landlordID = praetorian.current_user_id()
       valid, reason = self.checkInput(0, title, street, number, city, state, country, zipcode)
       # add accommodation if input is valid
       if valid:
-        newAccommodation = self.accommodations.addAccommodation(title, street, number, city, state, country, zipcode, description, landlordID)
+        newAccommodation = self.accommodations.addAccommodation(title, street, number, city, state, country, zipcode, latitude, longitude, description, landlordID)
         if newAccommodation:
           return jsonify(newAccommodation)
         else:
@@ -106,6 +152,8 @@ class AccommodationHandler:
       state = json['accm_state']
       country = json['accm_country']
       zipcode = json['accm_zipcode']
+      latitude = json['latitude']
+      longitude = json['longitude']
       description = json['accm_description']
       valid, reason = self.checkAccmID(accm_id)
       if not valid:
@@ -113,7 +161,7 @@ class AccommodationHandler:
       valid, reason = self.checkInput(accm_id, title, street, number, city, state, country, zipcode)
       # add accommodation if input is valid
       if valid:
-        updatedAccommodation = self.accommodations.updateAccommodation(accm_id, title, street, number, city, state, country, zipcode, description)
+        updatedAccommodation = self.accommodations.updateAccommodation(accm_id, title, street, number, city, state, country, zipcode, latitude, longitude, description)
         if updatedAccommodation:
           return jsonify(updatedAccommodation)
         else:

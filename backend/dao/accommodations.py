@@ -24,10 +24,10 @@ class Accommodations:
     cursor.close()
     return res
 
-  def addAccommodation(self, title, street, number, city, state, country, zipcode, description, landlord):
+  def addAccommodation(self, title, street, number, city, state, country, zipcode, latitude, longitude, description, landlord):
     query = 'WITH new_accm AS ( \
-              INSERT INTO accommodations (accm_title, accm_street, accm_number, accm_city, accm_state, accm_country, accm_zipcode, accm_description, landlord_id) \
-              VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) \
+              INSERT INTO accommodations (accm_title, accm_street, accm_number, accm_city, accm_state, accm_country, accm_zipcode, latitude, longitude, accm_description, landlord_id) \
+              VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) \
               RETURNING * \
             ), \
             new_amenities AS ( \
@@ -37,18 +37,18 @@ class Accommodations:
             ) \
             SELECT * FROM new_accm NATURAL INNER JOIN new_amenities'
     cursor = db.cursor(cursor_factory=RealDictCursor)
-    cursor.execute(query, (title, street, number, city, state, country, zipcode, description, landlord))
+    cursor.execute(query, (title, street, number, city, state, country, zipcode, latitude, longitude, description, landlord))
     res = cursor.fetchone()
     db.commit()
     cursor.close()
     return res
 
-  def updateAccommodation(self, identifier, title, street, number, city, state, country, zipcode, description):
+  def updateAccommodation(self, identifier, title, street, number, city, state, country, zipcode, latitude, longitude, description):
     query = 'UPDATE accommodations \
-            SET accm_title = %s, accm_street = %s, accm_number = %s, accm_city = %s, accm_state = %s, accm_country = %s, accm_zipcode = %s, accm_description = %s \
+            SET accm_title = %s, accm_street = %s, accm_number = %s, accm_city = %s, accm_state = %s, accm_country = %s, accm_zipcode = %s, latitude = %s, longitude = %s, accm_description = %s \
             WHERE accm_id = %s RETURNING *'
     cursor = db.cursor(cursor_factory=RealDictCursor)
-    cursor.execute(query, (title, street, number, city, state, country, zipcode, description, identifier))
+    cursor.execute(query, (title, street, number, city, state, country, zipcode, latitude, longitude, description, identifier))
     res = cursor.fetchone()
     db.commit()
     cursor.close()
@@ -80,6 +80,21 @@ class Accommodations:
             GROUP BY accm_id ORDER BY accm_id DESC LIMIT 10 OFFSET %s'
     cursor = db.cursor(cursor_factory=RealDictCursor)
     cursor.execute(query %(data, data, data, data, data, offset))
+    res = cursor.fetchall()
+    cursor.close()
+    return res
+
+  def filter(self, amenities, offset):
+    query = 'SELECT DISTINCT ON (accm_id) accm_id, accm_title, accm_street, accm_number, accm_city, accm_state, accm_country, accm_zipcode, accm_description, \
+            json_agg(json_build_object(\'unit_id\', units.unit_id, \'unit_number\', units.unit_number, \'price\', units.price, \'size\', units.size, \'date_available\', \
+            units.date_available, \'contract_duration\', units.contract_duration)) as units \
+            FROM accommodations NATURAL INNER JOIN units NATURAL INNER JOIN shared_amenities \
+            INNER JOIN private_amenities ON units.unit_id = private_amenities.priv_amenities_id \
+            WHERE (%s) AND units.available = true \
+            AND accommodations.deleted_flag = false \
+            GROUP BY accm_id ORDER BY accm_id DESC LIMIT 10 OFFSET %s'
+    cursor = db.cursor(cursor_factory=RealDictCursor)
+    cursor.execute(query %(amenities, offset))
     res = cursor.fetchall()
     cursor.close()
     return res
