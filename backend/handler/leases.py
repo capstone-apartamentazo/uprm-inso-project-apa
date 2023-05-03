@@ -16,7 +16,6 @@ class LeaseHandler:
       else:
         return jsonify('Empty List')
     except (Exception, pgerror) as e:
-      db.rollback()
       logger.exception(e)
       return jsonify('Error Occured'), 400
 
@@ -28,7 +27,6 @@ class LeaseHandler:
       else:
           return jsonify('Lease Not Found')
     except (Exception, pgerror) as e:
-      db.rollback()
       logger.exception(e)
       return jsonify('Error Occured'), 400
 
@@ -40,7 +38,6 @@ class LeaseHandler:
       else:
           return jsonify('Leases from Units Not Found')
     except (Exception, pgerror) as e:
-      db.rollback()
       logger.exception(e)
       return jsonify('Error Occured'), 400
 
@@ -52,7 +49,6 @@ class LeaseHandler:
       else:
           return jsonify('Leases from Tenant Not Found')
     except (Exception, pgerror) as e:
-      db.rollback()
       logger.exception(e)
       return jsonify('Error Occured'), 400
 
@@ -62,6 +58,7 @@ class LeaseHandler:
       unit, tenant = json['unit_id'], json['tenant_id']
       daoLease = self.leases.addLease(price, start, end, unit, tenant)
       if daoLease:
+        db.commit()
         return jsonify(daoLease)
       else:
         return jsonify('Error adding Lease'), 405
@@ -77,6 +74,7 @@ class LeaseHandler:
       currTenant, unit, tenant = json['is_current_tenant'], json['unit_id'], json['tenant_id']
       daoLease = self.leases.updateLease(identifier, price, start, end, currTenant, unit, tenant)
       if daoLease:
+        db.commit()
         return jsonify(daoLease)
       else:
         return jsonify('Error updating Lease'), 400
@@ -89,6 +87,7 @@ class LeaseHandler:
     try:
       daoLease = self.leases.updateCurrentTenant(json['lease_id'], json['is_current_tenant'])
       if daoLease:
+        db.commit()
         return jsonify(daoLease)
       else:
         return jsonify('Error updating Current Tenant from Lease'), 400

@@ -21,7 +21,6 @@ class LandlordHandler:
       else:
         return jsonify('Empty List')
     except (Exception, pgerror) as e:
-      db.rollback()
       logger.exception(e)
       return jsonify('Error Occured'), 400
 
@@ -33,7 +32,6 @@ class LandlordHandler:
       else:
         return jsonify('Landlord Not Found')
     except (Exception, pgerror) as e:
-      db.rollback()
       logger.exception(e)
       return jsonify('Error Occured'), 400
 
@@ -69,6 +67,7 @@ class LandlordHandler:
       if valid:
         newLandlord = self.landlords.addLandlord(name, email, guard.hash_password(password), phone)
         if newLandlord:
+          db.commit()
           return jsonify(newLandlord)
         else:
           return jsonify('Error adding Landlord'), 400
@@ -93,6 +92,7 @@ class LandlordHandler:
       if valid:
         updatedLandlord = self.landlords.updateLandlord(identifier, name, email, guard.hash_password(password), phone)
         if updatedLandlord:
+          db.commit()
           return jsonify(updatedLandlord)
         else:
           return jsonify('Error updating Landlord'), 400
@@ -131,6 +131,7 @@ class LandlordHandler:
     try:
       daoLandlord = self.landlords.updateRating(json['landlord_id'])
       if daoLandlord:
+        db.commit()
         return jsonify(daoLandlord)
       else:
         return jsonify('Error updating Landlord Rating')

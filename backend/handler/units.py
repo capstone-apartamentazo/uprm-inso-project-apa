@@ -28,7 +28,6 @@ class UnitHandler:
       else:
         return jsonify('Empty List')
     except (Exception, pgerror) as e:
-      db.rollback()
       logger.exception(e)
       return jsonify('Error Occured'), 400
 
@@ -40,7 +39,6 @@ class UnitHandler:
       else:
         return jsonify('Unit Not Found')
     except (Exception, pgerror) as e:
-      db.rollback()
       logger.exception(e)
       return jsonify('Error Occured'), 400
 
@@ -52,7 +50,6 @@ class UnitHandler:
       else:
         return jsonify('Units Not Found in Accommodation')
     except (Exception, pgerror) as e:
-      db.rollback()
       logger.exception(e)
       return jsonify('Error Occured'), 400
 
@@ -63,8 +60,9 @@ class UnitHandler:
       valid, reason = self.checkAccm(accm_id)
       if not valid:
         return jsonify(reason)
-      daoUnit = self.units.addUnit(json['unit_number'], json['shared'], json['price'], json['date_available'], json['contract_duration'], accm_id)
+      daoUnit = self.units.addUnit(json['unit_number'], json['tenant_capacity'], json['price'], json['size'], json['date_available'], json['contract_duration'], accm_id)
       if daoUnit:
+        db.commit()
         return jsonify(daoUnit)
       else:
           jsonify('Error adding Unit and Private Amenities'), 400
@@ -76,14 +74,20 @@ class UnitHandler:
   @praetorian.auth_required
   def updateUnit(self, json):
     try:
-      unit_id, number = json['unit_id'], json['unit_number']
-      available, shared, price = json['available'], json['shared'], json['price']
-      date_available, duration = json['date_available'], json['contract_duration']
+      unit_id = json['unit_id']
+      number = json['unit_number']
+      available = json['available']
+      tenant_capacity = json['tenant_capacity']
+      price = json['price']
+      size = json['size']
+      date_available = json['date_available']
+      duration = json['contract_duration']
       valid, reason = self.checkUnit(unit_id)
       if not valid:
         return jsonify(reason)
-      daoUnit = self.units.updateUnit(unit_id, number, available, shared, price, date_available, duration)
+      daoUnit = self.units.updateUnit(unit_id, number, available, tenant_capacity, price, size, date_available, duration)
       if daoUnit:
+        db.commit()
         return jsonify(daoUnit)
       else:
         return jsonify('Error updating Unit'), 400
