@@ -39,7 +39,16 @@ class Accommodations:
     cursor = db.cursor(cursor_factory=RealDictCursor)
     cursor.execute(query, (title, street, number, city, state, country, zipcode, latitude, longitude, description, landlord))
     res = cursor.fetchone()
-    db.commit()
+    cursor.close()
+    return res
+
+  def addDistance(self, identifier, distance):
+    query = 'UPDATE accommodations \
+            SET distance = %s \
+            WHERE accm_id = %s RETURNING *'
+    cursor = db.cursor(cursor_factory=RealDictCursor)
+    cursor.execute(query, (distance, identifier))
+    res = cursor.fetchone()
     cursor.close()
     return res
 
@@ -50,7 +59,6 @@ class Accommodations:
     cursor = db.cursor(cursor_factory=RealDictCursor)
     cursor.execute(query, (title, street, number, city, state, country, zipcode, latitude, longitude, description, identifier))
     res = cursor.fetchone()
-    db.commit()
     cursor.close()
     return res
 
@@ -86,8 +94,7 @@ class Accommodations:
 
   def filter(self, amenities, offset):
     query = 'SELECT DISTINCT ON (accm_id) accm_id, accm_title, accm_street, accm_number, accm_city, accm_state, accm_country, accm_zipcode, accm_description, \
-            json_agg(json_build_object(\'unit_id\', units.unit_id, \'unit_number\', units.unit_number, \'price\', units.price, \'size\', units.size, \'date_available\', \
-            units.date_available, \'contract_duration\', units.contract_duration)) as units \
+            json_agg(units) as accm_units \
             FROM accommodations NATURAL INNER JOIN units NATURAL INNER JOIN shared_amenities \
             INNER JOIN private_amenities ON units.unit_id = private_amenities.priv_amenities_id \
             WHERE (%s) AND units.available = true \
@@ -95,6 +102,22 @@ class Accommodations:
             GROUP BY accm_id ORDER BY accm_id DESC LIMIT 10 OFFSET %s'
     cursor = db.cursor(cursor_factory=RealDictCursor)
     cursor.execute(query %(amenities, offset))
+    res = cursor.fetchall()
+    cursor.close()
+    return res
+
+  def calculateScore(self):
+    query = 'SELECT DISTINCT ON (accm_id) accm_id, accm_title, accm_street, accm_number, accm_city, accm_state, accm_country, accm_zipcode, accm_description, \
+            landlord_rating/5::float as rating_score, \
+            json_agg(units) as accm_units, \
+            CASE \
+              WHEN distance < 1000 THEN 1 \
+              ELSE 1000/distance::float \
+            END AS distance_score \
+            FROM accommodations NATURAL INNER JOIN landlords NATURAL INNER JOIN units NATURAL INNER JOIN shared_amenities \
+            GROUP BY accm_id, landlord_rating LIMIT 10'
+    cursor = db.cursor(cursor_factory=RealDictCursor)
+    cursor.execute(query)
     res = cursor.fetchall()
     cursor.close()
     return res

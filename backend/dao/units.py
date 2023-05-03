@@ -39,7 +39,6 @@ class Units:
     cursor = db.cursor(cursor_factory=RealDictCursor)
     cursor.execute(query, (number, tenant_capacity, price, size, date_available, duration, accm))
     res = cursor.fetchone()
-    db.commit()
     cursor.close()
     return res
 
@@ -51,7 +50,6 @@ class Units:
     cursor = db.cursor(cursor_factory=RealDictCursor)
     cursor.execute(query, (number, available, tenant_capacity, price, size, date_available, duration, identifier))
     res = cursor.fetchone()
-    db.commit()
     cursor.close()
     return res
 

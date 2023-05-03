@@ -28,7 +28,6 @@ class PrivateAmenities:
     cursor = db.cursor(cursor_factory=RealDictCursor)
     cursor.execute('INSERT INTO private_amenities (unit_id) VALUES (%s) RETURNING *' %(unit))
     res = cursor.fetchone()
-    db.commit()
     cursor.close()
     return res
 
@@ -40,7 +39,6 @@ class PrivateAmenities:
     cursor = db.cursor(cursor_factory=RealDictCursor)
     cursor.execute(query, (bedrooms, bathrooms, electricity, water, internet, heater, private_washer, private_dryer, air_conditioner, parking, balcony, identifier))
     res = cursor.fetchone()
-    db.commit()
     cursor.close()
     return res
 

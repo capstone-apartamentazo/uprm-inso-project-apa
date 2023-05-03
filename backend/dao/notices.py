@@ -28,7 +28,6 @@ class Notices:
     cursor = db.cursor(cursor_factory=RealDictCursor)
     cursor.execute('INSERT INTO notices (notice_title, notice_content, accm_id) VALUES (%s, %s, %s) RETURNING *', (title, content, accm))
     res = cursor.fetchone()
-    db.commit()
     cursor.close()
     return res
 
@@ -40,7 +39,6 @@ class Notices:
     cursor = db.cursor(cursor_factory=RealDictCursor)
     cursor.execute(query, (title, content, identifier))
     res = cursor.fetchone()
-    db.commit()
     cursor.close()
     return res
   

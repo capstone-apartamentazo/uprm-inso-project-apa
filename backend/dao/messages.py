@@ -41,7 +41,6 @@ class Messages:
             WHERE landlord_id = %s AND tenant_id = %s AND landlord_sent_msg = %s AND msg_read = false'
     cursor = db.cursor(cursor_factory=RealDictCursor)
     cursor.execute(query, (landlord, tenant, landlord_sent_msg))
-    db.commit()
     cursor.close()
 
   def getConversation(self, landlord, tenant):
@@ -60,7 +59,6 @@ class Messages:
     cursor = db.cursor(cursor_factory=RealDictCursor)
     cursor.execute(query, (landlord, tenant, content))
     res = cursor.fetchone()
-    db.commit()
     cursor.close()
     return res
 
@@ -69,7 +67,6 @@ class Messages:
     cursor = db.cursor(cursor_factory=RealDictCursor)
     cursor.execute(query, (landlord, tenant, content))
     res = cursor.fetchone()
-    db.commit()
     cursor.close()
     return res
   

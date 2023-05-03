@@ -30,7 +30,6 @@ class Landlords:
     cursor = db.cursor(cursor_factory=RealDictCursor)
     cursor.execute(query, (name, email, password, phone))
     res = cursor.fetchone()
-    db.commit()
     cursor.close()
     return res
 
@@ -42,7 +41,6 @@ class Landlords:
     cursor = db.cursor(cursor_factory=RealDictCursor)
     cursor.execute(query, (name, email, password, phone, identifier))
     res = cursor.fetchone()
-    db.commit()
     cursor.close()
     return res
 
@@ -72,7 +70,6 @@ class Landlords:
     cursor = db.cursor(cursor_factory=RealDictCursor)
     cursor.execute(query, (identifier, identifier))
     res = cursor.fetchone()
-    db.commit()
     cursor.close()
     return res
 

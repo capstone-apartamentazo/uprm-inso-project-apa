@@ -3,7 +3,7 @@ from psycopg2 import Error as pgerror
 from handler.leases import LeaseHandler
 from handler.private_amenities import PrivateAmenitiesHandler
 from handler.requests import RequestHandler
-from util.config import db, logger, gmaps, landlord_guard as guard
+from util.config import db, logger, landlord_guard as guard
 from dao.units import Units
 from dao.accommodations import Accommodations
 import flask_praetorian as praetorian
@@ -28,7 +28,6 @@ class UnitHandler:
       else:
         return jsonify('Empty List')
     except (Exception, pgerror) as e:
-      db.rollback()
       logger.exception(e)
       return jsonify('Error Occured'), 400
 
@@ -40,7 +39,6 @@ class UnitHandler:
       else:
         return jsonify('Unit Not Found')
     except (Exception, pgerror) as e:
-      db.rollback()
       logger.exception(e)
       return jsonify('Error Occured'), 400
 
@@ -52,7 +50,6 @@ class UnitHandler:
       else:
         return jsonify('Units Not Found in Accommodation')
     except (Exception, pgerror) as e:
-      db.rollback()
       logger.exception(e)
       return jsonify('Error Occured'), 400
 
@@ -65,6 +62,7 @@ class UnitHandler:
         return jsonify(reason)
       daoUnit = self.units.addUnit(json['unit_number'], json['tenant_capacity'], json['price'], json['size'], json['date_available'], json['contract_duration'], accm_id)
       if daoUnit:
+        db.commit()
         return jsonify(daoUnit)
       else:
           jsonify('Error adding Unit and Private Amenities'), 400
@@ -89,6 +87,7 @@ class UnitHandler:
         return jsonify(reason)
       daoUnit = self.units.updateUnit(unit_id, number, available, tenant_capacity, price, size, date_available, duration)
       if daoUnit:
+        db.commit()
         return jsonify(daoUnit)
       else:
         return jsonify('Error updating Unit'), 400
@@ -144,25 +143,6 @@ class UnitHandler:
       db.rollback()
       logger.exception(e)
       return jsonify('Error Occured'), 400
-
-  def score(self):
-    # fixed values of UPRM
-    uprm_coordinates = (18.21102, -67.14092)
-
-    # latitude and longitude from accm
-    accm_coordinates = (18.17435, -67.14418)
-
-    driving_dist_matrix = gmaps.distance_matrix(uprm_coordinates, accm_coordinates, mode='driving')['rows'][0]
-    walking_dist_matrix = gmaps.distance_matrix(uprm_coordinates, accm_coordinates, mode='walking')['rows'][0]
-
-    driving_duration = driving_dist_matrix['elements'][0]['duration']['value']
-    walking_duration = walking_dist_matrix['elements'][0]['duration']['value']
-
-    best_dist_matrix = walking_dist_matrix
-    if walking_duration > 1800:
-      best_dist_matrix = driving_dist_matrix
-
-    best_dist = best_dist_matrix['elements'][0]['distance']['value']
 
   def checkUnit(self, identifier):
     daoUnit = self.units.getById(identifier)

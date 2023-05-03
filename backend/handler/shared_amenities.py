@@ -18,7 +18,6 @@ class SharedAmenitiesHandler:
       else:
         return jsonify('Empty List')
     except (Exception, pgerror) as e:
-      db.rollback()
       logger.exception(e)
       return jsonify('Error Occured'), 400
 
@@ -30,7 +29,6 @@ class SharedAmenitiesHandler:
       else:
         return jsonify('Shared Amenities Not Found')
     except (Exception, pgerror) as e:
-      db.rollback()
       logger.exception(e)
       return jsonify('Error Occured'), 400
 
@@ -42,7 +40,6 @@ class SharedAmenitiesHandler:
       else:
         return jsonify('Shared Amenities Not Found')
     except (Exception, pgerror) as e:
-      db.rollback()
       logger.exception(e)
       return jsonify('Error Occured'), 400
 
@@ -55,6 +52,7 @@ class SharedAmenitiesHandler:
         return jsonify(reason)
       daoAmenities = self.amenities.addSharedAmenities(accm_id)
       if daoAmenities:
+        db.commit()
         return jsonify(daoAmenities)
       else:
         return jsonify('Error adding Shared Amenities'), 400
@@ -77,6 +75,7 @@ class SharedAmenitiesHandler:
         return jsonify(reason)
       updatedAmenities = self.amenities.updateSharedAmenities(amenities_id, kitchen, bathroom, washer, dryer, pets_allowed)
       if updatedAmenities:
+        db.commit()
         return jsonify(updatedAmenities)
       else:
         return jsonify('Error updating Shared Amenities'), 400

@@ -3,7 +3,7 @@ from psycopg2 import Error as pgerror
 from handler.notices import NoticeHandler
 from handler.reviews import ReviewHandler
 from handler.units import UnitHandler
-from util.config import db, logger, landlord_guard as guard
+from util.config import db, logger, gmaps, landlord_guard as guard
 from dao.accommodations import Accommodations
 from handler.shared_amenities import SharedAmenitiesHandler
 import flask_praetorian as praetorian
@@ -27,7 +27,6 @@ class AccommodationHandler:
       else:
         return jsonify('Empty List')
     except (Exception, pgerror) as e:
-      db.rollback()
       logger.exception(e)
       return jsonify('Error Occured'), 400
 
@@ -39,7 +38,6 @@ class AccommodationHandler:
       else:
         return jsonify('Accommodation Not Found')
     except (Exception, pgerror) as e:
-      db.rollback()
       logger.exception(e)
       return jsonify('Error Occured'), 400
 
@@ -51,7 +49,6 @@ class AccommodationHandler:
       else:
         return jsonify('Accommodations Not Found')
     except (Exception, pgerror) as e:
-      db.rollback()
       logger.exception(e)
       return jsonify('Error Occured'), 400
 
@@ -111,6 +108,11 @@ class AccommodationHandler:
       logger.exception(e)
       return jsonify('Error Occured'), 400
 
+  def score(self, json):
+    weights = { 1: 0.35, 2: 0.25, 3: 0.20, 4: 0.15, 5: 0.05 }
+    daoAccommodations = self.accommodations.calculateScore()
+    return jsonify(daoAccommodations)
+
   @praetorian.auth_required
   def addAccommodation(self, json):
     try:
@@ -130,6 +132,8 @@ class AccommodationHandler:
       if valid:
         newAccommodation = self.accommodations.addAccommodation(title, street, number, city, state, country, zipcode, latitude, longitude, description, landlordID)
         if newAccommodation:
+          self.calculateDistance(newAccommodation['accm_id'], newAccommodation['latitude'], newAccommodation['longitude'])
+          db.commit()
           return jsonify(newAccommodation)
         else:
           return jsonify('Error adding Accommodation and Shared Amenities'), 400
@@ -163,12 +167,42 @@ class AccommodationHandler:
       if valid:
         updatedAccommodation = self.accommodations.updateAccommodation(accm_id, title, street, number, city, state, country, zipcode, latitude, longitude, description)
         if updatedAccommodation:
+          self.calculateDistance(updatedAccommodation['accm_id'], updatedAccommodation['latitude'], updatedAccommodation['longitude'])
+          db.commit()
           return jsonify(updatedAccommodation)
         else:
           return jsonify('Error updating Accommodation'), 400
       else:
         # returns reason why input was invalid
         return jsonify(reason)
+    except (Exception, pgerror) as e:
+      db.rollback()
+      logger.exception(e)
+      return jsonify('Error Occured'), 400
+
+  def calculateDistance(self, accm_id, latitude, longitude):
+    try:
+      uprm_coordinates = (18.21102, -67.14092)
+      accm_coordinates = (latitude, longitude)
+
+      driving_dist_matrix = gmaps.distance_matrix(uprm_coordinates, accm_coordinates, mode='driving')['rows'][0]
+      walking_dist_matrix = gmaps.distance_matrix(uprm_coordinates, accm_coordinates, mode='walking')['rows'][0]
+
+      driving_duration = driving_dist_matrix['elements'][0]['duration']['value']
+      walking_duration = walking_dist_matrix['elements'][0]['duration']['value']
+
+      best_dist_matrix = walking_dist_matrix
+      if walking_duration > 1800:
+        best_dist_matrix = driving_dist_matrix
+
+      best_dist = best_dist_matrix['elements'][0]['distance']['value']
+
+      daoAccommodation = self.accommodations.addDistance(accm_id, best_dist)
+      if daoAccommodation:
+        db.commit()
+        return jsonify(daoAccommodation)
+      else:
+        return jsonify('Error updating Accommodation'), 400
     except (Exception, pgerror) as e:
       db.rollback()
       logger.exception(e)

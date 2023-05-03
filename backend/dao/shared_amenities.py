@@ -28,7 +28,6 @@ class SharedAmenities:
     cursor = db.cursor(cursor_factory=RealDictCursor)
     cursor.execute('INSERT INTO shared_amenities (accm_id) VALUES (%s) RETURNING *' %(accm))
     res = cursor.fetchone()
-    db.commit()
     cursor.close()
     return res
 
@@ -40,7 +39,6 @@ class SharedAmenities:
     cursor = db.cursor(cursor_factory=RealDictCursor)
     cursor.execute(query, (kitchen, bathroom, washer, dryer, pets_allowed, identifier))
     res = cursor.fetchone()
-    db.commit()
     cursor.close()
     return res
 

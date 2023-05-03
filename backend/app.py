@@ -161,7 +161,6 @@ def updateAccommodation():
 def removeAccommodation():
   return None
 
-
 """
 SHARED AMENITIES (ACCOMMODATIONS)
 """
@@ -357,6 +356,13 @@ def searchAccommodations():
 @app.route('/api/filter/amenities', methods=['POST'])
 def filterByAmenities():
   return AccommodationHandler().filter(request.json)
+
+"""
+SCORE
+"""
+@app.route('/api/score', methods=['POST'])
+def getScoreForAccommodations():
+  return AccommodationHandler().score(request.json)
 
 """
 CLOUDINARY

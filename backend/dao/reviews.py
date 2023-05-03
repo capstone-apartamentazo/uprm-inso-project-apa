@@ -36,7 +36,6 @@ class Reviews:
     cursor = db.cursor(cursor_factory=RealDictCursor)
     cursor.execute(query, (rating, comment, accm, tenant))
     res = cursor.fetchone()
-    db.commit()
     cursor.close()
     return res
 
@@ -48,7 +47,6 @@ class Reviews:
     cursor = db.cursor(cursor_factory=RealDictCursor)
     cursor.execute(query, (rating, comment, identifier))
     res = cursor.fetchone()
-    db.commit()
     cursor.close()
     return res
 
