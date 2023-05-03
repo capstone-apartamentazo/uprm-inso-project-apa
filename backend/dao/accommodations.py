@@ -24,10 +24,10 @@ class Accommodations:
     cursor.close()
     return res
 
-  def addAccommodation(self, title, street, number, city, state, country, zipcode, description, landlord):
+  def addAccommodation(self, title, street, number, city, state, country, zipcode, latitude, longitude, description, landlord):
     query = 'WITH new_accm AS ( \
-              INSERT INTO accommodations (accm_title, accm_street, accm_number, accm_city, accm_state, accm_country, accm_zipcode, accm_description, landlord_id) \
-              VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) \
+              INSERT INTO accommodations (accm_title, accm_street, accm_number, accm_city, accm_state, accm_country, accm_zipcode, latitude, longitude, accm_description, landlord_id) \
+              VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) \
               RETURNING * \
             ), \
             new_amenities AS ( \
@@ -37,20 +37,28 @@ class Accommodations:
             ) \
             SELECT * FROM new_accm NATURAL INNER JOIN new_amenities'
     cursor = db.cursor(cursor_factory=RealDictCursor)
-    cursor.execute(query, (title, street, number, city, state, country, zipcode, description, landlord))
+    cursor.execute(query, (title, street, number, city, state, country, zipcode, latitude, longitude, description, landlord))
     res = cursor.fetchone()
-    db.commit()
     cursor.close()
     return res
 
-  def updateAccommodation(self, identifier, title, street, number, city, state, country, zipcode, description):
+  def addDistance(self, identifier, distance):
     query = 'UPDATE accommodations \
-            SET accm_title = %s, accm_street = %s, accm_number = %s, accm_city = %s, accm_state = %s, accm_country = %s, accm_zipcode = %s, accm_description = %s \
+            SET distance = %s \
             WHERE accm_id = %s RETURNING *'
     cursor = db.cursor(cursor_factory=RealDictCursor)
-    cursor.execute(query, (title, street, number, city, state, country, zipcode, description, identifier))
+    cursor.execute(query, (distance, identifier))
     res = cursor.fetchone()
-    db.commit()
+    cursor.close()
+    return res
+
+  def updateAccommodation(self, identifier, title, street, number, city, state, country, zipcode, latitude, longitude, description):
+    query = 'UPDATE accommodations \
+            SET accm_title = %s, accm_street = %s, accm_number = %s, accm_city = %s, accm_state = %s, accm_country = %s, accm_zipcode = %s, latitude = %s, longitude = %s, accm_description = %s \
+            WHERE accm_id = %s RETURNING *'
+    cursor = db.cursor(cursor_factory=RealDictCursor)
+    cursor.execute(query, (title, street, number, city, state, country, zipcode, latitude, longitude, description, identifier))
+    res = cursor.fetchone()
     cursor.close()
     return res
 
@@ -80,6 +88,64 @@ class Accommodations:
             GROUP BY accm_id ORDER BY accm_id DESC LIMIT 10 OFFSET %s'
     cursor = db.cursor(cursor_factory=RealDictCursor)
     cursor.execute(query %(data, data, data, data, data, offset))
+    res = cursor.fetchall()
+    cursor.close()
+    return res
+
+  def filter(self, amenities, offset):
+    query = 'SELECT DISTINCT ON (accm_id) accm_id, accm_title, accm_street, accm_number, accm_city, accm_state, accm_country, accm_zipcode, accm_description, \
+            json_agg(units) AS accm_units \
+            FROM accommodations NATURAL INNER JOIN units NATURAL INNER JOIN shared_amenities \
+            INNER JOIN private_amenities ON units.unit_id = private_amenities.unit_id \
+            WHERE (%s) AND units.available = true \
+            AND accommodations.deleted_flag = false \
+            GROUP BY accm_id ORDER BY accm_id DESC LIMIT 10 OFFSET %s'
+    cursor = db.cursor(cursor_factory=RealDictCursor)
+    cursor.execute(query %(amenities, offset))
+    res = cursor.fetchall()
+    cursor.close()
+    return res
+
+  def calculateScore(self, distance_weight, price_weight, size_weight, amenities_weight, rating_weight):
+    query = 'WITH shared_amenities_scores AS ( \
+              SELECT accm_id, sum(shared_kitchen::int)+sum(shared_bathroom::int)+sum(shared_washer::int)+sum(shared_dryer::int)+sum(pets_allowed::int) AS total_shared_amenities \
+              FROM shared_amenities \
+              GROUP BY accm_id \
+            ), \
+            accm_scores AS ( \
+              SELECT accm_id, total_shared_amenities, \
+              landlord_rating/5::float AS rating_score, \
+              CASE \
+                WHEN distance < 1000 THEN 1 \
+                ELSE 1000/distance::float \
+                END AS distance_score \
+              FROM accommodations NATURAL INNER JOIN landlords NATURAL INNER JOIN shared_amenities_scores \
+            ), \
+            priv_amenities_scores AS ( \
+              SELECT unit_id, \
+              sum(electricity::int)+sum(water::int)+sum(internet::int)+sum(heater::int)+sum(balcony::int)+sum(private_washer::int)+sum(private_dryer::int)+sum(air_conditioner::int)+sum(parking::int) AS total_priv_amenities \
+              FROM private_amenities \
+              GROUP BY unit_id \
+            ), \
+            unit_scores AS ( \
+              SELECT unit_id, rating_score, distance_score, \
+              ((cast(size as float)/cast(tenant_capacity as float))/cast((cast(size as float)/cast(tenant_capacity as float))+350 as float)) AS size_score, \
+              ((cast(total_shared_amenities+total_priv_amenities as float))/14) AS amenities_score, \
+              exp((cast(-price as float)/cast(tenant_capacity as float))/1800) AS price_score \
+              FROM units NATURAL INNER JOIN accm_scores NATURAL INNER JOIN priv_amenities_scores \
+            ), \
+            unit_total_scores AS ( \
+              SELECT unit_id, unit_number, tenant_capacity, price, size, date_available, contract_duration, accm_id, distance_score, price_score, size_score, amenities_score, rating_score, \
+              round(((distance_score*%s)+(price_score*%s)+(size_score*%s)+(amenities_score*%s)+(rating_score*%s))::numeric,1) AS total_score \
+              FROM units NATURAL INNER JOIN unit_scores \
+              ORDER BY total_score DESC \
+            ) \
+            SELECT accm_id, accm_title, accm_street, accm_number, accm_city, accm_state, accm_country, accm_zipcode, accm_description, \
+            json_agg(unit_total_scores) AS accm_units, round(avg(total_score)::numeric,1) as avg_score \
+            FROM accommodations NATURAL INNER JOIN unit_total_scores \
+            GROUP BY accm_id ORDER BY avg_score DESC LIMIT 10'
+    cursor = db.cursor(cursor_factory=RealDictCursor)
+    cursor.execute(query %(distance_weight, price_weight, size_weight, amenities_weight, rating_weight))
     res = cursor.fetchall()
     cursor.close()
     return res

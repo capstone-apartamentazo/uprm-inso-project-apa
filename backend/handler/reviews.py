@@ -20,7 +20,6 @@ class ReviewHandler:
       else:
         return jsonify('Empty List')
     except (Exception, pgerror) as e:
-      db.rollback()
       logger.exception(e)
       return jsonify('Error Occured'), 400
 
@@ -32,7 +31,6 @@ class ReviewHandler:
       else:
         return jsonify('Review Not Found'), 400
     except (Exception, pgerror) as e:
-      db.rollback()
       logger.exception(e)
       return jsonify('Error Occured'), 400
 
@@ -47,7 +45,6 @@ class ReviewHandler:
       else:
         return jsonify('Reviews Not Found'), 400
     except (Exception, pgerror) as e:
-      db.rollback()
       logger.exception(e)
       return jsonify('Error Occured'), 400
 
@@ -62,7 +59,6 @@ class ReviewHandler:
       else:
         return jsonify('Reviews Not Found'), 400
     except (Exception, pgerror) as e:
-      db.rollback()
       logger.exception(e)
       return jsonify('Error Occured'), 400
 
@@ -75,6 +71,7 @@ class ReviewHandler:
           return jsonify('Error retrieving Accommodation'), 400
         landlord = self.landlords.updateRating(accm[9])
         if not landlord:
+          db.commit()
           return jsonify('Error updating Landlord Rating'), 400
         return jsonify(landlord), 200
       else:
@@ -93,6 +90,7 @@ class ReviewHandler:
           return jsonify('Error retrieving Accommodation'), 400
         landlord = self.landlords.updateRating(accm[9])
         if not landlord:
+          db.commit()
           return jsonify('Error updating Landlord Rating'), 400
         return jsonify(landlord), 200
       else:

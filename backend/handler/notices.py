@@ -18,7 +18,6 @@ class NoticeHandler:
       else:
         return jsonify('Empty List')
     except (Exception, pgerror) as e:
-      db.rollback()
       logger.exception(e)
       return jsonify('Error Occured'), 400
 
@@ -30,7 +29,6 @@ class NoticeHandler:
       else:
         return jsonify('Notice Not Found')
     except (Exception, pgerror) as e:
-      db.rollback()
       logger.exception(e)
       return jsonify('Error Occured'), 400
 
@@ -42,7 +40,6 @@ class NoticeHandler:
       else:
         return jsonify('Notices Not Found')
     except (Exception, pgerror) as e:
-      db.rollback()
       logger.exception(e)
       return jsonify('Error Occured'), 400
 
@@ -55,6 +52,7 @@ class NoticeHandler:
         return jsonify(reason)
       daoNotice = self.notices.addNotice(json['notice_title'], json['notice_content'], accm_id)
       if daoNotice:
+        db.commit()
         return jsonify(daoNotice)
       else:
         return jsonify('Error adding Notice'), 400
@@ -72,6 +70,7 @@ class NoticeHandler:
         return jsonify(reason)
       updatedNotice = self.notices.updateNotice(notice_id, json['notice_title'], json['notice_content'])
       if updatedNotice:
+        db.commit()
         return jsonify(updatedNotice)
       else:
         return jsonify('Error updating Notice'), 400

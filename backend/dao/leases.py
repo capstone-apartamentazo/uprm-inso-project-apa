@@ -38,7 +38,6 @@ class Leases:
     cursor = db.cursor(cursor_factory=RealDictCursor)
     cursor.execute(query, (price, start, end, unit, tenant))
     res = cursor.fetchone()
-    db.commit()
     cursor.close()
     return res
 
@@ -50,7 +49,6 @@ class Leases:
     cursor = db.cursor(cursor_factory=RealDictCursor)
     cursor.execute(query, (price, start, end, currTenant, unit, tenant, identifier))
     res = cursor.fetchone()
-    db.commit()
     cursor.close()
     return res
 
@@ -59,7 +57,6 @@ class Leases:
     cursor = db.cursor(cursor_factory=RealDictCursor)
     cursor.execute(query, (currTenant, identifier))
     res = cursor.fetchone()
-    db.commit()
     cursor.close()
     return res
   

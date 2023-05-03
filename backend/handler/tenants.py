@@ -21,7 +21,6 @@ class TenantHandler:
       else:
         return jsonify('Empty List')
     except (Exception, pgerror) as e:
-      db.rollback()
       logger.exception(e)
       return jsonify('Error Occured'), 400
   
@@ -33,7 +32,6 @@ class TenantHandler:
       else:
         return jsonify('Tenant Not Found')
     except (Exception, pgerror) as e:
-      db.rollback()
       logger.exception(e)
       return jsonify('Error Occured'), 400
 
@@ -68,6 +66,7 @@ class TenantHandler:
       if valid:
         newTenant = self.tenants.addTenant(name, email, guard.hash_password(password), phone)
         if newTenant:
+          db.commit()
           return jsonify(newTenant)
         else:
           return jsonify('Error adding Tenant'), 400
@@ -92,6 +91,7 @@ class TenantHandler:
       if valid:
         updatedTenant = self.tenants.updateTenant(identifier, name, email, guard.hash_password(password), phone)
         if updatedTenant:
+          db.commit()
           return jsonify(updatedTenant)
         else:
           return jsonify('Error updating Tenant'), 400
