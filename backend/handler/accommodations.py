@@ -109,9 +109,21 @@ class AccommodationHandler:
       return jsonify('Error Occured'), 400
 
   def score(self, json):
-    weights = { 1: 0.35, 2: 0.25, 3: 0.20, 4: 0.15, 5: 0.05 }
-    daoAccommodations = self.accommodations.calculateScore()
-    return jsonify(daoAccommodations)
+    try:
+      weights = { 1: 35, 2: 25, 3: 20, 4: 15, 5: 5 }
+      distance_weight = weights[json['distance']]
+      price_weight = weights[json['price']]
+      size_weight = weights[json['size']]
+      amenities_weight = weights[json['amenities']]
+      rating_weight = weights[json['ranking']]
+      daoAccommodations = self.accommodations.calculateScore(distance_weight, price_weight, size_weight, amenities_weight, rating_weight)
+      if daoAccommodations:
+        return jsonify(daoAccommodations)
+      else:
+        return jsonify('Empty List')
+    except (Exception, pgerror) as e:
+      logger.exception(e)
+      return jsonify('Error Occured'), 400
 
   @praetorian.auth_required
   def addAccommodation(self, json):
