@@ -141,7 +141,7 @@ const New = () => {
                                 <div className="grid grid-flow-row grid-cols-3 gap-2">
                                     <input id='street' type="text" placeholder="Street" className="input input-bordered w-full  col-span-2" required />
                                     <span></span>
-                                    <input id='number' type="text" placeholder="Accommodation #" className="input input-bordered w-full  " />
+                                    <input id='number' type="text" placeholder="Number" className="input input-bordered w-full  " />
                                     <input id='city' type="text" placeholder="City" className="input input-bordered w-full " required />
                                     <input id='state' type="text" placeholder="State" className="input input-bordered w-full  " />
                                     <select id='country' className="select select-bordered" required>
