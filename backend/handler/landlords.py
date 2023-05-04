@@ -6,6 +6,7 @@ from handler.accommodations import AccommodationHandler
 import flask_praetorian as praetorian
 from cloudinary.uploader import upload
 from cloudinary.search import Search
+from cloudinary.api import delete_resources
 import re
 
 class LandlordHandler:
@@ -120,9 +121,20 @@ class LandlordHandler:
       image = upload(
         json['image'],
         folder = 'apartamentazo/landlords/landlord_{}'.format(praetorian.current_user_id()),
+        public_id = 'landlord_{}'.format(praetorian.current_user_id()),
         tags='landlord'
       )
       return jsonify(image)
+    except (Exception, pgerror) as e:
+      logger.exception(e)
+      return jsonify('Error Occured'), 400
+    
+  @praetorian.auth_required
+  def deleteProfilePicture(self):
+    try:
+      query = 'apartamentazo/landlords/landlord_{}/landlord_{}'.format(praetorian.current_user_id(), praetorian.current_user_id())
+      image_delete_result = delete_resources(query, resource_type="image", type="upload")
+      return jsonify(image_delete_result)
     except (Exception, pgerror) as e:
       logger.exception(e)
       return jsonify('Error Occured'), 400

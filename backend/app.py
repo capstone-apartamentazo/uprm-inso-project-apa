@@ -433,3 +433,20 @@ def uploadImageForAccommodation():
 @app.route('/api/images/unit', methods=['POST'])
 def uploadImageForUnit():
   return UnitHandler().uploadImages(request.json)
+
+@app.route('/api/images/landlord', methods=['DELETE'])
+def deleteImageForLandlord():
+  return LandlordHandler().deleteProfilePicture()
+
+@app.route('/api/images/tenant', methods=['DELETE'])
+def deleteImageForTenant():
+  return TenantHandler().deleteProfilePicture()
+
+@app.route('/api/images/accommodation/<int:accm_id>/<int:img_id>', methods=['DELETE'])
+def deleteImageForAccommodation(accm_id, img_id):
+  return AccommodationHandler().deleteImage(accm_id, img_id)
+
+@app.route('/api/images/unit/<int:unit_id>/<int:img_id>', methods=['DELETE'])
+def deleteImageForUnit(unit_id, img_id):
+  return UnitHandler().deleteImage(unit_id, img_id)
+
