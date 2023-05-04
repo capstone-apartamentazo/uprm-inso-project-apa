@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import AccommodationUnits from './AccommodationUnits';
 import { useListings } from 'useListings';
+import defaultPic from 'public/images/default.jpg';
 
 type Props = {
 	title: string;
@@ -8,14 +9,6 @@ type Props = {
 	description: string;
 	id: string;
 	unitAmount: number;
-};
-
-const unit = {
-	amenities: 'water, balcony, electricity',
-	description: 'Test Description',
-	number: '2',
-	price: '400',
-	available: 'Available',
 };
 
 const ListingResult: React.FC<Props> = ({ title, address, description, unitAmount, id }) => {
@@ -26,13 +19,17 @@ const ListingResult: React.FC<Props> = ({ title, address, description, unitAmoun
 	var baths = '';
 
 	if (id) {
-		const { data: accmData, error: accmError } = useListings(`images/accommodation/${id}`);
+		const { data: accmData, error: accmError } = useListings(`images/accommodation/1`);
 		const { data: accmAmenities, error: accmAmenitiesError } = useListings(`accommodations/amenities/${id}`);
 		if (accmData) {
+			console.log('accm data');
 			console.log(accmData);
-			picLink = accmData.resources[0].secure_url;
+			console.log(id);
+			if (accmData.length === 0) picLink = '/images/default.jpg';
+			else picLink = accmData[0];
 		}
 		if (accmAmenities) {
+			console.log('amenities');
 			console.log(accmAmenities);
 			beds = accmAmenities.bedrooms;
 			baths = accmAmenities.bathrooms;
