@@ -3,17 +3,24 @@ import Link from "next/link";
 import { useEffect, useState, useMemo, useCallback } from 'react';
 
 import { useLoadScript, GoogleMap, MarkerF, Marker } from '@react-google-maps/api';
+import axios from "axios";
+import getConfig from 'next/config';
 
+
+const { publicRuntimeConfig } = getConfig();
+const { url: host } = publicRuntimeConfig.site;
 
 const New = () => {
 
     //const [page, setPage] = useState(1);
     //const [currentPage, setCurrentPage] = useState(<></>);
     var currentPage = <></>
-    const [selectedImage1, setSelectedImage1] = useState<string>();
-    const [selectedImage2, setSelectedImage2] = useState<string>();
-    const [selectedImage3, setSelectedImage3] = useState<string>();
-    const [selectedImage4, setSelectedImage4] = useState<string>();
+    const [selectedImage1, setSelectedImage1] = useState<string|null>(null);
+    const [selectedImage2, setSelectedImage2] = useState<string|null>(null);
+    const [selectedImage3, setSelectedImage3] = useState<string|null>(null);
+    const [selectedImage4, setSelectedImage4] = useState<string|null>(null);
+
+    const [accId,setAccId] = useState(null)
 
 
     const handleSelect1 = async (event: any) => {
@@ -46,15 +53,70 @@ const New = () => {
     })
     const [currPos,setCurrPos] = useState<google.maps.LatLng>()
 
+    const uploadImage = async (image:string) => {
+
+        if(accId){
+            axios.post(`${host}/api/images/accommodation/`,)
+
+        }
+
+    }
+    const createAccommodation = async (data:any) =>{
+        if(data){
+            console.log(data)
+
+        }
+    }
+    const updateAccAmenities = async (data:any) =>{
+        if(data){
+            console.log(data)
+
+        }
+    }
+
     const handleSubmit = async (event: any) => {
         event.preventDefault();
+        
+        
+
+
         //'latitude':center.lat.toString ,'longitude':center.lng.toString
         let latitude = currPos!.lat
         let longitude = currPos!.lng
-        console.log({
+        let amenities = {'bathroom': event.target.bathroom.checked, 'washer': event.target.washer.checked, 'dryer': event.target.dryer.checked, 'kitchen': event.target.kitchen.checked, 'pets': event.target.pets.checked}
+        let details = {
             'title': event.target.title.value, 'street': event.target.street.value, 'number': event.target.number.value, 'city': event.target.city.value, 'state': event.target.state.value, 'country': event.target.country.value,
-            'zipcode': event.target.zipcode.value,'latitude':latitude ,'longitude':longitude,'description': event.target.description.value, 'bathroom': event.target.bathroom.checked, 'washer': event.target.washer.checked, 'dryer': event.target.dryer.checked, 'kitchen': event.target.kitchen.checked, 'pets': event.target.pets.checked
-        })
+            'zipcode': event.target.zipcode.value,'latitude':latitude ,'longitude':longitude,'description': event.target.description.value
+        }
+
+
+
+        try{
+
+
+            createAccommodation(details)
+            updateAccAmenities(amenities)
+
+            if(selectedImage1){
+            
+                uploadImage(selectedImage1)
+                
+    
+            }
+            if(selectedImage2){
+                uploadImage(selectedImage2)
+            }
+            if(selectedImage3){
+                uploadImage(selectedImage3)
+    
+            }
+            if(selectedImage4){
+                uploadImage(selectedImage4)
+    
+            }
+        }catch (err){
+            console.error(err)
+        }
 
     }
 
