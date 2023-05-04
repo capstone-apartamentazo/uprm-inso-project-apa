@@ -3,10 +3,14 @@ from psycopg2 import Error as pgerror
 from util.config import db, logger
 from dao.messages import Messages
 import flask_praetorian as praetorian
+from dao.units import Units
+from dao.accommodations import Accommodations
 
 class MessageHandler:
   def __init__(self):
     self.messages = Messages()
+    self.units = Units()
+    self.accommodations = Accommodations()
 
   def getAll(self):
     try:
@@ -102,6 +106,44 @@ class MessageHandler:
       return jsonify('Error Occured'), 400
     
   @praetorian.auth_required
+  def tenantSendsRequestWithoutTour(self, json):
+    try:
+      content = 'I would like to request this unit. No need for a tour.'
+      daoUnit = self.units.getById(json['unit_id'])
+      if not daoUnit:
+        return jsonify('Unit Not found')
+      daoAccommodation = self.accommodations.getById(daoUnit['accm_id'])
+      daoMessage = self.messages.tenantSendsMessage(daoAccommodation['landlord_id'], praetorian.current_user_id(), content)
+      if daoMessage:
+        db.commit()
+        return jsonify(daoMessage)
+      else:
+        return jsonify('Error creating Message'), 400
+    except (Exception, pgerror) as e:
+      db.rollback()
+      logger.exception(e)
+      return jsonify('Error Occured'), 400
+    
+  @praetorian.auth_required
+  def tenantSendsRequestWithTour(self, json):
+    try:
+      content = 'I would like to have a tour for this unit.'
+      daoUnit = self.units.getById(json['unit_id'])
+      if not daoUnit:
+        return jsonify('Unit Not found')
+      daoAccommodation = self.accommodations.getById(daoUnit['accm_id'])
+      daoMessage = self.messages.tenantSendsMessage(daoAccommodation['landlord_id'], praetorian.current_user_id(), content)
+      if daoMessage:
+        db.commit()
+        return jsonify(daoMessage)
+      else:
+        return jsonify('Error creating Message'), 400
+    except (Exception, pgerror) as e:
+      db.rollback()
+      logger.exception(e)
+      return jsonify('Error Occured'), 400
+    
+  @praetorian.auth_required
   def deleteMessage(self, message_id):
     try:
       self.messages.deleteMessage(message_id)
@@ -109,3 +151,4 @@ class MessageHandler:
       db.rollback()
       logger.exception(e)
       return jsonify('Error Occured'), 400
+    
