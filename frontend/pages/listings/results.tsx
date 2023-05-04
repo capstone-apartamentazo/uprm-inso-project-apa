@@ -27,6 +27,7 @@ const Listings = () => {
 					return data.json();
 				})
 				.then((data) => {
+					console.log('results');
 					console.log(data);
 					data.map((accm: any) => {
 						allListings.push(

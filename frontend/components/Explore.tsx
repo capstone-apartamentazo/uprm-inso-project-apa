@@ -33,7 +33,7 @@ export default function Explore() {
 				{/* TODO: This section changes based on whether the user is signed in or not, is a landlord, or is a student */}
 				{listings}
 			</div>
-			<Link className='btn btn-accent text-white mb-10' href='/listings/results?search=San Juan'>
+			<Link className='btn btn-accent text-white mb-10' href='/listings/results?search=Mayaguez'>
 				View More
 			</Link>
 		</section>
