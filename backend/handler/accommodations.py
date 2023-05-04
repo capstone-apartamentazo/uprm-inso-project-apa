@@ -112,13 +112,14 @@ class AccommodationHandler:
 
   def score(self, json):
     try:
-      weights = { 1: 35, 2: 25, 3: 20, 4: 15, 5: 5 }
+      weights = { 1: 3.5, 2: 2.5, 3: 2.0, 4: 1.5, 5: 0.5 }
       distance_weight = weights[json['distance']]
       price_weight = weights[json['price']]
       size_weight = weights[json['size']]
       amenities_weight = weights[json['amenities']]
       rating_weight = weights[json['ranking']]
-      daoAccommodations = self.accommodations.calculateScore(distance_weight, price_weight, size_weight, amenities_weight, rating_weight)
+      offset = json['offset']
+      daoAccommodations = self.accommodations.calculateScore(distance_weight, price_weight, size_weight, amenities_weight, rating_weight, offset)
       if daoAccommodations:
         return jsonify(daoAccommodations)
       else:
