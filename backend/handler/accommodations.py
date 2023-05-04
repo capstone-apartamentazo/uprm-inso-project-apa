@@ -9,6 +9,7 @@ from handler.shared_amenities import SharedAmenitiesHandler
 import flask_praetorian as praetorian
 from cloudinary.uploader import upload
 from cloudinary.search import Search
+from cloudinary.api import delete_resources
 import re
 
 class AccommodationHandler:
@@ -183,7 +184,7 @@ class AccommodationHandler:
           db.commit()
           return jsonify(updatedAccommodation)
         else:
-          return jsonify('Error updating Accommodation'), 400
+          return jsonify('Error updating Accommodation')
       else:
         # returns reason why input was invalid
         return jsonify(reason)
@@ -224,11 +225,12 @@ class AccommodationHandler:
     try:
       daoAccommodation = self.accommodations.getById(accm_id)
       if not daoAccommodation:
-        return False, 'Accommodation Not Found'
+        return jsonify('Accommodation Not Found'), 400
       landlord_id = daoAccommodation['landlord_id']
       query = 'folder:apartamentazo/landlords/landlord_{}/accm_{} AND tags:accm'.format(landlord_id, accm_id)
-      image = Search().expression(query).execute()
-      return jsonify(image)
+      image = Search().expression(query).sort_by('public_id', 'asc').execute()['resources']
+      secure_urls = [{"secure_url": obj["secure_url"]} for obj in image]
+      return jsonify(secure_urls)
     except (Exception, pgerror) as e:
       logger.exception(e)
       return jsonify('Error Occured'), 400
@@ -242,10 +244,24 @@ class AccommodationHandler:
         return jsonify(reason)
       image = upload(
         json['image'],
+        public_id = json['order'],
         folder = 'apartamentazo/landlords/landlord_{}/accm_{}'.format(praetorian.current_user_id(), accm_id),
         tags='accm'
       )
       return jsonify(image)
+    except (Exception, pgerror) as e:
+      logger.exception(e)
+      return jsonify('Error Occured'), 400
+  
+  @praetorian.auth_required
+  def deleteImage(self, accm_id, img_id):
+    try:
+      valid, reason = self.checkAccmID(accm_id)
+      if not valid:
+        return jsonify(reason)
+      query = 'apartamentazo/landlords/landlord_{}/accm_{}/{}'.format(praetorian.current_user_id(), accm_id, img_id)
+      image_delete_result = delete_resources(query, resource_type="image", type="upload")
+      return jsonify(image_delete_result)
     except (Exception, pgerror) as e:
       logger.exception(e)
       return jsonify('Error Occured'), 400
