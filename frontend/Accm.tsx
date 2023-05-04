@@ -10,4 +10,6 @@ export interface Accm{
     "accm_zipcode": string,
     "deleted_flag": boolean,
     "landlord_id": number
+    "latitude": number,
+    "longitude": number,
 }
