@@ -81,7 +81,7 @@ class Accommodations:
     return res
 
   def search(self, data, offset):
-    query = 'SELECT accm_id, accm_title, accm_street, accm_number, accm_city, accm_state, accm_country, accm_zipcode, accm_description, COUNT(unit_id) AS number_of_units \
+    query = 'SELECT accm_id, accm_title, accm_street, accm_number, accm_city, accm_state, accm_country, accm_zipcode, accm_description, json_agg(units) AS accm_units \
             FROM accommodations NATURAL INNER JOIN units \
             WHERE (accm_title ILIKE \'%%%s%%\' OR accm_street ILIKE \'%%%s%%\' OR accm_city ILIKE \'%%%s%%\' OR accm_state ILIKE \'%%%s%%\' OR accm_country ILIKE \'%%%s%%\') \
             AND deleted_flag = false \

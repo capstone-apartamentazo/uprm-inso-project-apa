@@ -54,6 +54,7 @@ class AccommodationHandler:
 
   def search(self, data, offset):
     try:
+      # accm needs units to appear in the search
       daoAccommodations = self.accommodations.search(data, offset)
       if daoAccommodations:
         return jsonify([row for row in daoAccommodations])
