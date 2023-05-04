@@ -2,7 +2,6 @@ from flask import jsonify
 from psycopg2 import Error as pgerror
 from handler.leases import LeaseHandler
 from handler.private_amenities import PrivateAmenitiesHandler
-from handler.requests import RequestHandler
 from util.config import db, logger, landlord_guard as guard
 from dao.units import Units
 from dao.accommodations import Accommodations
@@ -17,7 +16,6 @@ class UnitHandler:
     self.units = Units()
     self.accommodations = Accommodations()
     self.pAmenities = PrivateAmenitiesHandler()
-    self.request = RequestHandler()
     self.lease = LeaseHandler()
 
 
@@ -151,9 +149,8 @@ class UnitHandler:
       deletedUnit = self.units.deleteUnitCascade(accm_id)
       for unit in deletedUnit:
         deletedPrivAmenities = self.pAmenities.deletePrivAmenitiesCascade(unit['unit_id'])
-        deletedRequest = self.request.deleteRequestCascade(unit['unit_id'])
         deletedLease = self.lease.deleteLeaseCascade(unit['unit_id'])
-        if not deletedPrivAmenities and deletedRequest and deletedLease:
+        if not deletedPrivAmenities and deletedLease:
           return False
       return True
     except (Exception, pgerror) as e:

@@ -9,7 +9,6 @@ from handler.notices import NoticeHandler
 from handler.reviews import ReviewHandler
 from handler.units import UnitHandler
 from handler.private_amenities import PrivateAmenitiesHandler
-from handler.requests import RequestHandler
 from handler.leases import LeaseHandler
 
 @app.route('/')
