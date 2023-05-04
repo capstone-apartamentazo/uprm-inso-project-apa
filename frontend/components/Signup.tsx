@@ -11,20 +11,27 @@ const Signup = () => {
 	const handleSubmit = async (event: any) => {
 		event.preventDefault();
 		if (event.target.password.value == event.target.cpassword.value) {
-			const data = {
+			var data = {}
+			data = {
 				tenant_name: event.target.first.value + ' ' + event.target.last.value,
 				tenant_email: event.target.email.value,
 				tenant_password: event.target.password.value,
 				tenant_phone: event.target.phone.value,
 			};
 
-			const JSONdata = JSON.stringify(data);
-			alert(`${JSONdata}`);
+			
+			
 			var endpoint = `${host}/api/tenants/new`;
 			if (event.target.inlineRadio2.checked) {
 				endpoint = `${host}/api/landlords/new`;
+				data = {
+					landlord_name: event.target.first.value + ' ' + event.target.last.value,
+					landlord_email: event.target.email.value,
+					landlord_password: event.target.password.value,
+					landlord_phone: event.target.phone.value,
+				}
 			}
-
+			const JSONdata = JSON.stringify(data);
 			const options = {
 				method: 'POST',
 				headers: {
