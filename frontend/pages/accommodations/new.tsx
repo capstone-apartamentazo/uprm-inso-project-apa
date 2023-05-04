@@ -20,12 +20,12 @@ const New = () => {
     //const [page, setPage] = useState(1);
     //const [currentPage, setCurrentPage] = useState(<></>);
     var currentPage = <></>
-    const [selectedImage1, setSelectedImage1] = useState<string|null>(null);
-    const [selectedImage2, setSelectedImage2] = useState<string|null>(null);
-    const [selectedImage3, setSelectedImage3] = useState<string|null>(null);
-    const [selectedImage4, setSelectedImage4] = useState<string|null>(null);
+    const [selectedImage1, setSelectedImage1] = useState<string|any>(null);
+    const [selectedImage2, setSelectedImage2] = useState<string|any>(null);
+    const [selectedImage3, setSelectedImage3] = useState<string|any>(null);
+    const [selectedImage4, setSelectedImage4] = useState<string|any>(null);
 
-    const [accId,setAccId] = useState(null)
+    const [accId,setAccId] = useState<number|null>(null)
     const [storage, setStorage] = useState<Storage>({ token: null, isLandlord: null, id: null })
     const router = useRouter()
     const cookies = new Cookies()
@@ -75,25 +75,55 @@ const New = () => {
     const handleSelect1 = async (event: any) => {
         event.preventDefault();
 
-        setSelectedImage1(URL.createObjectURL(event.target.files![0]))
+
+        const reader = new FileReader();
+        reader.onload = () => {
+            setSelectedImage1(reader.result)
+        }   
+        reader.readAsDataURL(event.target.files[0])
+
+        
+        //alert(URL.createObjectURL(event.target.files![0]))
+        //setSelectedImage1(URL.createObjectURL(event.target.files![0]))
 
     }
     const handleSelect2 = async (event: any) => {
         event.preventDefault();
 
-        setSelectedImage2(URL.createObjectURL(event.target.files![0]))
+        const reader = new FileReader();
+        reader.onload = () => {
+            setSelectedImage2(reader.result)
+        }   
+        reader.readAsDataURL(event.target.files[0])
+
+
+        //setSelectedImage2(URL.createObjectURL(event.target.files![0]))
 
     }
     const handleSelect3 = async (event: any) => {
         event.preventDefault();
 
-        setSelectedImage3(URL.createObjectURL(event.target.files![0]))
+        const reader = new FileReader();
+        reader.onload = () => {
+            setSelectedImage3(reader.result)
+        }   
+        reader.readAsDataURL(event.target.files[0])
+
+
+        //setSelectedImage3(URL.createObjectURL(event.target.files![0]))
 
     }
     const handleSelect4 = async (event: any) => {
         event.preventDefault();
 
-        setSelectedImage4(URL.createObjectURL(event.target.files![0]))
+        const reader = new FileReader();
+        reader.onload = () => {
+            setSelectedImage4(reader.result)
+        }   
+        reader.readAsDataURL(event.target.files[0])
+
+
+        //setSelectedImage4(URL.createObjectURL(event.target.files![0]))
 
     }
     const [center, setCenter] = useState<google.maps.LatLng | google.maps.LatLngLiteral>({
@@ -102,12 +132,19 @@ const New = () => {
     })
     const [currPos,setCurrPos] = useState<google.maps.LatLng>()
 
-    const uploadImage = async (image:string) => {
+    const uploadImage = async (image:string,accId:number,order:number) => {
+        let data = {
+            "accm_id": accId,
+            "image": image,
+            "order": order
+        }
 
-        // if(accId){
-        //     axios.post(`${host}/api/images/accommodation/`,)
-
-        // }
+        if(accId){
+            await axios({ method: 'post', url: `${host}/api/images/accommodation`, headers: { Authorization: `Bearer ${storage.token}` },data })
+            .catch(err=>{
+                console.error(err)
+            })
+        }
 
     }
     const createAccommodation = async (data:any, amenities:any) =>{
@@ -122,11 +159,20 @@ const New = () => {
                 return response.data
             })
             .then(result =>{
-                alert(result)
+                //alert(result)
+                uploadImages(result['accm_id'])
+                return result
+            }).then(result =>{
                 updateAccAmenities(result['shared_amenities_id'],amenities)
+
+            }).then(()=>{
+                alert('Creation successfull')
+                router.replace('/profile')
             })
             .catch(err =>{
                 console.log(err)
+                alert('Creation errors')
+                //router.replace()
             })
         }
     }
@@ -155,6 +201,25 @@ const New = () => {
 
         }
     }
+    const uploadImages = async (accId:any)=>{
+        if(selectedImage1){
+            
+            uploadImage(selectedImage1,accId,1)
+            
+
+        }
+        if(selectedImage2){
+            uploadImage(selectedImage2,accId,2)
+        }
+        if(selectedImage3){
+            uploadImage(selectedImage3,accId,3)
+
+        }
+        if(selectedImage4){
+            uploadImage(selectedImage4,accId,4)
+
+        }
+    }
 
     const handleSubmit = async (event: any) => {
         event.preventDefault();
@@ -177,27 +242,14 @@ const New = () => {
 
 
             createAccommodation(details,amenities)
-
-            if(selectedImage1){
             
-                uploadImage(selectedImage1)
-                
-    
-            }
-            if(selectedImage2){
-                uploadImage(selectedImage2)
-            }
-            if(selectedImage3){
-                uploadImage(selectedImage3)
-    
-            }
-            if(selectedImage4){
-                uploadImage(selectedImage4)
-    
-            }
+            // uploadImage(selectedImage1!,6,1)
+
+            
         }catch (err){
             console.error(err)
         }
+
 
     }
 
