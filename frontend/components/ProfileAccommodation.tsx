@@ -8,7 +8,7 @@ type Props = {
 
 const ProfileAccommodation: React.FC<Props> = ({ title, address, id }) => {
     return (
-        <div className='flex justify-center w-72 transition ease-in-out delay-50 hover:-translate-y-1 hover:scale-10 duration-200'>
+        <div className='flex justify-center w-72 '>
             <a data-te-ripple-init data-te-ripple-color='light'>
                 <div className='block max-w-full rounded-lg bg-white shadow-lg ring-1 ring-stone-200 dark:bg-neutral-700 '>
                     <img className='rounded-t-lg aspect-video h-56' src='https://tecdn.b-cdn.net/img/new/standard/nature/186.jpg' alt='' />
