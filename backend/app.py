@@ -125,6 +125,14 @@ def landlordSendsMessage():
 def tenantSendsMessage():
   return MessageHandler().tenantSendsMessage(request.json)
 
+@app.route('/api/tenant/sends/request', methods=['POST'])
+def tenantSendsRequestWithoutTour():
+  return MessageHandler().tenantSendsRequestWithoutTour(request.json)
+
+@app.route('/api/tenant/sends/request/tour', methods=['POST'])
+def tenantSendsRequestWithTour():
+  return MessageHandler().tenantSendsRequestWithTour(request.json)
+
 """
 ACCOMMODATIONS (LANDLORDS)
 """
