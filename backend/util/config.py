@@ -20,7 +20,7 @@ try:
   print('Database Connection Successful')
 
   cursor = db.cursor()
-  cursor.execute('SELECT version()')
+  cursor.execute('SELECT version();')
   print(cursor.fetchone())
   cursor.close()
   

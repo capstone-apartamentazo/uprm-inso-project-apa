@@ -5,32 +5,26 @@ import Login from './Login';
 import Signup from './Signup';
 import { sign } from 'crypto';
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/router';
 
 import jwt from 'jwt-decode';
 import Cookies from 'universal-cookie';
 import { Storage } from 'Storage';
 import { Token } from 'Token';
 
-
-
-
-
-
 export default function Navbar(path: any) {
-	const router = useRouter()
+	const router = useRouter();
 
 	var classes = '';
 	//var navBar = <></>;
-	const [navBar, setNavBar] = useState(<></>)
+	const [navBar, setNavBar] = useState(<></>);
 
 	const logout = async () => {
-		cookies.remove('jwt_authorization')
+		cookies.remove('jwt_authorization');
 		//localStorage.removeItem('data');
 		router.replace('/');
 		router.reload();
-
-	}
+	};
 	// INFO: Signed out / Default Navigation Bar
 	var defaultBar = (
 		<ul className='menu menu-horizontal px-1 gap-4'>
@@ -46,7 +40,6 @@ export default function Navbar(path: any) {
 			</li>
 		</ul>
 	);
-
 
 	// INFO: Navigation Bar for Signed In users
 	var signedInBar = (
@@ -83,13 +76,17 @@ export default function Navbar(path: any) {
 				</label>
 				<ul tabIndex={0} className='mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-auto items-center'>
 					<li>
-						<Link href='/profile' className='justify-between'>Profile</Link>
+						<Link href='/profile' className='justify-between'>
+							Profile
+						</Link>
 					</li>
 					<li>
 						<Link href='/settings'>Settings</Link>
 					</li>
 					<li>
-						<div onClick={logout} className='cursor-pointer'>Logout</div>
+						<div onClick={logout} className='cursor-pointer'>
+							Logout
+						</div>
 					</li>
 				</ul>
 			</div>
@@ -119,34 +116,29 @@ export default function Navbar(path: any) {
 	// }
 	/* bg-opacity-30 backdrop-filter backdrop-blur-lg */
 
-	
-	const [storage,setStorage] = useState<Storage>({'token':null,'id':null,'isLandlord':null})
+	const [storage, setStorage] = useState<Storage>({ token: null, id: null, isLandlord: null });
 
-	const cookies = new Cookies()
+	const cookies = new Cookies();
 	useEffect(() => {
-		try{
-			const token = cookies.get('jwt_authorization')
-			const decoded = jwt<Token>(token)
-			setStorage({'token':token,'id':decoded['id'],'isLandlord':((decoded['rls']=="landlord")?true:false)})
+		try {
+			const token = cookies.get('jwt_authorization');
+			const decoded = jwt<Token>(token);
+			setStorage({ token: token, id: decoded['id'], isLandlord: decoded['rls'] == 'landlord' ? true : false });
 			setNavBar(signedInBar);
-		}catch (err){
+		} catch (err) {
 			setNavBar(defaultBar);
-			console.log('No tokens found in cookies')
+			console.log('No tokens found in cookies');
 		}
 
 		// if(localStorage.getItem('data') != null){
 		// 	data = localStorage.getItem('data')!
 		// 	setNavBar(signedInBar);
-			
+
 		// }else{
 		// 	setNavBar(defaultBar);
-			
+
 		// }
-		
-	}, [])
-
-	
-
+	}, []);
 
 	return (
 		<div className={`navbar text-primary-content fixed px-16 py-5 ${classes} z-10`}>

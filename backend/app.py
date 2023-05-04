@@ -163,6 +163,7 @@ def getAccommodationByLandlordId(u_id):
     return AccommodationHandler().getByLandlordId(u_id)
   else:
     return jsonify(Error="Method not allowed."), 405
+
 @app.route('/api/accommodations/new', methods=['POST'])
 def addAccommodation():
   return AccommodationHandler().addAccommodation(request.json)
@@ -187,9 +188,12 @@ def getAllSharedAmenities():
 def getSharedAmenitiesById():
     return SharedAmenitiesHandler().getById(request.json)
 
-@app.route('/api/accommodations/amenities', methods=['POST'])
-def getSharedAmenitiesByAccommodationId():
-    return SharedAmenitiesHandler().getByAccommodationId(request.json)
+@app.route('/api/accommodations/amenities/<int:accm_id>', methods=['GET'])
+def getSharedAmenitiesByAccommodationId(accm_id):
+  if request.method == 'GET':
+    return SharedAmenitiesHandler().getByAccommodationId(accm_id)
+  else:
+    return jsonify(Error="Method not allowed."), 405
 
 # TODO add restrictions when updating shared amenities
 @app.route('/api/accommodations/amenities', methods=['PUT'])
@@ -239,9 +243,12 @@ def getAllReviews():
 def getReviewById():
     return ReviewHandler().getById(request.json)
 
-@app.route('/api/accommodations/reviews', methods=['POST'])
-def getReviewsByAccommodationId():
-    return ReviewHandler().getByAccommodationId(request.json)
+@app.route('/api/accommodations/reviews/<int:accm_id>', methods=['GET'])
+def getReviewsByAccommodationId(accm_id):
+  if request.method == 'GET':
+    return ReviewHandler().getByAccommodationId(accm_id)
+  else: 
+    return jsonify(Error="Method not allowed."), 405
 
 @app.route('/api/tenants/reviews', methods=['POST'])
 def getReviewsByTenantId():
@@ -269,13 +276,19 @@ UNITS (ACCOMMODATIONS)
 def getAllUnits():
   return UnitHandler().getAll()
 
-@app.route('/api/units', methods=['POST'])
-def getUnitById():
-    return UnitHandler().getById(request.json)
+@app.route("/api/units/<int:unit_id>", methods=["GET"])
+def getUnitById(unit_id):
+    if request.method == "GET":
+        return UnitHandler().getById(unit_id)
+    else:
+        return jsonify(Error="Method not allowed."), 405
 
-@app.route('/api/accommodations/units', methods=['POST'])
-def getUnitsByAccommodationId():
-    return UnitHandler().getByAccommodationId(request.json)
+@app.route('/api/accommodations/units/<int:accm_id>', methods=['GET'])
+def getUnitsByAccommodationId(accm_id):
+    if request.method == "GET": 
+        return UnitHandler().getByAccommodationId(accm_id)
+    else:
+        return jsonify(Error="Method not allowed."), 405
 
 # TODO add restrictions when creating unit
 @app.route('/api/units/add', methods=['POST'])
@@ -305,9 +318,13 @@ def getPrivateAmenitiesById():
     return PrivateAmenitiesHandler().getById(request.json)
 
 # TODO
-@app.route('/api/units/amenities', methods=['POST'])
-def getPrivateAmenitiesByUnitId():
-    return PrivateAmenitiesHandler().getByUnitId(request.json)
+@app.route('/api/units/amenities/<int:unit_id>', methods=['GET'])
+def getPrivateAmenitiesByUnitId(unit_id):
+    if request.method == "GET":
+        return PrivateAmenitiesHandler().getByUnitId(unit_id)
+    else:
+        return jsonify(Error="Method not allowed."), 405
+
 
 # TODO add restrictions when updating shared amenities
 @app.route('/api/units/amenities', methods=['PUT'])
@@ -364,9 +381,12 @@ def removeLease():
 """
 SEARCH AND FILTER (ACCOMMODATIONS & UNITS)
 """
-@app.route('/api/search', methods=['POST'])
+@app.route('/api/search', methods=['GET'])
 def searchAccommodations():
-  return AccommodationHandler().search(request.json)
+  if request.method == 'GET':
+    return AccommodationHandler().search(request.args.get('input'), request.args.get('offset'))
+  else: 
+    return jsonify(Error="Method not allowed."), 405
 
 @app.route('/api/filter/amenities', methods=['POST'])
 def filterByAmenities():

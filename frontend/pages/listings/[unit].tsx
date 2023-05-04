@@ -1,158 +1,197 @@
 import Layout from '@/components/Layout';
-import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
 import { useListings } from 'useListings';
+import Review from '@/components/Review';
+import ReviewList from '@/components/ReviewList';
+import { useRouter } from 'next/router';
 
 const Unit = () => {
-	const { data, error } = useListings('units/1');
+	const router = useRouter();
+	const { unit } = router.query;
+
+	// if (!unit) return <div>LOADING UNIT</div>;
+	const { data: unitData, error: unitError } = useListings('units/' + '1');
+	// return <div></div>;
+	const { data: accmData, error: accmError } = useListings('accommodations/1');
+	const { data: unitAmenities, error: unitAmenitiesError } = useListings('units/amenities/1');
+	const { data: accmAmenities, error: accmAmenitiesError } = useListings('accommodations/amenities/1');
+	const { data: accmReviews, error: accmReviewsError } = useListings('accommodations/reviews/1');
+	const { data: landlord, error: landlordError } = useListings('landlords/1');
+	const { data: landlordPic, error: landlordPicError } = useListings('images/landlord/1');
+	const { data: unitPics, error: unitPicsError } = useListings('images/unit/1');
 
 	// TODO: Add loading cards, default error cards
-	if (error) return <div>Failed to load</div>;
-	if (!data) return <div>Loading...</div>;
-	console.log(data);
-	// let allUnits: any[] = [];
-	// const [units, setUnits] = useState([]);
-	// const router = useRouter();
-	// const { unit } = router.query;
-	// const [unitData, setUnitData] = useState();
+	if (unitError || accmError || unitAmenitiesError || accmAmenitiesError || accmReviewsError || landlordError || landlordPicError || unitPicsError) return <div>Failed to load</div>;
+	if ((!unitData && !accmData) || unitData === undefined || accmData === undefined || unitAmenities === undefined || accmAmenities === undefined || accmReviews === undefined || landlord === undefined || landlordPic === undefined || unitPics === undefined) return <div>Loading...</div>;
 
-	// useEffect(() => {
-	// 	if (unit) {
-	// 		const data = {
-	// 			accm_id: unit,
-	// 		};
-	// 		console.log(data);
-	// 		const endpoint = 'http://127.0.0.1:5000/api/units/1';
-	// 		const options = {
-	// 			method: 'GET',
-	// 			// headers: new Headers({ 'content-type': 'application/json' }),
-	// 		};
-	// 		fetch(endpoint, options)
-	// 			.then((data) => {
-	// 				return data.json();
-	// 			})
-	// 			.then((data) => {
-	// 				setUnitData(data);
-	// 				console.log(data);
-	// 				data.map((accm: any) => {
-	// 					console.log(accm);
-	// 					allUnits.push();
-	// 				});
-	// 			})
-	// 			.catch((err) => {
-	// 				var noListings: any = [];
-	// 				noListings.push(<div className='col-start-1 row-span-2 p-2'>No results found</div>);
-	// 				setUnits(noListings);
-	// 			});
-	// 		setUnits(units);
-	// 	}
-	// }, [unit]);
+	console.log(unitData);
+	console.log(accmData);
+	console.log(unitAmenities);
+	console.log(accmAmenities);
+	console.log(accmReviews);
+	console.log(landlord);
+	console.log(landlordPic);
+	console.log(unitPics);
+
+	let tempAmenities = {
+		'Air Conditioner': unitAmenities['air_conditioner'],
+		Balcony: unitAmenities['balcony'],
+		Bed: unitAmenities['bed'],
+		Electricity: unitAmenities['electricity'],
+		Internet: unitAmenities['internet'],
+		Microwave: unitAmenities['microwave'],
+		Parking: unitAmenities['parking'],
+		Water: unitAmenities['water'],
+	};
+
+	let tempSharedAmenities = {
+		Dryer: accmAmenities['dryer'],
+		Internet: accmAmenities['internet'],
+		Kitchen: accmAmenities['kitchen'],
+		Pets: accmAmenities['pets_allowed'],
+		Washer: accmAmenities['washer'],
+	};
+
+	let amenities = [];
+
+	var included = (
+		<svg className='w-4 h-4 mr-1.5 text-green-500 dark:text-green-400 flex-shrink-0' fill='currentColor' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'>
+			<path fill-rule='evenodd' d='M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z' clip-rule='evenodd'></path>
+		</svg>
+	);
+
+	var notIncluded = (
+		<svg className='w-4 h-4 mr-1.5 text-gray-400 flex-shrink-0' fill='currentColor' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'>
+			<path fill-rule='evenodd' d='M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z' clip-rule='evenodd'></path>
+		</svg>
+	);
+
+	let displayName: keyof typeof tempAmenities;
+	for (displayName in tempAmenities) {
+		const isIncluded = tempAmenities[displayName];
+		amenities.push(
+			<li className='flex items-center'>
+				{isIncluded ? included : notIncluded} {displayName}
+			</li>
+		);
+	}
+
+	let dName: keyof typeof tempSharedAmenities;
+	for (dName in tempSharedAmenities) {
+		const isIncluded = tempSharedAmenities[dName];
+		amenities.push(
+			<li className='flex items-center'>
+				{isIncluded ? included : notIncluded} {dName === 'Pets' && isIncluded ? 'Pets Allowed' : dName === 'Pets' && !isIncluded ? 'No Pets Allowed' : dName}
+			</li>
+		);
+	}
+
+	let reviews: any[] = [];
+	accmReviews.map((review: any) => {
+		console.log(review);
+		reviews.push(<Review listingTitle={review.comment} opinion='' listingImg='https://tecdn.b-cdn.net/img/new/standard/nature/186.jpg' name={review.tenant_id} date={review.review_send_date} userImg='/images/person.png' rating={review.rating}></Review>);
+	});
+
+	const rating = landlord.landlord_rating;
+	let ratingStars = [];
+
+	for (let i = 0; i < 5; i++) {
+		ratingStars.push(
+			<svg aria-hidden='true' className={`w-5 h-5 ${Math.round(rating) > i ? 'text-accent' : 'text-gray-500'}`} fill='currentColor' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'>
+				<path d='M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z'></path>
+			</svg>
+		);
+	}
+
+	let landlordPicLink = landlordPic.resources[1].secure_url;
+	let allUnitPics: any[] = [];
+
+	landlordPic.resources.forEach((pic: { secure_url: any }) => {
+		console.log(pic.secure_url);
+		if (allUnitPics.length === 0)
+			allUnitPics.push(
+				<div className='row-span-2 h-96 w-auto'>
+					<img src={pic.secure_url} className='rounded-2xl object-cover h-96 w-full' />
+				</div>
+			);
+		else
+			allUnitPics.push(
+				<div className='col-start-2 h-auto w-96'>
+					<img src={pic.secure_url} className='rounded-2xl object-cover h-full w-full' />
+				</div>
+			);
+	});
+
 	return (
 		<Layout>
-			<section className='pt-36 pl-20 pr-20'>
+			<section className='pt-32 pl-20 pr-20 bg-gray-50'>
 				<div className='grid grid-flow-row gap-4'>
-					<div className='row-span-2 row-start-1 col-start-1 text-3xl align-middle'>Unit {data.unit_number} | Accommodation Title</div>
-					<div className='row-start-1 text-end col-start-4'>Landlord Rating</div>
-					<div className='flex items-center col-start-4 row-start-2 justify-end '>
-						<svg aria-hidden='true' className='w-5 h-5 text-accent' fill='currentColor' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'>
-							<title>First star</title>
-							<path d='M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z'></path>
-						</svg>
-						<svg aria-hidden='true' className='w-5 h-5 text-accent' fill='currentColor' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'>
-							<title>Second star</title>
-							<path d='M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z'></path>
-						</svg>
-						<svg aria-hidden='true' className='w-5 h-5 text-accent' fill='currentColor' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'>
-							<title>Third star</title>
-							<path d='M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z'></path>
-						</svg>
-						<svg aria-hidden='true' className='w-5 h-5 text-accent' fill='currentColor' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'>
-							<title>Fourth star</title>
-							<path d='M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z'></path>
-						</svg>
-						<svg aria-hidden='true' className='w-5 h-5 text-gray-300 dark:text-gray-500' fill='currentColor' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'>
-							<title>Fifth star</title>
-							<path d='M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z'></path>
-						</svg>
-						<p className='ml-2 text-sm font-medium text-gray-500 dark:text-gray-400'>4.95 out of 5</p>
-						<span className='w-1 h-1 mx-1.5 bg-gray-500 rounded-full dark:bg-gray-400'></span>
-						<a href='#' className='text-sm font-medium text-gray-900 underline hover:no-underline'>
-							73 reviews
-						</a>
+					<div className='row-span-2 row-start-1 col-start-1 text-3xl align-middle'>
+						<h1 className='font-semibold'>
+							Unit {unitData.unit_number} <span className='text-accent'>|</span> {accmData.accm_title}
+							{unit}
+						</h1>
+						<h3 className='text-lg'>
+							{accmData.accm_street}, {accmData.accm_city}, {accmData.accm_country}, {accmData.accm_zipcode}
+						</h3>
 					</div>
-					<div className='row-start-3 col-span-4'>
-						<div id='indicators-carousel' className='relative w-full bg-gray-200' data-carousel='static'>
-							<div className='relative h-56 overflow-hidden rounded-lg md:h-96'>
-								<div className='hidden duration-700 ease-in-out' data-carousel-item='active'>
-									<img src='/docs/images/carousel/carousel-1.svg' className='absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2' alt='...' />
-								</div>
-
-								<div className='hidden duration-700 ease-in-out' data-carousel-item>
-									<img src='/docs/images/carousel/carousel-2.svg' className='absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2' alt='...' />
-								</div>
-
-								<div className='hidden duration-700 ease-in-out' data-carousel-item>
-									<img src='/docs/images/carousel/carousel-3.svg' className='absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2' alt='...' />
-								</div>
-
-								<div className='hidden duration-700 ease-in-out' data-carousel-item>
-									<img src='/docs/images/carousel/carousel-4.svg' className='absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2' alt='...' />
-								</div>
-
-								<div className='hidden duration-700 ease-in-out' data-carousel-item>
-									<img src='/docs/images/carousel/carousel-5.svg' className='absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2' alt='...' />
-								</div>
+					<div className='row-start-3 col-span-4 h-96'>
+						<div className='grid grid-rows-2 grid-flow-col gap-4 h-96'>
+							{allUnitPics}
+							<div className='col-start-2 h-auto w-96'>
+								<img src='https://cache.umusic.com/_sites/_halo/zrskt/nwff/utbd.jpg' className='rounded-2xl object-cover h-full w-full' />
 							</div>
-
-							<div className='absolute z-30 flex space-x-3 -translate-x-1/2 bottom-5 left-1/2'>
-								<button type='button' className='w-3 h-3 rounded-full' aria-current='true' aria-label='Slide 1' data-carousel-slide-to='0'></button>
-								<button type='button' className='w-3 h-3 rounded-full' aria-current='false' aria-label='Slide 2' data-carousel-slide-to='1'></button>
-								<button type='button' className='w-3 h-3 rounded-full' aria-current='false' aria-label='Slide 3' data-carousel-slide-to='2'></button>
-								<button type='button' className='w-3 h-3 rounded-full' aria-current='false' aria-label='Slide 4' data-carousel-slide-to='3'></button>
-								<button type='button' className='w-3 h-3 rounded-full' aria-current='false' aria-label='Slide 5' data-carousel-slide-to='4'></button>
-							</div>
-
-							<button type='button' className='absolute top-0 left-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none' data-carousel-prev>
-								<span className='inline-flex items-center justify-center w-8 h-8 rounded-full sm:w-10 sm:h-10 bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none'>
-									<svg aria-hidden='true' className='w-5 h-5 text-white sm:w-6 sm:h-6 dark:text-gray-800' fill='none' stroke='currentColor' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'>
-										<path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M15 19l-7-7 7-7'></path>
-									</svg>
-									<span className='sr-only'>Previous</span>
-								</span>
-							</button>
-							<button type='button' className='absolute top-0 right-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none' data-carousel-next>
-								<span className='inline-flex items-center justify-center w-8 h-8 rounded-full sm:w-10 sm:h-10 bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none'>
-									<svg aria-hidden='true' className='w-5 h-5 text-white sm:w-6 sm:h-6 dark:text-gray-800' fill='none' stroke='currentColor' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'>
-										<path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M9 5l7 7-7 7'></path>
-									</svg>
-									<span className='sr-only'>Next</span>
-								</span>
-							</button>
 						</div>
 					</div>
-					<div className='row-start-4 col-span-2'>
-						<p className='font-semibold'>Unit Description</p>
-						<p className='font-semibold'>${data.price} per month</p>
-						<p className='font-semibold'>{data.contract_duration} month contract</p>
-						<p>Available {data.date_available}</p>
+					<div className='row-start-4 col-span-2 space-y-1'>
+						<p className='font-semibold text-xl'>
+							{accmAmenities['bedrooms']} <span className='font-normal'>beds</span> <span className='text-accent'>|</span> {accmAmenities['bathrooms']} <span className='font-normal'>baths</span>
+						</p>
+						<p className='font-semibold text-xl'>
+							${unitData.price} <span className='font-normal'>per month</span>
+						</p>
+						<p className='font-semibold'>
+							{unitData.contract_duration} month <span className='font-normal'>contract</span>
+						</p>
+						<p className=''>Available {unitData.date_available}</p>
 					</div>
 					<div className='row-start-4 col-start-4 text-end'>
 						<button className='btn btn-primary mr-4 text-white'>Request Tour</button>
 						<button className='btn btn-secondary bg-transparent text-secondary hover:bg-primary-200 hover:text-white'>Apply</button>
 					</div>
-					<div className='row-start-5 col-span-2 col-start-1'>
+					<div className='row-start-5 col-start-1 col-span-2 mt-10'>
 						<h3 className='text-2xl'>About</h3>
-						<div className=''>accm_description</div>
-						<div className=''>Card with Landlord</div>
+						<div className='w-full break-all'>
+							<p>{accmData.accm_description}</p>
+						</div>
+						<div className='rounded-lg shadow-lg w-full py-4 flex'>
+							<div className='w-32 overflow-hidden mx-4'>
+								<img src={landlordPicLink} alt='landlord' className='rounded-2xl h-full w-full object-cover' />
+							</div>
+							<div className='mt-3 mx-auto w-3/4 self-center'>
+								<p className='text-xl text-gray-800 tracking-wide leading-5'>{landlord.landlord_name}</p>
+								<p className='text-lg text-primary tracking-wide leading-5'>Property Manager</p>
+								<div className='flex items-center mt-2'>
+									{ratingStars}
+									<p className='ml-2 text-sm font-medium text-gray-500 dark:text-gray-400'>{landlord.landlord_rating} out of 5</p>
+									<span className='w-1 h-1 mx-1.5 bg-gray-500 rounded-full dark:bg-gray-400'></span>
+									<a href='#' className='text-sm font-medium text-gray-900 underline hover:no-underline'>
+										{reviews.length} {reviews.length > 1 ? 'reviews' : 'review'}
+									</a>
+								</div>
+								<button className='btn btn-primary btn-sm leading-5 mt-2'>Contact</button>
+							</div>
+						</div>
 					</div>
-					<div className='row-start-5 col-span-2 col-start-3 bg-gray-200 text-center'>Map</div>
-					<div className='row-start-6 col-span-4'>
+					<div className='row-start-5 col-start-3 bg-gray-200 col-span-2 text-center mt-10'>Map</div>
+					<div className='row-start-6 col-span-4 mt-10'>
 						<h3 className='text-2xl'>Amenities</h3>
-						<div>All bullet points of amenities</div>
+						<ul className='space-y-1 text-gray-500 list-inside mt-4 max-h-32 w-full flex flex-wrap flex-col'>{amenities}</ul>{' '}
 					</div>
-					<div className='row-start-7 col-span-4'>
-						<h3 className='text-2xl'>Reviews</h3>
-						<div className=''>Reviews...</div>
+					<div className='row-start-7 col-span-4 mt-10'>
+						<h3 className='text-2xl'>Accommodation Reviews</h3>
+						<div className='mb-24'>
+							<ReviewList route='accommodations/reviews/1' />
+						</div>
 					</div>
 				</div>
 			</section>

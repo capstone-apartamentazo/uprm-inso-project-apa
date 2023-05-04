@@ -1,51 +1,36 @@
 import getConfig from 'next/config';
-import { type } from 'os';
-import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react';
-import { resolve } from 'path';
+import { useRouter } from 'next/router';
+import { useState } from 'react';
 
 import jwt from 'jwt-decode';
 import Cookies from 'universal-cookie';
 import { Token } from 'Token';
 
-
 const { publicRuntimeConfig } = getConfig();
 const { url: host } = publicRuntimeConfig.site;
 
-
 const Login = () => {
-
-	const router = useRouter()
-	const cookies = new Cookies()
-	const [logError, setLogError] = useState(false)
-
+	const router = useRouter();
+	const cookies = new Cookies();
+	const [logError, setLogError] = useState(false);
 
 	const handleSubmit = async (event: any) => {
 		event.preventDefault();
 
-		var data = {}
-		const isLandlord = event.target.landlord.checked
-
-
-
-		//console.log(data);
-
-		//console.log(JSONdata);
+		var data = {};
+		const isLandlord = event.target.landlord.checked;
 
 		data = {
-			"tenant_email": event.target.email.value,
-			"tenant_password": event.target.password.value,
-
+			tenant_email: event.target.email.value,
+			tenant_password: event.target.password.value,
 		};
-
 
 		var endpoint = `${host}/api/tenants/login`;
 		if (isLandlord) {
 			endpoint = `${host}/api/landlords/login`;
 			data = {
-				"landlord_email": event.target.email.value,
-				"landlord_password": event.target.password.value,
-
+				landlord_email: event.target.email.value,
+				landlord_password: event.target.password.value,
 			};
 		}
 
@@ -56,54 +41,33 @@ const Login = () => {
 			headers: {
 				'Content-Type': 'application/json',
 			},
-			body: JSONdata
+			body: JSONdata,
 		};
-		console.log(JSONdata)
+		console.log(JSONdata);
 		await fetch(endpoint, options)
 			.then((response) => {
-				//console.log(response);
 				if (!response.ok) {
-					console.log(response)
-					//alert("first error")
-					throw new Error("Email or password not match!");
+					console.log(response);
+					throw new Error('Email or password do not match!');
 				} else {
-					return response.json()
+					return response.json();
 				}
 			})
-
-			.then(result => {
-				//alert(result);
-				const decoded = jwt<Token>(result['access_token'])
-				cookies.set("jwt_authorization", result['access_token'], {
-					expires: new Date(decoded.exp*1000),
-				})
-				// const objc = { "token": (result['access_token']), "isLandlord": isLandlord, 'id': (isLandlord ? result['landlord_id'] : result['tenant_id']) };
-				// const stringified = JSON.stringify(objc)
-				// localStorage.setItem("data", stringified)
-
-				// localStorage.setItem('token', result["access_token"]);
-				// localStorage.setItem('type', data.type)
-				// localStorage.setItem('id', 1)
-				//console.log()
-				//console.log(JSON.parse(localStorage.getItem('data')!).token === ("Bearer "+result['access_token']));
-				//alert(`Logged in success`);
+			.then((result) => {
+				const decoded = jwt<Token>(result['access_token']);
+				cookies.set('jwt_authorization', result['access_token'], {
+					expires: new Date(decoded.exp * 1000),
+				});
 				router.replace('/#');
 				router.reload();
-
-
-
 			})
 			.catch((error) => {
-				setLogError(true)
+				setLogError(true);
 				console.log(error);
-				//alert(error);
 			});
-
 	};
 	return (
 		<div className='text-center'>
-			
-
 			<label id='login-modal' className='modal cursor-pointer'>
 				<label className='modal-box relative flex' htmlFor=''>
 					<div className='flex-col flex-none w-10 -my-6 bg-gradient-to-b pl-5 -ml-8 mr-5 from-primary to-accent overscroll-none'>
@@ -123,7 +87,6 @@ const Login = () => {
 							<div className='text-left'>
 								<div className='flex-row pb-5'>Account Type</div>
 								<div className='flex-row text-left justify-start'>
-
 									<div className='mb-[0.125rem] mr-4 inline-block min-h-[1.5rem]  hover:cursor-pointer'>
 										<input type='checkbox' name='checkbox' className='hover:cursor-pointer  text-accent bg-gray-200 border-gray-200 focus:accent' id='landlord' value='landlord' />
 										<label className='mt-px inline-block pl-2 hover:cursor-pointer' htmlFor='landlord'>
@@ -133,12 +96,13 @@ const Login = () => {
 								</div>
 							</div>
 							<div className='flex-col'>
-								<h1 hidden={!logError} className='mb-4 text-red-600'>Email or password did not match</h1>
+								<h1 hidden={!logError} className='mb-4 text-red-600'>
+									Email or password did not match
+								</h1>
 								<button onClick={() => setLogError(false)} type='submit' className='btn w-full text-white bg-accent hover:bg-accent'>
 									Log In
 								</button>
 							</div>
-
 						</form>
 						<p className='pb-16'>
 							Don't have an account?{' '}
@@ -147,9 +111,9 @@ const Login = () => {
 							</a>
 						</p>
 					</div>
-				</label >
-			</label >
-		</div >
+				</label>
+			</label>
+		</div>
 	);
 };
 

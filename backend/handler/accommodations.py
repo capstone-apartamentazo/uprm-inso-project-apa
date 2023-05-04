@@ -52,9 +52,9 @@ class AccommodationHandler:
       logger.exception(e)
       return jsonify('Error Occured'), 400
 
-  def search(self, json):
+  def search(self, data, offset):
     try:
-      daoAccommodations = self.accommodations.search(json['input'], json['offset'])
+      daoAccommodations = self.accommodations.search(data, offset)
       if daoAccommodations:
         return jsonify([row for row in daoAccommodations])
       else:

@@ -1,12 +1,7 @@
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
-
-const unit = {
-	amenities: 'water, balcony, electricity',
-	description: 'Test Description',
-	number: '2',
-	price: '400',
-	available: 'Available',
-};
+import { useListings } from 'useListings';
+import { useRouter } from 'next/router';
 
 type Unit = {
 	accm_id: number;
@@ -19,70 +14,91 @@ type Unit = {
 	unit_id: number;
 	unit_number: string;
 };
+type Amenities = {
+	air_conditioner: boolean;
+	balcony: boolean;
+	bed: boolean;
+	electricity: boolean;
+	internet: boolean;
+	microwave: boolean;
+	parking: boolean;
+	water: boolean;
+};
+
+function getAvailableAmenities(amenities: any) {
+	let toReturn: any[] = [];
+	var topAmenities = ['electricity', 'water', 'internet', 'parking'];
+	var includedAmenities = Object.keys(amenities).filter((item) => (item != 'deleted_flag' ? amenities[item] === false : null));
+	const filteredAmenities = includedAmenities.filter((value) => topAmenities.includes(value));
+
+	while (filteredAmenities.length < 4 && includedAmenities.length >= filteredAmenities.length) {
+		var lastItem: any = includedAmenities.pop();
+		if (filteredAmenities.includes(lastItem)) continue;
+		filteredAmenities.push(lastItem);
+	}
+
+	filteredAmenities.forEach((amenity) =>
+		toReturn.push(
+			<span key={amenity} className='badge badge-ghost badge-sm'>
+				{amenity}
+			</span>
+		)
+	);
+	return toReturn;
+}
 
 const AccommodationUnits = (accm_id: any) => {
+	const router = useRouter();
 	let allUnits: any = [];
 	const [units, setUnits] = useState([]);
-	const [amount, setAmount] = useState([]);
+	const { data: unitData, error: unitError } = useListings('accommodations/units/' + accm_id.accm_id);
 
 	useEffect(() => {
-		if (accm_id.accm_id) {
-			const data = {
-				accm_id: accm_id.accm_id,
-			};
-
-			const endpoint = 'http://127.0.0.1:5000/api/accommodations/units';
-
+		if (unitData) {
 			const options = {
-				method: 'POST',
+				method: 'GET',
 				headers: new Headers({ 'content-type': 'application/json' }),
-				body: JSON.stringify(data),
 			};
 
-			fetch(endpoint, options)
-				.then((data) => {
-					return data.json();
-				})
-				.then((data) => {
-					data.map((accm: Unit) => {
+			unitData.map((unit: Unit) => {
+				var endpoint = 'http://127.0.0.1:5000/api/units/amenities/' + unit.unit_id;
+				fetch(endpoint, options)
+					.then((data) => {
+						return data.json();
+					})
+					.then((data) => {
 						allUnits.push(
-							<tr>
+							<tr key={unit.unit_id} className='hover cursor-pointer' onClick={() => router.push('/listings/' + unit.unit_id)}>
 								<td>
 									<div className='flex items-center space-x-3'>
 										<div>
-											<div className='font-bold'>Unit {accm.unit_number}</div>
-											<div className='text-sm opacity-50'>{accm.available ? 'Available' : 'Unavailable'}</div>
+											<div className='font-bold'>Unit {unit.unit_number}</div>
+											<div className='text-sm opacity-50'>{unit.available ? 'Available' : 'Unavailable'}</div>
 										</div>
 									</div>
 								</td>
-								<td>
-									{unit.description}
-									<br />
-									<span className='badge badge-ghost badge-sm'>{unit.amenities}</span>
-								</td>
-								<td className='font-bold'>${accm.price}/m</td>
-								<th>
-									<button className='btn btn-ghost btn-xs'>details</button>
-								</th>
+								<td className='space-x-2'>{getAvailableAmenities(data)}</td>
+								<td className='font-bold'>${unit.price}/m</td>
 							</tr>
 						);
+						if (allUnits.length === unitData.length) setUnits(allUnits);
+					})
+					.catch((err) => {
+						console.log(err);
+						var noListings: any = [];
+						noListings.push(
+							<tr>
+								<td className='text-center font-semibold'>No Units Found</td>
+							</tr>
+						);
+						setUnits(noListings);
 					});
-					setUnits(allUnits);
-				})
-				.catch((err) => {
-					var noListings: any = [];
-					noListings.push(
-						<tr>
-							<td className='text-center font-semibold'>No Units Found</td>
-						</tr>
-					);
-					setUnits(noListings);
-				});
+			});
 		}
-	}, [accm_id.accm_id]);
+	}, [accm_id.accm_id, unitData]);
 
 	return (
-		<div id={accm_id.accm_id + '_units'} className={`h-96 card card-compact shadow text-primary-content translate-y-1 bg-accent transition-all delay-150 duration-300 overflow-hidden w-full`}>
+		<div id={accm_id.accm_id + '_units'} className={`h-72 card card-compact shadow text-primary-content translate-y-1 bg-accent transition-all delay-150 duration-300 overflow-hidden w-full`}>
 			<div className='card-body p-0'>
 				<h3 className='card-title'>Accommodation Units</h3>
 				<div className='overflow-x-auto w-full'>

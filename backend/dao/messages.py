@@ -18,10 +18,7 @@ class Messages:
     return res
 
   def getByLandlordId(self, landlord):
-    query = 'SELECT DISTINCT ON (tenant_id) \
-            message_id, landlord_id, tenant_id, msg_send_date, landlord_sent_msg, msg_content, msg_read, tenant_name, landlord_name FROM messages \
-            NATURAL INNER JOIN landlords NATURAL INNER JOIN tenants \
-            WHERE landlord_id = %s ORDER BY tenant_id, msg_send_date DESC'
+    query = 'SELECT * FROM (SELECT DISTINCT ON (tenant_id) * FROM messages WHERE landlord_id = %s ORDER BY tenant_id, msg_send_date DESC) AS landlord_msg ORDER BY msg_send_date DESC'
     cursor = db.cursor(cursor_factory=RealDictCursor)
     cursor.execute(query %(landlord))
     res = cursor.fetchall()
@@ -29,10 +26,7 @@ class Messages:
     return res
 
   def getByTenantId(self, tenant):
-    query = 'SELECT DISTINCT ON (landlord_id) \
-            message_id, landlord_id, tenant_id, msg_send_date, landlord_sent_msg, msg_content, msg_read, tenant_name, landlord_name FROM messages \
-            NATURAL INNER JOIN landlords NATURAL INNER JOIN tenants \
-            WHERE tenant_id = %s ORDER BY landlord_id, msg_send_date DESC'
+    query = 'SELECT * FROM (SELECT DISTINCT ON (landlord_id) * FROM messages WHERE tenant_id = %s ORDER BY landlord_id, msg_send_date DESC) AS tenant_msg ORDER BY msg_send_date DESC'
     cursor = db.cursor(cursor_factory=RealDictCursor)
     cursor.execute(query %(tenant))
     res = cursor.fetchall()
