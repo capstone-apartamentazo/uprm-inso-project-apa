@@ -144,8 +144,8 @@ class AccommodationHandler:
       if valid:
         newAccommodation = self.accommodations.addAccommodation(title, street, number, city, state, country, zipcode, latitude, longitude, description, landlordID)
         if newAccommodation:
-          self.calculateDistance(newAccommodation['accm_id'], newAccommodation['latitude'], newAccommodation['longitude'])
           db.commit()
+          self.calculateDistance(newAccommodation['accm_id'], newAccommodation['latitude'], newAccommodation['longitude'])
           return jsonify(newAccommodation)
         else:
           return jsonify('Error adding Accommodation and Shared Amenities'), 400
@@ -179,8 +179,8 @@ class AccommodationHandler:
       if valid:
         updatedAccommodation = self.accommodations.updateAccommodation(accm_id, title, street, number, city, state, country, zipcode, latitude, longitude, description)
         if updatedAccommodation:
-          self.calculateDistance(updatedAccommodation['accm_id'], updatedAccommodation['latitude'], updatedAccommodation['longitude'])
           db.commit()
+          self.calculateDistance(updatedAccommodation['accm_id'], updatedAccommodation['latitude'], updatedAccommodation['longitude'])
           return jsonify(updatedAccommodation)
         else:
           return jsonify('Error updating Accommodation'), 400
