@@ -1,6 +1,3 @@
-import Card from './Card';
-import Hunt from '../public/images/features-hunt.gif';
-import Image from 'next/image';
 import { useEffect, useRef } from 'react';
 import lottie from 'lottie-web';
 import listings from 'public/animations/listings.json';
@@ -33,8 +30,8 @@ export default function Features(props: any) {
 	if (props.type === 'aptHunt') animationClasses = 'w-[25rem] h-96';
 
 	return (
-		<div className='hero'>
-			<div className={`hero-content flex-col ${classes}`}>
+		<div className='hero mb-10'>
+			<div className={`hero-content flex-col ${classes} bg-white rounded-2xl shadow-md`}>
 				<div className={animationClasses}>
 					<span ref={animationContainer} className='h-full w-full'></span>
 				</div>

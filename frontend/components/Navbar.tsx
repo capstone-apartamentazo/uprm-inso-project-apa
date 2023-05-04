@@ -142,13 +142,13 @@ export default function Navbar(path: any) {
 
 	return (
 		<div className={`navbar text-primary-content fixed px-16 py-5 ${classes} z-10`}>
-			<div className='flex-1'>
+			<div className='flex-1 gap-4'>
 				<Link href={'../'}>
-					<span className='btn btn-ghost normal-case text-xl text-white'>
-						<Image src={apartamentazo} width={200} height={200} alt={''}></Image>
-					</span>
+					<span className='btn btn-ghost normal-case text-lg text-white'>{/* <Image src={apartamentazo} width={200} height={200} alt={''}></Image> */}Home</span>
 				</Link>
+				<div className='btn btn-ghost text-lg text-white normal-case'>About Us</div>
 			</div>
+
 			<div className='flex-none'>
 				{' '}
 				<Login />
