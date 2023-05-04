@@ -129,7 +129,7 @@ class Accommodations:
             ), \
             unit_scores AS ( \
               SELECT unit_id, rating_score, distance_score, \
-              ((cast(size as float)/cast(tenant_capacity as float))/cast((cast(size as float)/cast(tenant_capacity as float))+350 as float)) AS size_score, \
+              (1-exp((cast(size as float)/cast(tenant_capacity as float))*-0.004)) AS size_score, \
               ((cast(total_shared_amenities+total_priv_amenities as float))/14) AS amenities_score, \
               exp((cast(-price as float)/cast(tenant_capacity as float))/1800) AS price_score \
               FROM units NATURAL INNER JOIN accm_scores NATURAL INNER JOIN priv_amenities_scores \
