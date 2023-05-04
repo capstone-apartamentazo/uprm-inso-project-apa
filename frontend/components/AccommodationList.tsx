@@ -78,9 +78,9 @@ const AccommodationList: React.FC<Props> = ({  }) => {
 
     return (
         <div className='flex  gap-4  pt-4 pr-4 pb-4'>
-            {acms.slice(0,4).map((acm: Accm ) => (
+            {acms.slice(0,4).map((accm: Accm ) => (
                 
-				<ProfileAccommodation title='Bosque 1' address='calle bosque' id={1}/>
+				<ProfileAccommodation title={accm.accm_title} address={accm.accm_street} id={accm.accm_id}/>
 
             ))}
             {/* <Link href='/' className=' flex flex-col bg-white justify-center  w-40 rounded-md  shadow-md ring-1 ring-stone-200 transition ease-in-out delay-50 hover:-translate-y-1 hover:scale-10 duration-200 cursor-pointer'>

@@ -12,8 +12,8 @@ const ProfileAccommodation: React.FC<Props> = ({ title, address, id }) => {
             <a data-te-ripple-init data-te-ripple-color='light'>
                 <div className='block max-w-full rounded-lg bg-white shadow-lg ring-1 ring-stone-200 dark:bg-neutral-700 '>
                     <img className='rounded-t-lg aspect-video h-56' src='https://tecdn.b-cdn.net/img/new/standard/nature/186.jpg' alt='' />
-                    <div className='p-4 flex menu-vertical align-middle'>
-                        <h1 className='text-left mb-2 text-xl font-bold leading-tight text-neutral-800 dark:text-neutral-50'>{title}</h1>
+                    <div className='p-4 flex menu-vertical h-36 align-middle'>
+                        <h1 className='text-left mb-2 text-xl font-semibold leading-tight w-56   truncate text-neutral-800 dark:text-neutral-50'>{title}</h1>
                         <div className='text-left text-base text-neutral-600 dark:text-neutral-200 flex align-middle gap-1 '>
                             <span>
                                 <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' strokeWidth={1.5} stroke='currentColor' className='w-4 h-4'>
