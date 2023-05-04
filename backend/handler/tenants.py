@@ -1,6 +1,5 @@
 from flask import jsonify
 from psycopg2 import Error as pgerror
-#from backend.handler.leases import LeaseHandler
 from util.config import db, logger, tenant_guard as guard
 from dao.tenants import Tenants
 import flask_praetorian as praetorian
@@ -12,7 +11,6 @@ import re
 class TenantHandler:
   def __init__(self):
     self.tenants = Tenants()
-    #self.lease = LeaseHandler()
 
   def getAll(self):
     try:
@@ -143,8 +141,6 @@ class TenantHandler:
     try:
       tenant_id = praetorian.current_user_id()
       deletedTenant = self.tenants.deleteTenant(tenant_id)
-      # deletedRequest = self.request.deleteRequestCascade(tenant_id)
-      # deletedLease = self.lease.deleteLeaseCascade(tenant_id)
       if deletedTenant:
         db.commit()
         return jsonify(deletedTenant)

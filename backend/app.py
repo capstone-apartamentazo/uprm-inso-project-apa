@@ -93,7 +93,7 @@ def updateTenant():
 # TODO
 @app.route('/api/tenants', methods=['DELETE'])
 def removeTenant():
-  return None
+  return TenantHandler().deleteTenant()
 
 """
 MESSAGES (LANDLORDS AND TENANTS)
