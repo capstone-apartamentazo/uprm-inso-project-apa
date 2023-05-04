@@ -2,9 +2,15 @@ import Layout from '@/components/Layout';
 import { useListings } from 'useListings';
 import Review from '@/components/Review';
 import ReviewList from '@/components/ReviewList';
+import { useRouter } from 'next/router';
 
 const Unit = () => {
-	const { data: unitData, error: unitError } = useListings('units/1');
+	const router = useRouter();
+	const { unit } = router.query;
+
+	// if (!unit) return <div>LOADING UNIT</div>;
+	const { data: unitData, error: unitError } = useListings('units/' + '1');
+	// return <div></div>;
 	const { data: accmData, error: accmError } = useListings('accommodations/1');
 	const { data: unitAmenities, error: unitAmenitiesError } = useListings('units/amenities/1');
 	const { data: accmAmenities, error: accmAmenitiesError } = useListings('accommodations/amenities/1');
@@ -122,6 +128,7 @@ const Unit = () => {
 					<div className='row-span-2 row-start-1 col-start-1 text-3xl align-middle'>
 						<h1 className='font-semibold'>
 							Unit {unitData.unit_number} <span className='text-accent'>|</span> {accmData.accm_title}
+							{unit}
 						</h1>
 						<h3 className='text-lg'>
 							{accmData.accm_street}, {accmData.accm_city}, {accmData.accm_country}, {accmData.accm_zipcode}

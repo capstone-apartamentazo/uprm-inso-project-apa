@@ -15,17 +15,11 @@ const Listings = () => {
 
 	useEffect(() => {
 		if (search) {
-			const data = {
-				input: search,
-				offset: 0,
-			};
-
-			const endpoint = 'http://127.0.0.1:5000/api/search';
+			const endpoint = `http://127.0.0.1:5000/api/search?input=${search}&offset=0`;
 
 			const options = {
-				method: 'POST',
+				method: 'GET',
 				headers: new Headers({ 'content-type': 'application/json' }),
-				body: JSON.stringify(data),
 			};
 
 			fetch(endpoint, options)
@@ -37,7 +31,7 @@ const Listings = () => {
 					data.map((accm: any) => {
 						allListings.push(
 							<div key={accm} className='col-start-1 row-span-2 p-2'>
-								<ListingResult key={accm} title={accm.accm_title} address={accm.accm_street + ', ' + accm.accm_city} features={'2 bed • 2 baths'} description={accm.accm_description} price={'$800'} href={''} id={accm.accm_id} />{' '}
+								<ListingResult key={accm} title={accm.accm_title} address={accm.accm_street + ', ' + accm.accm_city} description={accm.accm_description} unitAmount={accm.number_of_units} id={accm.accm_id} />{' '}
 							</div>
 						);
 					});
