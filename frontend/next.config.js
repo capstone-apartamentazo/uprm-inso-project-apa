@@ -2,7 +2,7 @@ module.exports = {
 	publicRuntimeConfig: {
 		site: {
 			name: 'Apartamentazo',
-			url: process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : 'https://apartamentazo.herokuapp.com',
+			url: process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:5000' : 'https://api.apartamentazo.com',
 			title: 'Apartamentazo',
 			description: 'Helping you find your next college apartment',
 			socialPreview: '/images/preview.png',

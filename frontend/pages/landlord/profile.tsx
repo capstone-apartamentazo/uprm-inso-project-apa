@@ -1,5 +1,5 @@
 import Layout from '@/components/Layout';
-import Listing from '@/components/Listing';
+import Listing from '@/components/Accommodation';
 import Review from '@/components/Review';
 import Image from 'next/image';
 

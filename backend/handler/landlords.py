@@ -24,9 +24,9 @@ class LandlordHandler:
       logger.exception(e)
       return jsonify('Error Occured'), 400
 
-  def getById(self, json):
+  def getById(self, u_id):
     try:
-      daoLandlord = self.landlords.getById(json['landlord_id'])
+      daoLandlord = self.landlords.getById(u_id)
       if daoLandlord:
         return jsonify(daoLandlord)
       else:

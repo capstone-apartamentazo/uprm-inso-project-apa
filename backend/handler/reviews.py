@@ -34,14 +34,11 @@ class ReviewHandler:
       logger.exception(e)
       return jsonify('Error Occured'), 400
 
-  def getByAccommodationId(self, json):
+  def getByAccommodationId(self, accm_id):
     try:
-      daoReviews = self.reviews.getByAccommodationId(json['accm_id'])
+      daoReviews = self.reviews.getByAccommodationId(accm_id)
       if daoReviews:
-        result = []
-        for row in daoReviews:
-          result.append(self.dictionary(row))
-        return jsonify(result), 200
+        return jsonify([row for row in daoReviews]), 200
       else:
         return jsonify('Reviews Not Found'), 400
     except (Exception, pgerror) as e:

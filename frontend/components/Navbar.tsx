@@ -1,23 +1,42 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import apartamentazo from '../public/images/apartamentazo.png';
+import Login from './Login';
+import Signup from './Signup';
+import { sign } from 'crypto';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+
+import jwt from 'jwt-decode';
+import Cookies from 'universal-cookie';
+import { Storage } from 'Storage';
+import { Token } from 'Token';
 
 export default function Navbar(path: any) {
-	var classes = '';
-	var navBar = <></>;
+	const router = useRouter();
 
+	var classes = '';
+	//var navBar = <></>;
+	const [navBar, setNavBar] = useState(<></>);
+
+	const logout = async () => {
+		cookies.remove('jwt_authorization');
+		//localStorage.removeItem('data');
+		router.replace('/');
+		router.reload();
+	};
 	// INFO: Signed out / Default Navigation Bar
 	var defaultBar = (
 		<ul className='menu menu-horizontal px-1 gap-4'>
 			<li>
-				<Link href={''} className='btn btn-accent btn-outline normal-case bg-white w-28 font-light'>
+				<a href='#signup-modal' className='btn btn-accent btn-outline normal-case bg-white w-28'>
 					Sign up
-				</Link>
+				</a>
 			</li>
 			<li>
-				<Link href={''} className='btn btn-accent btn-outline normal-case bg-white w-28 font-light'>
+				<a href='#login-modal' className='btn btn-accent btn-outline normal-case bg-white w-28'>
 					Log in
-				</Link>
+				</a>
 			</li>
 		</ul>
 	);
@@ -26,7 +45,7 @@ export default function Navbar(path: any) {
 	var signedInBar = (
 		<div className='menu menu-horizontal px-1 gap-4'>
 			<li>
-				<Link href={''} className='text-accent normal-case font-semibold'>
+				<Link href={'/'} className='text-accent normal-case font-semibold'>
 					<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' strokeWidth={1.5} stroke='currentColor' className='w-5 h-5 -mr-1'>
 						<path
 							strokeLinecap='round'
@@ -38,7 +57,7 @@ export default function Navbar(path: any) {
 				</Link>
 			</li>
 			<li>
-				<Link href={''} className='normal-case font-semibold'>
+				<Link href={'/messages'} className='normal-case font-semibold'>
 					<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' strokeWidth={1.5} stroke='currentColor' className='w-5 h-5 -mr-1'>
 						<path
 							strokeLinecap='round'
@@ -57,38 +76,69 @@ export default function Navbar(path: any) {
 				</label>
 				<ul tabIndex={0} className='mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-auto items-center'>
 					<li>
-						<a className='justify-between'>Profile</a>
+						<Link href='/profile' className='justify-between'>
+							Profile
+						</Link>
 					</li>
 					<li>
-						<a>Logout</a>
+						<Link href='/settings'>Settings</Link>
+					</li>
+					<li>
+						<div onClick={logout} className='cursor-pointer'>
+							Logout
+						</div>
 					</li>
 				</ul>
 			</div>
 		</div>
 	);
 
-	switch (path.path) {
-		case '/':
-			classes = 'bg-transparent';
-			navBar = defaultBar;
-			break;
-		case '/profile':
-			classes = 'shadow-md bg-white';
-			navBar = signedInBar;
-			break;
-		case '/about':
-			classes = '';
-			navBar = defaultBar;
-			break;
-		case '/404':
-			classes = 'shadow-md';
-			navBar = defaultBar;
-			break;
-		default:
-			classes = 'bg-transparent';
-			navBar = defaultBar;
-	}
+	// switch (path.path) {
+	// 	case '/':
+	// 		classes = 'bg-transparent';
+	// 		navBar = defaultBar;
+	// 		break;
+	// 	case '/profile':
+	// 		classes = 'shadow-md bg-white';
+	// 		navBar = signedInBar;
+	// 		break;
+	// 	case '/about':
+	// 		classes = '';
+	// 		navBar = defaultBar;
+	// 		break;
+	// 	case '/404':
+	// 		classes = 'shadow-md';
+	// 		navBar = defaultBar;
+	// 		break;
+	// 	default:
+	// 		classes = 'bg-transparent';
+	// 		navBar = defaultBar;
+	// }
 	/* bg-opacity-30 backdrop-filter backdrop-blur-lg */
+
+	const [storage, setStorage] = useState<Storage>({ token: null, id: null, isLandlord: null });
+
+	const cookies = new Cookies();
+	useEffect(() => {
+		try {
+			const token = cookies.get('jwt_authorization');
+			const decoded = jwt<Token>(token);
+			setStorage({ token: token, id: decoded['id'], isLandlord: decoded['rls'] == 'landlord' ? true : false });
+			setNavBar(signedInBar);
+		} catch (err) {
+			setNavBar(defaultBar);
+			console.log('No tokens found in cookies');
+		}
+
+		// if(localStorage.getItem('data') != null){
+		// 	data = localStorage.getItem('data')!
+		// 	setNavBar(signedInBar);
+
+		// }else{
+		// 	setNavBar(defaultBar);
+
+		// }
+	}, []);
 
 	return (
 		<div className={`navbar text-primary-content fixed px-16 py-5 ${classes} z-10`}>
@@ -99,7 +149,12 @@ export default function Navbar(path: any) {
 					</span>
 				</Link>
 			</div>
-			<div className='flex-none'>{navBar}</div>
+			<div className='flex-none'>
+				{' '}
+				<Login />
+				<Signup />
+				{navBar}
+			</div>
 		</div>
 	);
 }

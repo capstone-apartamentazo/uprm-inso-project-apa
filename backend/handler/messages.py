@@ -48,16 +48,16 @@ class MessageHandler:
       return jsonify('Error Occured'), 400
 
   @praetorian.auth_required
-  def getConversation(self, json):
+  def getConversation(self, u_id):
     try:
       daoMessages = []
       role = praetorian.current_rolenames().pop()
       if role == 'landlord':
-        self.messages.read(praetorian.current_user_id(), json['tenant_id'], role)
-        daoMessages = self.messages.getConversation(praetorian.current_user_id(), json['tenant_id'])
+        self.messages.read(praetorian.current_user_id(), u_id, role)
+        daoMessages = self.messages.getConversation(praetorian.current_user_id(), u_id)
       elif role == 'tenant':
-        self.messages.read(json['landlord_id'], praetorian.current_user_id(), role)
-        daoMessages = self.messages.getConversation(json['landlord_id'], praetorian.current_user_id())
+        self.messages.read(u_id, praetorian.current_user_id(), role)
+        daoMessages = self.messages.getConversation(u_id, praetorian.current_user_id())
       if daoMessages:
         db.commit()
         return jsonify([row for row in daoMessages])

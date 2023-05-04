@@ -31,9 +31,9 @@ class UnitHandler:
       logger.exception(e)
       return jsonify('Error Occured'), 400
 
-  def getById(self, json):
+  def getById(self, unit_id):
     try:
-      daoUnit = self.units.getById(json['unit_id'])
+      daoUnit = self.units.getById(unit_id)
       if daoUnit:
         return jsonify(daoUnit)
       else:
@@ -42,9 +42,9 @@ class UnitHandler:
       logger.exception(e)
       return jsonify('Error Occured'), 400
 
-  def getByAccommodationId(self, json):
+  def getByAccommodationId(self, accm_id):
     try:
-      daoUnits = self.units.getByAccommodationId(json['accm_id'])
+      daoUnits = self.units.getByAccommodationId(accm_id)
       if daoUnits:
         return jsonify([row for row in daoUnits])
       else:

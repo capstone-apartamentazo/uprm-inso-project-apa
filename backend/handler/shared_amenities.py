@@ -32,9 +32,9 @@ class SharedAmenitiesHandler:
       logger.exception(e)
       return jsonify('Error Occured'), 400
 
-  def getByAccommodationId(self, json):
+  def getByAccommodationId(self, accm_id):
     try:
-      daoAmenities = self.amenities.getByAccommodationId(json['accm_id'])
+      daoAmenities = self.amenities.getByAccommodationId(accm_id)
       if daoAmenities:
         return jsonify(daoAmenities)
       else:
