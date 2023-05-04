@@ -106,7 +106,7 @@ class Accommodations:
     cursor.close()
     return res
 
-  def calculateScore(self, distance_weight, price_weight, size_weight, amenities_weight, rating_weight):
+  def calculateScore(self, distance_weight, price_weight, size_weight, amenities_weight, rating_weight, offset):
     query = 'WITH shared_amenities_scores AS ( \
               SELECT accm_id, sum(shared_kitchen::int)+sum(shared_bathroom::int)+sum(shared_washer::int)+sum(shared_dryer::int)+sum(pets_allowed::int) AS total_shared_amenities \
               FROM shared_amenities \
@@ -129,7 +129,7 @@ class Accommodations:
             ), \
             unit_scores AS ( \
               SELECT unit_id, rating_score, distance_score, \
-              ((cast(size as float)/cast(tenant_capacity as float))/cast((cast(size as float)/cast(tenant_capacity as float))+350 as float)) AS size_score, \
+              (1-exp((cast(size as float)/cast(tenant_capacity as float))*-0.004)) AS size_score, \
               ((cast(total_shared_amenities+total_priv_amenities as float))/14) AS amenities_score, \
               exp((cast(-price as float)/cast(tenant_capacity as float))/1800) AS price_score \
               FROM units NATURAL INNER JOIN accm_scores NATURAL INNER JOIN priv_amenities_scores \
@@ -143,9 +143,9 @@ class Accommodations:
             SELECT accm_id, accm_title, accm_street, accm_number, accm_city, accm_state, accm_country, accm_zipcode, accm_description, \
             json_agg(unit_total_scores) AS accm_units, round(avg(total_score)::numeric,1) as avg_score \
             FROM accommodations NATURAL INNER JOIN unit_total_scores \
-            GROUP BY accm_id ORDER BY avg_score DESC LIMIT 10'
+            GROUP BY accm_id ORDER BY avg_score DESC LIMIT 10 OFFSET %s'
     cursor = db.cursor(cursor_factory=RealDictCursor)
-    cursor.execute(query %(distance_weight, price_weight, size_weight, amenities_weight, rating_weight))
+    cursor.execute(query %(distance_weight, price_weight, size_weight, amenities_weight, rating_weight, offset))
     res = cursor.fetchall()
     cursor.close()
     return res
