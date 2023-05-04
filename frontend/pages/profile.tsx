@@ -29,197 +29,187 @@ const languages = ['Spanish', 'English'];
 const reviewCount = 2;
 
 const Profile = () => {
-  //   const [storage, setStorage] = useState<Storage>({ token: null, isLandlord: null, id: null })
-	// const router = useRouter()
-	// const cookies = new Cookies()
+    const [storage, setStorage] = useState<Storage>({ token: null, isLandlord: null, id: null })
+	const router = useRouter()
+	const cookies = new Cookies()
 
-	// useEffect(() => {
-
-
-	// 	try{
-  //           const token = cookies.get('jwt_authorization')
-	// 		const decoded = jwt<Token>(token)
-	// 		setStorage({'token':token,'id':decoded['id'],'isLandlord':((decoded['rls']=="landlord")?true:false)})
-	// 		var endpoint = `${host}/api/tenants/refresh`
-  //           if (storage.isLandlord) {
-  //               endpoint = `${host}/api/landlords/refresh`
-
-  //           }
-  //           axios({ method: 'get', url: endpoint, headers: { Authorization: `Bearer ${token}` } })
-  //                   .then(res => {
-  //                       return res.data
-  //                       //const obj = {'token':res.data,}
-  //                       //localStorage.setItem('data',res.data)
-  //                   })
-  //                   .then(result => {
-  //                       const newToken = result['access_token']
-  //                       const newDecoded = jwt<Token>(newToken)
-
-  //                       cookies.set("jwt_authorization", result['access_token'], {
-  //                           expires: new Date(newDecoded.exp*1000),
-  //                       })
-  //                       setStorage({'token':newToken,'id':newDecoded['id'],'isLandlord':((newDecoded['rls']=="landlord")?true:false)})
-  //                   })
-  //                   .catch(err => {
-  //                       //localStorage.removeItem('data');
-  //                       console.log('in')
-  //                       console.error(err);
-  //                   })
-  //       }catch(err){
-	// 		router.replace('/')
-  //           console.log('out')
-  //           console.error(err)
-
-  //       }
-	// }, [])
-	// // var endpoint = `http://127.0.0.1:5000/api/tenants/${storage.id}`
-	// // if (storage.isLandlord) {
-	// // 	endpoint = `http://127.0.0.1:5000/api/landlords/${storage.id}`
-	// // }
+	useEffect(() => {
 
 
-	// const { data: user, error: userError, isLoading: isLoadingUser } = useSWR((storage.token != null) ? (storage.isLandlord ? `${host}/api/landlords/${storage.id}` : `${host}/api/tenants/${storage.id}`) : null, (url: any) => fetch(url, {
-	// 	headers: {
-	// 		Authorization: `Bearer ${storage?.token}`
-	// 	}
-	// }).then(res => res.json()));
+		try{
+            const token = cookies.get('jwt_authorization')
+			const decoded = jwt<Token>(token)
+			setStorage({'token':token,'id':decoded['id'],'isLandlord':((decoded['rls']=="landlord")?true:false)})
+			var endpoint = `${host}/api/tenants/refresh`
+            if (storage.isLandlord) {
+                endpoint = `${host}/api/landlords/refresh`
 
-	// if (userError) {
-	// 	console.error(userError);
+            }
+            axios({ method: 'get', url: endpoint, headers: { Authorization: `Bearer ${token}` } })
+                    .then(res => {
+                        return res.data
+                        //const obj = {'token':res.data,}
+                        //localStorage.setItem('data',res.data)
+                    })
+                    .then(result => {
+                        const newToken = result['access_token']
+                        const newDecoded = jwt<Token>(newToken)
+
+                        cookies.set("jwt_authorization", result['access_token'], {
+                            expires: new Date(newDecoded.exp*1000),
+                        })
+                        setStorage({'token':newToken,'id':newDecoded['id'],'isLandlord':((newDecoded['rls']=="landlord")?true:false)})
+                    })
+                    .catch(err => {
+                        //localStorage.removeItem('data');
+                        console.log('in')
+                        console.error(err);
+                    })
+        }catch(err){
+			router.replace('/')
+            console.log('out')
+            console.error(err)
+
+        }
+	}, [])
+	// var endpoint = `http://127.0.0.1:5000/api/tenants/${storage.id}`
+	// if (storage.isLandlord) {
+	// 	endpoint = `http://127.0.0.1:5000/api/landlords/${storage.id}`
+	// }
+
+
+	const { data: user, error: userError, isLoading: isLoadingUser } = useSWR((storage.token != null) ? (storage.isLandlord ? `${host}/api/landlords/${storage.id}` : `${host}/api/tenants/${storage.id}`) : null, (url: any) => fetch(url, {
+		headers: {
+			Authorization: `Bearer ${storage?.token}`
+		}
+	}).then(res => res.json()));
+
+	if (userError) {
+		console.error(userError);
 		
-	// }
-	// if (!user) {
-	// 	console.log(user);
-	// }
-	// if (isLoadingUser) {
-	// 	return (<h1>Loading...</h1>)
-	// }
-	// // if (storage.id == null) {
-	// // 	return (
-	// // 		<div>
-	// // 			<h1>Error found</h1>
-	// // 			<button onClick ={() => {{ cookies.remove('jwt_authorization') }}} className="btn border-2 mr-4">Logout</button>
-	// // 		</div>
-	// // 	)
-	// // }
-	// // if (!(storage.isLandlord)) {
-	// // 	return (
-	// // 		<Layout>
-	// // 			<main className='flex flex-row flex-nowrap pt-24'>
-	// // 				<div className='flex  flex-col flex-initial basis-1/6 pt-10 pl-6 pr-6 '>
-	// // 					<div className='block min-w-full rounded-xl pt-6 bg-white ring-stone-200 ring-1 shadow-lg dark:bg-neutral-700 items-center text-center'>
-	// // 						<div className=''>
-	// // 							<div className='avatar my-4 mx-10'>
-	// // 								<div className=' w-40 rounded-full ring ring-accent ring-offset-base-100 ring-offset-2 hover:ring-4 hover:shadow-lg'>
-	// // 									<a href='/'><img className='aspect-square' src='/images/user.png' /></a>
-	// // 								</div>
-	// // 							</div>
-	// // 						</div>
-	// // 						<div className=' '>
-	// // 							<h5 className='mb-2 text-2xl pt-2 font-bold leading-tight text-neutral-800 dark:text-neutral-50'>{storage.isLandlord ? user.landlord_name : user.tenant_name}</h5>
-	// // 							<p className=' font-semibold pb-6 text-neutral-600 dark:text-neutral-200 '> {storage.isLandlord ? ('Rating:' + user.landlord_rating + '/5') : ''}</p>
-	// // 						</div>
-	// // 					</div>
-	// // 					<div className='flex justify-center pt-4'>
-	// // 						<div className='block min-w-full rounded-lg bg-white ring-1 ring-stone-200 shadow-lg dark:bg-neutral-700'>
-	// // 							<div className='p-6'>
-	// // 								<h5 className='mb-2 text-xl font-medium leading-tight text-neutral-800 dark:text-neutral-50'>Details:</h5>
-	// // 								<ul>
-	// // 									<li className=' text-neutral-600 dark:text-neutral-200 '>Phone:  {storage.isLandlord ? user.landlord_phone : user.tenant_phone}</li>
-	// // 									<li className=' text-neutral-600 dark:text-neutral-200 '> {storage.isLandlord ? 'Account type: Landlord' : ''}</li>
+	}
+	if (!user) {
+		console.log(user);
+	}
+	if (isLoadingUser) {
+		return (<h1>Loading...</h1>)
+	}
+	if (storage.id == null) {
+		return (
+			<div>
+				<h1>Error found</h1>
+				<button onClick ={() => {{ cookies.remove('jwt_authorization') }}} className="btn border-2 mr-4">Logout</button>
+			</div>
+		)
+	}
+	if (!(storage.isLandlord)) {
+		return (
+			<Layout>
+				<main className='flex flex-row flex-nowrap pt-24'>
+					<div className='flex  flex-col flex-initial basis-1/6 pt-10 pl-6 pr-6 '>
+						<div className='block min-w-full rounded-xl pt-6 bg-white ring-stone-200 ring-1 shadow-lg dark:bg-neutral-700 items-center text-center'>
+							<div className=''>
+								<div className='avatar my-4 mx-10'>
+									<div className=' w-40 rounded-full ring ring-accent ring-offset-base-100 ring-offset-2 hover:ring-4 hover:shadow-lg'>
+										<a href='/'><img className='aspect-square' src='/images/user.png' /></a>
+									</div>
+								</div>
+							</div>
+							<div className=' '>
+								<h5 className='mb-2 text-2xl pt-2 font-bold leading-tight text-neutral-800 dark:text-neutral-50'>{storage.isLandlord ? user.landlord_name : user.tenant_name}</h5>
+								<p className=' font-semibold pb-6 text-neutral-600 dark:text-neutral-200 '> {storage.isLandlord ? ('Rating:' + user.landlord_rating + '/5') : ''}</p>
+							</div>
+						</div>
+						<div className='flex justify-center pt-4'>
+							<div className='block min-w-full rounded-lg bg-white ring-1 ring-stone-200 shadow-lg dark:bg-neutral-700'>
+								<div className='p-6'>
+									<h5 className='mb-2 text-xl font-medium leading-tight text-neutral-800 dark:text-neutral-50'>Details:</h5>
+									<ul>
+										<li className=' text-neutral-600 dark:text-neutral-200 '>Phone:  {storage.isLandlord ? user.landlord_phone : user.tenant_phone}</li>
+										<li className=' text-neutral-600 dark:text-neutral-200 '> {storage.isLandlord ? 'Account type: Landlord' : ''}</li>
 
-	// // 								</ul>
-	// // 							</div>
-	// // 						</div>
-	// // 					</div>
-	// // 				</div>
-	// // 				<div className='flex flex-col flex-initial basis-5/6 pt-10 pl-4 w-9/12 '>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div className='flex flex-col flex-initial basis-5/6 pt-10 pl-4 w-9/12 '>
 
 
 
-	// // 					<div className='rounded-md p-6 max-w-full'>
-	// // 						<h1 className=' text-3xl font-bold text-left  '>
+						<div className='rounded-md p-6 max-w-full'>
+							<h1 className=' text-3xl font-bold text-left  '>
 
-	// // 							<a href='/' className='hover:underline'>
-	// // 								Reviews ({reviewCount})
-	// // 							</a>
-	// // 						</h1>
-	// // 						<div className='flex flex-col '>
-	// // 							<Review listingTitle='2BR Condo ON THE BEACH! Restaurant- Pool- Hot Tub!' opinion='Had a great time and the place was great. The beach was beautiful and the place had everything we needed for a terrific vacation.' listingImg='https://tecdn.b-cdn.net/img/new/standard/nature/186.jpg' name='Maya Williams' date='March 2022' userImg='/images/person.png'></Review>
-	// // 							<Review listingTitle='Apartment ON THE BEACH! NO POOL' opinion='Had a horrible time and the place was nasty. There was no beach and the place had nothing we needed for a terrific vacation.' listingImg='https://tecdn.b-cdn.net/img/new/standard/nature/186.jpg' name='Robin' date='May 2022' userImg='/images/person.png'></Review>
-	// // 						</div>
-	// // 					</div>
-	// // 				</div>
-	// // 			</main>
-	// // 		</Layout>
+								<a href='/' className='hover:underline'>
+									Reviews ({reviewCount})
+								</a>
+							</h1>
+							<div className='flex flex-col '>
+								{/*<Review listingTitle='2BR Condo ON THE BEACH! Restaurant- Pool- Hot Tub!' opinion='Had a great time and the place was great. The beach was beautiful and the place had everything we needed for a terrific vacation.' listingImg='https://tecdn.b-cdn.net/img/new/standard/nature/186.jpg' name='Maya Williams' date='March 2022' userImg='/images/person.png'></Review>
+								<Review listingTitle='Apartment ON THE BEACH! NO POOL' opinion='Had a horrible time and the place was nasty. There was no beach and the place had nothing we needed for a terrific vacation.' listingImg='https://tecdn.b-cdn.net/img/new/standard/nature/186.jpg' name='Robin' date='May 2022' userImg='/images/person.png'></Review>
+		*/}
+								</div>
+						</div>
+					</div>
+				</main>
+			</Layout>
 
-	// // 	)
-	// // }
+		)
+	}
 
-	// return (
-	// 	<Layout>
-	// 		<main className='flex flex-row flex-nowrap pt-24'>
-	// 			<div className='flex  flex-col flex-initial basis-1/6 pt-10 pl-6 pr-6 '>
-	// 				<div className='block min-w-full rounded-xl pt-6 bg-white ring-stone-200 ring-1 shadow-lg dark:bg-neutral-700 items-center text-center'>
-	// 					<div className=''>
-	// 						<div className='avatar my-4 mx-10'>
-	// 							<div className=' w-40 rounded-full ring ring-accent ring-offset-base-100 ring-offset-2 hover:ring-4 hover:shadow-lg'>
-	// 								<a href='/'><img className='aspect-square' src='/images/user.png' /></a>
-	// 							</div>
-	// 						</div>
-	// 					</div>
-	// 					<div className=' '>
-	// 						<h5 className='mb-2 text-2xl pt-2 font-bold leading-tight text-neutral-800 dark:text-neutral-50'>{storage.isLandlord ? user.landlord_name : user.tenant_name}</h5>
-	// 						<p className=' font-semibold pb-6 text-neutral-600 dark:text-neutral-200 '> {storage.isLandlord ? ('Rating:' + user.landlord_rating + '/5') : ''}</p>
-	// 					</div>
-	// 				</div>
-	// 				<div className='flex justify-center pt-4'>
-	// 					<div className='block min-w-full rounded-lg bg-white ring-1 ring-stone-200 shadow-lg dark:bg-neutral-700'>
-	// 						<div className='p-6'>
-	// 							<h5 className='mb-2 text-xl font-medium leading-tight text-neutral-800 dark:text-neutral-50'>Details:</h5>
-	// 							<ul>
-	// 								<li className=' text-neutral-600 dark:text-neutral-200 '>Phone:  {storage.isLandlord ? user.landlord_phone : user.tenant_phone}</li>
-	// 								<li className=' text-neutral-600 dark:text-neutral-200 '> {storage.isLandlord ? 'Account type: Landlord' : ''}</li>
+	return (
+		<Layout>
+			<main className='flex flex-row flex-nowrap py-24'>
+				<div className='flex  flex-col flex-initial basis-1/6 pt-10 pl-6 pr-6 '>
+					<div className='block min-w-full rounded-xl pt-6 bg-white ring-stone-200 ring-1 shadow-lg dark:bg-neutral-700 items-center text-center'>
+						<div className=''>
+							<div className='avatar my-4 mx-10'>
+								<div className=' w-40 rounded-full ring ring-accent ring-offset-base-100 ring-offset-2 hover:ring-4 hover:shadow-lg'>
+									<a href='/'><img className='aspect-square' src='/images/user.png' /></a>
+								</div>
+							</div>
+						</div>
+						<div className=' '>
+							<h5 className='mb-2 text-2xl pt-2 font-bold leading-tight text-neutral-800 dark:text-neutral-50'>{storage.isLandlord ? user.landlord_name : user.tenant_name}</h5>
+							<p className=' font-semibold pb-6 text-neutral-600 dark:text-neutral-200 '> {storage.isLandlord ? ('Rating:' + user.landlord_rating + '/5') : ''}</p>
+						</div>
+					</div>
+					<div className='flex justify-center pt-4'>
+						<div className='block min-w-full rounded-lg bg-white ring-1 ring-stone-200 shadow-lg dark:bg-neutral-700'>
+							<div className='p-6'>
+								<h5 className='mb-2 text-xl font-medium leading-tight text-neutral-800 dark:text-neutral-50'>Details:</h5>
+								<ul>
+									<li className=' text-neutral-600 dark:text-neutral-200 '>Phone:  {storage.isLandlord ? user.landlord_phone : user.tenant_phone}</li>
+									<li className=' text-neutral-600 dark:text-neutral-200 '> {storage.isLandlord ? 'Account type: Landlord' : ''}</li>
 
-	// 							</ul>
-	// 						</div>
-	// 					</div>
-	// 				</div>
-	// 			</div>
-	// 			<div className='flex flex-col flex-initial basis-5/6 pt-10 pl-4 w-9/12 '>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div className='flex flex-col flex-initial basis-5/6 pt-10 pl-4 w-9/12 '>
 
-	// 				<div className='rounded-md p-6'>
-	// 					<div className='relative'>
-	// 						<h1 className=' text-3xl font-bold text-left  '>
+					<div className='rounded-md p-6'>
+						<div className='relative'>
+							<h1 className=' text-3xl font-bold text-left  '>
 
-	// 							<a href='/' className='hover:underline'>
-	// 								Accommodations
-	// 							</a>
-	// 						</h1>
-	// 						<div className='flex absolute inset-y-0 right-0 items-center bg-accent rounded-md px-4 mr-4 hover:opacity-90'>
-	// 							<Link href='' className='font-semibold text-white '>Add Accommodation</Link>
-	// 						</div>
-	// 					</div>
-	// 					<AccommodationList></AccommodationList>
+								<a href='/' className='hover:underline'>
+									Accommodations
+								</a>
+							</h1>
+							<div className='flex absolute inset-y-0 right-0 items-center '>
+								<Link href='' className='btn font-semibold ring-1 ring-primary text-primary hover:text-white hover:ring-2 hover:bg-primary hover:ring-white'>Add Accommodation</Link>
+							</div>
+						</div>
+						<AccommodationList></AccommodationList>
 
-	// 				</div>
+					</div>
 
-	// 				<div className='rounded-md p-6 max-w-full'>
-	// 					<h1 className=' text-3xl font-bold text-left  '>
-	// 						{' '}
-	// 						<a href='/' className='hover:underline'>
-	// 							Reviews ({reviewCount})
-	// 						</a>
-	// 					</h1>
-	// 					<div className='flex flex-col '>
-	// 						{/* <Review listingTitle='2BR Condo ON THE BEACH! Restaurant- Pool- Hot Tub!' opinion='Had a great time and the place was great. The beach was beautiful and the place had everything we needed for a terrific vacation.' listingImg='https://tecdn.b-cdn.net/img/new/standard/nature/186.jpg' name='Maya Williams' date='March 2022' userImg='/images/person.png'></Review> */}
-	// 						{/* <Review listingTitle='Apartment ON THE BEACH! NO POOL' opinion='Had a horrible time and the place was nasty. There was no beach and the place had nothing we needed for a terrific vacation.' listingImg='https://tecdn.b-cdn.net/img/new/standard/nature/186.jpg' name='Robin' date='May 2022' userImg='/images/person.png'></Review> */}
-	// 					</div>
-	// 				</div>
-	// 			</div>
-	// 		</main>
-	// 	</Layout>
-	// );
+					
+				</div>
+			</main>
+		</Layout>
+	);
 };
 
 export default Profile;
