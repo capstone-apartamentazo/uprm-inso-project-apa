@@ -143,11 +143,11 @@ class AccommodationHandler:
       # add accommodation if input is valid
       if valid:
         newAccommodation = self.accommodations.addAccommodation(title, street, number, city, state, country, zipcode, latitude, longitude, description, landlordID)
-        if newAccommodation:
+        if newAccommodation and self.calculateDistance(newAccommodation['accm_id'], newAccommodation['latitude'], newAccommodation['longitude']):
           db.commit()
-          self.calculateDistance(newAccommodation['accm_id'], newAccommodation['latitude'], newAccommodation['longitude'])
           return jsonify(newAccommodation)
         else:
+          db.rollback()
           return jsonify('Error adding Accommodation and Shared Amenities'), 400
       else:
         # returns reason why input was invalid
@@ -178,11 +178,11 @@ class AccommodationHandler:
       # add accommodation if input is valid
       if valid:
         updatedAccommodation = self.accommodations.updateAccommodation(accm_id, title, street, number, city, state, country, zipcode, latitude, longitude, description)
-        if updatedAccommodation:
+        if updatedAccommodation and self.calculateDistance(updatedAccommodation['accm_id'], updatedAccommodation['latitude'], updatedAccommodation['longitude']):
           db.commit()
-          self.calculateDistance(updatedAccommodation['accm_id'], updatedAccommodation['latitude'], updatedAccommodation['longitude'])
           return jsonify(updatedAccommodation)
         else:
+          db.rollback()
           return jsonify('Error updating Accommodation'), 400
       else:
         # returns reason why input was invalid
@@ -200,21 +200,26 @@ class AccommodationHandler:
       driving_dist_matrix = gmaps.distance_matrix(uprm_coordinates, accm_coordinates, mode='driving')['rows'][0]
       walking_dist_matrix = gmaps.distance_matrix(uprm_coordinates, accm_coordinates, mode='walking')['rows'][0]
 
-      driving_duration = driving_dist_matrix['elements'][0]['duration']['value']
-      walking_duration = walking_dist_matrix['elements'][0]['duration']['value']
 
-      best_dist_matrix = walking_dist_matrix
-      if walking_duration > 1800:
-        best_dist_matrix = driving_dist_matrix
+      if driving_dist_matrix['elements'][0]['status'] == 'ZERO_RESULTS' and walking_dist_matrix['elements'][0]['status'] == 'ZERO_RESULTS':
+        return False
+      if driving_dist_matrix['elements'][0]['status'] == 'ZERO_RESULTS':
+        best_dist_matrix = walking_dist_matrix['elements'][0]['duration']['value']
+      if walking_dist_matrix['elements'][0]['status'] == 'ZERO_RESULTS':
+        best_dist_matrix = driving_dist_matrix['elements'][0]['duration']['value']
+      else:
+        driving_duration = driving_dist_matrix['elements'][0]['duration']['value']
+        walking_duration = walking_dist_matrix['elements'][0]['duration']['value']
+
+        best_dist_matrix = walking_dist_matrix
+        if walking_duration > 1800:
+          best_dist_matrix = driving_dist_matrix
 
       best_dist = best_dist_matrix['elements'][0]['distance']['value']
-
       daoAccommodation = self.accommodations.addDistance(accm_id, best_dist)
       if daoAccommodation:
-        db.commit()
-        return jsonify(daoAccommodation)
-      else:
-        return jsonify('Error updating Accommodation'), 400
+        return True
+      return False
     except (Exception, pgerror) as e:
       db.rollback()
       logger.exception(e)
