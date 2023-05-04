@@ -11,6 +11,7 @@ import Cookies from 'universal-cookie';
 import { Token } from 'Token';
 import { Accm } from 'Accm';
 import getConfig from 'next/config';
+import ProfileAccommodation from './ProfileAccommodation';
 
 const { publicRuntimeConfig } = getConfig();
 const { url: host } = publicRuntimeConfig.site;
@@ -77,12 +78,12 @@ const AccommodationList: React.FC<Props> = ({  }) => {
 
     return (
         <div className='flex  gap-4  pt-4 pr-4 pb-4'>
-            {acms.slice(0,4).map((acm: Accm ) => (
+            {acms.slice(0,4).map((accm: Accm ) => (
                 
-				<Accommodation title='Bosque 1' address='calle bosque' features='1 bed' price='$200/month' href='/' />
+				<ProfileAccommodation title={accm.accm_title} address={accm.accm_street} id={accm.accm_id}/>
 
             ))}
-            <Link href='/' className=' flex flex-col bg-white justify-center  w-40 rounded-md  shadow-md ring-1 ring-stone-200 transition ease-in-out delay-50 hover:-translate-y-1 hover:scale-10 duration-200 cursor-pointer'>
+            {/* <Link href='/' className=' flex flex-col bg-white justify-center  w-40 rounded-md  shadow-md ring-1 ring-stone-200 transition ease-in-out delay-50 hover:-translate-y-1 hover:scale-10 duration-200 cursor-pointer'>
 								<div className='text-center '>
 									<h1 className='font-semibold text-xl text-black'>Add Accommodation</h1>
 
@@ -94,7 +95,7 @@ const AccommodationList: React.FC<Props> = ({  }) => {
 									</svg>
 								</div>
 
-							</Link>
+							</Link> */}
         </div>
 
     )

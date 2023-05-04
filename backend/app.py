@@ -93,7 +93,7 @@ def updateTenant():
 # TODO
 @app.route('/api/tenants', methods=['DELETE'])
 def removeTenant():
-  return None
+  return TenantHandler().deleteTenant()
 
 """
 MESSAGES (LANDLORDS AND TENANTS)
@@ -110,10 +110,6 @@ def getMessageByLandlordId():
 def getMessageById():
     return MessageHandler().getById(request.json)
 
-@app.route('/api/messages/unique', methods=['POST'])
-def getMessageByConstraint():
-    return MessageHandler().getByConstraint(request.json)
-
 @app.route('/api/messages/conversation/<int:u_id>', methods=['GET'])
 def getConversation(u_id):
     if request.method == 'GET':
@@ -128,20 +124,6 @@ def landlordSendsMessage():
 @app.route('/api/tenant/sends/message', methods=['POST'])
 def tenantSendsMessage():
   return MessageHandler().tenantSendsMessage(request.json)
-
-@app.route('/api/message/read', methods=['PUT'])
-def messageRead():
-  return MessageHandler().messageRead(request.json)
-
-# TODO
-@app.route('/api/messages', methods=['PUT'])
-def updateMessage():
-    return None
-
-# TODO
-@app.route('/api/messages', methods=['DELETE'])
-def removeMessage():
-  return None
 
 """
 ACCOMMODATIONS (LANDLORDS)
