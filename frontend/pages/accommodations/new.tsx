@@ -5,12 +5,17 @@ import { useEffect, useState, useMemo, useCallback } from 'react';
 import { useLoadScript, GoogleMap, MarkerF, Marker } from '@react-google-maps/api';
 import axios from "axios";
 import getConfig from 'next/config';
-
+import jwt from 'jwt-decode';
+import Cookies from 'universal-cookie';
+import { Token } from 'Token';
+import { Storage } from 'Storage';
+import { useRouter } from 'next/router'
 
 const { publicRuntimeConfig } = getConfig();
 const { url: host } = publicRuntimeConfig.site;
 
 const New = () => {
+
 
     //const [page, setPage] = useState(1);
     //const [currentPage, setCurrentPage] = useState(<></>);
@@ -21,6 +26,50 @@ const New = () => {
     const [selectedImage4, setSelectedImage4] = useState<string|null>(null);
 
     const [accId,setAccId] = useState(null)
+    const [storage, setStorage] = useState<Storage>({ token: null, isLandlord: null, id: null })
+    const router = useRouter()
+    const cookies = new Cookies()
+
+    useEffect(() => {
+        console.log(host)
+        try{
+            const token = cookies.get('jwt_authorization')
+			const decoded = jwt<Token>(token)
+			setStorage({'token':token,'id':decoded['id'],'isLandlord':((decoded['rls']=="landlord")?true:false)})
+			var endpoint = `${host}/api/tenants/refresh`
+            if (storage.isLandlord) {
+                endpoint = `${host}/api/landlords/refresh`
+
+            }
+            axios({ method: 'get', url: endpoint, headers: { Authorization: `Bearer ${token}` } })
+                    .then(res => {
+                        return res.data
+                        //const obj = {'token':res.data,}
+                        //localStorage.setItem('data',res.data)
+                    })
+                    .then(result => {
+                        const newToken = result['access_token']
+                        const newDecoded = jwt<Token>(newToken)
+
+                        cookies.set("jwt_authorization", result['access_token'], {
+                            expires: new Date(newDecoded.exp*1000),
+                        })
+                        setStorage({'token':newToken,'id':newDecoded['id'],'isLandlord':((newDecoded['rls']=="landlord")?true:false)})
+                    })
+                    .catch(err => {
+                        //localStorage.removeItem('data');
+                        console.log('in')
+                        console.error(err);
+                    })
+        }catch(err){
+            router.replace('/')
+            console.log('out')
+            console.error(err)
+        }
+
+
+        
+    }, [])
 
 
     const handleSelect1 = async (event: any) => {
@@ -55,21 +104,54 @@ const New = () => {
 
     const uploadImage = async (image:string) => {
 
-        if(accId){
-            axios.post(`${host}/api/images/accommodation/`,)
+        // if(accId){
+        //     axios.post(`${host}/api/images/accommodation/`,)
 
-        }
+        // }
 
     }
-    const createAccommodation = async (data:any) =>{
+    const createAccommodation = async (data:any, amenities:any) =>{
+
         if(data){
             console.log(data)
-
+            await axios({ method: 'post', url: `${host}/api/accommodations/new`, headers: { Authorization: `Bearer ${storage.token}` },data })
+            .then(response => {
+                // if(response==Object){
+                //     throw new Error('Accm number exists');
+                // }
+                return response.data
+            })
+            .then(result =>{
+                alert(result)
+                updateAccAmenities(result['shared_amenities_id'],amenities)
+            })
+            .catch(err =>{
+                console.log(err)
+            })
         }
     }
-    const updateAccAmenities = async (data:any) =>{
-        if(data){
-            console.log(data)
+    const updateAccAmenities = async (sha_id:any,amenities:any) =>{
+        var data = {
+            "shared_amenities_id": sha_id,
+            "shared_bathroom": amenities.bathroom,
+            "shared_dryer": amenities.dryer,
+            "shared_kitchen": amenities.kitchen,
+            "shared_washer": amenities.washer,
+            "pets_allowed": amenities.pets
+        }
+        if(amenities){
+            await axios({ method: 'put', url: `${host}/api/accommodations/amenities`, headers: { Authorization: `Bearer ${storage.token}` },data })
+            .then(response => {
+                return response.data
+            })
+            .then(result =>{
+                console.log(result)
+
+                
+            })
+            .catch(err =>{
+                console.log(err)
+            })
 
         }
     }
@@ -78,15 +160,15 @@ const New = () => {
         event.preventDefault();
         
         
-
+        
 
         //'latitude':center.lat.toString ,'longitude':center.lng.toString
         let latitude = currPos!.lat
         let longitude = currPos!.lng
         let amenities = {'bathroom': event.target.bathroom.checked, 'washer': event.target.washer.checked, 'dryer': event.target.dryer.checked, 'kitchen': event.target.kitchen.checked, 'pets': event.target.pets.checked}
         let details = {
-            'title': event.target.title.value, 'street': event.target.street.value, 'number': event.target.number.value, 'city': event.target.city.value, 'state': event.target.state.value, 'country': event.target.country.value,
-            'zipcode': event.target.zipcode.value,'latitude':latitude ,'longitude':longitude,'description': event.target.description.value
+            'accm_title': event.target.title.value, 'accm_street': event.target.street.value, 'accm_number': event.target.number.value, 'accm_city': event.target.city.value, 'accm_state': event.target.state.value, 'accm_country': event.target.country.value,
+            'accm_zipcode': event.target.zipcode.value,'latitude':latitude ,'longitude':longitude,'accm_description': event.target.description.value
         }
 
 
@@ -94,8 +176,7 @@ const New = () => {
         try{
 
 
-            createAccommodation(details)
-            updateAccAmenities(amenities)
+            createAccommodation(details,amenities)
 
             if(selectedImage1){
             
@@ -144,7 +225,7 @@ const New = () => {
             })
 
             .catch((error) => {
-                console.log('boo')
+                
                 console.log(error);
             });
         }
@@ -293,9 +374,18 @@ const New = () => {
 
 
                 </div>
+                
                 <div className="grid grid-flow-row shadow-lg  rounded-lg ring-1 ring-stone-200  mx-10 my-4">
                     <label className="font-medium text-2xl m-4 ">Locate your accommodation</label>
-                    <GoogleMap
+                    <div className="flex flex-col mx-4">
+                        <label>Coordinates:</label>
+                        <label>Latitude: {currPos?currPos.lat:'undefined'}</label>
+                        <label>Longitude: {currPos?currPos.lng:'undefined'}</label>
+                        <label className='text-accent'>Drag the pin to accommodation's precise location to get latitude and longitude.</label>
+
+                    </div>
+                    
+                    <GoogleMap 
                         options={mapOptions}
                         zoom={16}
                         center={center}
@@ -313,7 +403,7 @@ const New = () => {
 
                         />
                     </GoogleMap>
-                    <input type="submit" className="btn" value={'Create'}></input>
+                    <input type="submit" className={currPos?'btn mx-4 my-2 ring-1 ring-accent text-accent hover:bg-accent hover:ring-white hover:text-white':'hidden'} value={'Create'}></input>
 
                 </div>
 
