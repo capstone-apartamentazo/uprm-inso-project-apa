@@ -34,9 +34,9 @@ class PrivateAmenitiesHandler:
       logger.exception(e)
       return jsonify('Error Occured'), 400
 
-  def getByUnitId(self, json):
+  def getByUnitId(self, unit_id):
     try:
-      daoAmenities = self.amenities.getByUnitId(json['unit_id'])
+      daoAmenities = self.amenities.getByUnitId(unit_id)
       if daoAmenities:
         return jsonify(daoAmenities)
       else:
