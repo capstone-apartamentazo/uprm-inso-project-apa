@@ -48,8 +48,7 @@ class LandlordHandler:
   
   @praetorian.auth_required
   def protected(self):
-    json = { 'landlord_id': praetorian.current_user_id() }
-    return self.getById(json)
+    return self.getById(praetorian.current_user_id())
 
   def refresh(self):
     old_token = guard.read_token_from_header()
