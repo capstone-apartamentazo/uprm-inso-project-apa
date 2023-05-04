@@ -25,14 +25,14 @@ type Amenities = {
 	water: boolean;
 };
 
-function getAvailableAmenities(amenities: Amenities) {
+function getAvailableAmenities(amenities: any) {
 	let toReturn: any[] = [];
 	var topAmenities = ['electricity', 'water', 'internet', 'parking'];
 	var includedAmenities = Object.keys(amenities).filter((item) => (item != 'deleted_flag' ? amenities[item] === false : null));
 	const filteredAmenities = includedAmenities.filter((value) => topAmenities.includes(value));
 
 	while (filteredAmenities.length < 4 && includedAmenities.length >= filteredAmenities.length) {
-		var lastItem = includedAmenities.pop();
+		var lastItem: any = includedAmenities.pop();
 		if (filteredAmenities.includes(lastItem)) continue;
 		filteredAmenities.push(lastItem);
 	}

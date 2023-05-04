@@ -10,7 +10,8 @@ import reminders from 'public/animations/reminders.json';
 
 export default function Features(props: any) {
 	const animationContainer = useRef(null);
-	var type = {
+
+	var type: any = {
 		listings: listings,
 		messaging: messaging,
 		aptHunt: aptHunt,
@@ -19,13 +20,11 @@ export default function Features(props: any) {
 
 	useEffect(() => {
 		lottie.loadAnimation({
-			container: animationContainer.current,
+			container: animationContainer.current!,
 			renderer: 'svg',
 			loop: true,
 			autoplay: true,
 			animationData: type[props.type],
-			preserveAspectRatio: false,
-			resizeMode: 'center',
 		});
 	}, []);
 	var classes = 'lg:flex-row';

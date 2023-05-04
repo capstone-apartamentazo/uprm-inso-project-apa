@@ -9,7 +9,7 @@ const NotFound = () => {
 
 	useEffect(() => {
 		lottie.loadAnimation({
-			container: animationContainer.current,
+			container: animationContainer.current!,
 			renderer: 'svg',
 			loop: true,
 			autoplay: true,
