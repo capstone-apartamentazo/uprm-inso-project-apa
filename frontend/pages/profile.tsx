@@ -198,7 +198,7 @@ const Profile = () => {
 								</a>
 							</h1>
 							<div className='flex absolute inset-y-0 right-0 items-center '>
-								<Link href='' className='btn font-semibold ring-1 ring-primary text-primary hover:text-white hover:ring-2 hover:bg-primary hover:ring-white'>Add Accommodation</Link>
+								<Link href='/accommodations/new' className='btn font-semibold ring-1 ring-primary text-primary hover:text-white hover:ring-2 hover:bg-primary hover:ring-white'>Add Accommodation</Link>
 							</div>
 						</div>
 						<AccommodationList></AccommodationList>
