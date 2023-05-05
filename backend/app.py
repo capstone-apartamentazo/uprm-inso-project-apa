@@ -305,6 +305,8 @@ def getLeasesByUnitId(unit_id):
 def getLeaseByTenantId(tenant_id):
     return LeaseHandler().getByTenantId(tenant_id)
 
+# -----------------------------------------------------------------------------------------
+# si quieres q envie un email pues mira el metodo de add notice
 @app.route('/api/leases/add', methods=['POST'])
 def addLease():
     return LeaseHandler().addLease(request.json)
