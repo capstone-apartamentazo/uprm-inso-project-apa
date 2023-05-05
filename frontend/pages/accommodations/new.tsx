@@ -31,7 +31,7 @@ const New = () => {
     const cookies = new Cookies()
 
     useEffect(() => {
-        console.log(host)
+        
         try{
             const token = cookies.get('jwt_authorization')
 			const decoded = jwt<Token>(token)
