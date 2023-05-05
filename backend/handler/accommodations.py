@@ -317,7 +317,7 @@ class AccommodationHandler:
     if not len(street.strip()):
       return False, 'Empty Street'
     if self.accmNumValid(number):
-      return False, 'Accommodation number can only contain numbers, leters and hyphen. (Hyphen are optional but cannot start or end with a hyphen -)'
+      return False, 'Accommodation number can only contain numbers, leters and hyphen and max 10 characters. (Hyphen are optional but cannot start or end with a hyphen -)'
     if not len(city.strip()):
       return False, 'Empty City'
     if self.onlyCharacters(city):

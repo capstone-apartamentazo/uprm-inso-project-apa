@@ -243,12 +243,10 @@ def getUnitById(unit_id):
 def getUnitsByAccommodationId(accm_id):
   return UnitHandler().getByAccommodationId(accm_id)
 
-# TODO add restrictions when creating unit
 @app.route('/api/units/add', methods=['POST'])
 def addUnit():
   return UnitHandler().addUnit(request.json)
 
-# TODO add restrictions when updating unit
 @app.route('/api/units', methods=['PUT'])
 def updateUnit():
     return UnitHandler().updateUnit(request.json)
