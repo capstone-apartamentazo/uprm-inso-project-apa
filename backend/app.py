@@ -230,20 +230,9 @@ def getReviewsByAccommodationId(accm_id):
 def getReviewsByTenantId(tenant_id):
     return ReviewHandler().getByTenantId(tenant_id)
 
-# TODO add restrictions when creating reviews
-@app.route('/api/reviews/add', methods=['POST'])
-def addReview():
-  return ReviewHandler().addReview(request.json)
-
-# TODO add restrictions when updating reviews
-@app.route('/api/reviews', methods=['PUT'])
-def updateReview():
-    return ReviewHandler().updateReview(request.json)
-
-# TODO
-@app.route('/api/reviews', methods=['DELETE'])
-def removeReview():
-  return None
+@app.route('/api/reviews/add/<int:accm_id>', methods=['POST'])
+def addReview(accm_id):
+  return ReviewHandler().addReview(request.json, accm_id)
 
 """
 UNITS (ACCOMMODATIONS)
