@@ -49,7 +49,6 @@ def addLandlord():
 def updateLandlord():
     return LandlordHandler().updateLandlord(request.json)
 
-# TODO
 @app.route('/api/landlords', methods=['DELETE'])
 def removeLandlord():
   return LandlordHandler().deleteLandlord()
@@ -88,7 +87,6 @@ def addTenant():
 def updateTenant():
     return TenantHandler().updateTenant(request.json)
 
-# TODO
 @app.route('/api/tenants', methods=['DELETE'])
 def removeTenant():
   return TenantHandler().deleteTenant()
@@ -183,7 +181,6 @@ def getSharedAmenitiesByAccommodationId(accm_id):
   else:
     return jsonify(Error="Method not allowed."), 405
 
-# TODO add restrictions when updating shared amenities
 @app.route('/api/accommodations/amenities', methods=['PUT'])
 def updateSharedAmenities():
     return SharedAmenitiesHandler().updateSharedAmenities(request.json)
@@ -275,12 +272,10 @@ def getUnitsByAccommodationId(accm_id):
     else:
         return jsonify(Error="Method not allowed."), 405
 
-# TODO add restrictions when creating unit
 @app.route('/api/units/add', methods=['POST'])
 def addUnit():
   return UnitHandler().addUnit(request.json)
 
-# TODO add restrictions when updating unit
 @app.route('/api/units', methods=['PUT'])
 def updateUnit():
     return UnitHandler().updateUnit(request.json)
@@ -297,12 +292,10 @@ PRIVATE AMENITIES (UNITS)
 def getAllPrivateAmenities():
   return PrivateAmenitiesHandler().getAll()
 
-# TODO
 @app.route('/api/private/amenities', methods=['POST'])
 def getPrivateAmenitiesById():
     return PrivateAmenitiesHandler().getById(request.json)
 
-# TODO
 @app.route('/api/units/amenities/<int:unit_id>', methods=['GET'])
 def getPrivateAmenitiesByUnitId(unit_id):
     if request.method == "GET":
@@ -310,16 +303,9 @@ def getPrivateAmenitiesByUnitId(unit_id):
     else:
         return jsonify(Error="Method not allowed."), 405
 
-
-# TODO add restrictions when updating shared amenities
 @app.route('/api/units/amenities', methods=['PUT'])
 def updatePrivateAmenities():
     return PrivateAmenitiesHandler().updatePrivateAmenities(request.json)
-
-# TODO
-@app.route('/api/units/amenities', methods=['DELETE'])
-def removePrivateAmenities():
-  return None
 
 """
 LEASES (UNITS AND TENANTS)
