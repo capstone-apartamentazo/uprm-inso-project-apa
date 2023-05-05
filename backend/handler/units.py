@@ -55,11 +55,13 @@ class UnitHandler:
   @praetorian.auth_required
   def addUnit(self, json):
     try:
-      accm_id = json['accm_id']
-      valid, reason = self.checkAccm(accm_id)
+      valid, reason = self.checkInput(json['unit_number'], json['tenant_capacity'], json['price'], json['size'], json['contract_duration'])
       if not valid:
         return jsonify(reason)
-      daoUnit = self.units.addUnit(json['unit_number'], json['tenant_capacity'], json['price'], json['size'], json['date_available'], json['contract_duration'], accm_id)
+      valid, reason = self.checkAccm(json['accm_id'])
+      if not valid:
+        return jsonify(reason)
+      daoUnit = self.units.addUnit(json['unit_number'], json['tenant_capacity'], json['price'], json['size'], json['date_available'], json['contract_duration'], json['accm_id'])
       if daoUnit:
         db.commit()
         return jsonify(daoUnit)
@@ -73,18 +75,13 @@ class UnitHandler:
   @praetorian.auth_required
   def updateUnit(self, json):
     try:
-      unit_id = json['unit_id']
-      number = json['unit_number']
-      available = json['available']
-      tenant_capacity = json['tenant_capacity']
-      price = json['price']
-      size = json['size']
-      date_available = json['date_available']
-      duration = json['contract_duration']
-      valid, reason = self.checkUnit(unit_id)
+      valid, reason = self.checkInput(json['unit_number'], json['tenant_capacity'], json['price'], json['size'], json['contract_duration'])
       if not valid:
         return jsonify(reason)
-      daoUnit = self.units.updateUnit(unit_id, number, available, tenant_capacity, price, size, date_available, duration)
+      valid, reason = self.checkUnit(json['unit_id'])
+      if not valid:
+        return jsonify(reason)
+      daoUnit = self.units.updateUnit(json['unit_id'], json['unit_number'], json['available'], json['tenant_capacity'], json['price'], json['size'], json['date_available'], json['contract_duration'])
       if daoUnit:
         db.commit()
         return jsonify(daoUnit)
@@ -157,6 +154,23 @@ class UnitHandler:
       db.rollback()
       logger.exception(e)
       return jsonify('Error Occured'), 400
+    
+  @praetorian.auth_required
+  def deleteUnit(self, unit_id):
+    try:
+      if len(self.units.getByAccommodationId(self.units.getById(unit_id)['accm_id'])) == 1:
+        return jsonify('You must have at least 1 unit associated to your accommodation.')
+      deletedUnit = self.units.deleteUnit(unit_id)
+      deletedPrivAmenities = self.pAmenities.deletePrivAmenitiesCascade(unit_id)
+      deletedLease = self.lease.deleteLeaseCascade(unit_id)
+      if not deletedUnit and deletedPrivAmenities and deletedLease:
+        return jsonify('Error deleting unit')
+      db.commit()
+      return jsonify('Successfully deleted unit!')
+    except (Exception, pgerror) as e:
+      db.rollback()
+      logger.exception(e)
+      return jsonify('Error Occured'), 400
 
   def checkUnit(self, identifier):
     daoUnit = self.units.getById(identifier)
@@ -173,3 +187,34 @@ class UnitHandler:
       return False, 'Accommodation is not own by Landlord'
     else:
       return True , ''
+
+  def checkInput(self, unit_number, tenant_capacity, price, size, contract_duration):
+    if isinstance(unit_number, bool):
+      return False, 'unit_number can\'t be bool'
+    if self.unitNumValid(unit_number):
+      return False, 'Unit number can only contain numbers, leters and hyphen and max 10 characters. (Hyphen are optional but cannot start or end with a hyphen -)'
+    if not isinstance(tenant_capacity, int):
+      return False, 'tenant_capacity must be a number not a string'
+    if isinstance(tenant_capacity, bool):
+      return False, 'tenant_capacity must be a number not a bool'
+    if not isinstance(price, int):
+      return False, 'price must be a number not a string'
+    if isinstance(price, bool):
+      return False, 'price must be a number not a bool'
+    if not isinstance(size, int):
+      return False, 'size must be a number not a string'
+    if isinstance(size, bool):
+      return False, 'size must be a number not a bool'
+    if not isinstance(contract_duration, int):
+      return False, 'size must be a number not a string'
+    if isinstance(contract_duration, bool):
+      return False, 'contract_duration must be a number not a bool'
+    else:
+      return True , ''
+    
+  def unitNumValid(self, number):
+    if not number:
+      return
+    numberRegex = '^(?!-)(?!.*-$)[\w-]{1,10}$'
+    return not re.search(numberRegex, number)
+

@@ -211,9 +211,7 @@ class AccommodationHandler:
       if walking_dist_matrix['elements'][0]['status'] == 'ZERO_RESULTS':
         best_dist_matrix = driving_dist_matrix['elements'][0]['duration']['value']
       else:
-        driving_duration = driving_dist_matrix['elements'][0]['duration']['value']
         walking_duration = walking_dist_matrix['elements'][0]['duration']['value']
-
         best_dist_matrix = walking_dist_matrix
         if walking_duration > 1800:
           best_dist_matrix = driving_dist_matrix
@@ -273,7 +271,6 @@ class AccommodationHandler:
       logger.exception(e)
       return jsonify('Error Occured'), 400
 
-  # TODO add individual delete function
   @praetorian.auth_required
   def deleteAccommodationCascade(self, landlord_id):
     try:
@@ -320,7 +317,7 @@ class AccommodationHandler:
     if not len(street.strip()):
       return False, 'Empty Street'
     if self.accmNumValid(number):
-      return False, 'Accommodation number can only contain numbers, leters and hyphen. (Hyphen are optional but cannot start or end with a hyphen -)'
+      return False, 'Accommodation number can only contain numbers, leters and hyphen and max 10 characters. (Hyphen are optional but cannot start or end with a hyphen -)'
     if not len(city.strip()):
       return False, 'Empty City'
     if self.onlyCharacters(city):

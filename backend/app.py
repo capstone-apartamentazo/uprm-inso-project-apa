@@ -49,7 +49,6 @@ def addLandlord():
 def updateLandlord():
   return LandlordHandler().updateLandlord(request.json)
 
-# TODO
 @app.route('/api/landlords', methods=['DELETE'])
 def removeLandlord():
   return LandlordHandler().deleteLandlord()
@@ -85,7 +84,6 @@ def addTenant():
 def updateTenant():
   return TenantHandler().updateTenant(request.json)
 
-# TODO
 @app.route('/api/tenants', methods=['DELETE'])
 def removeTenant():
   return TenantHandler().deleteTenant()
@@ -167,7 +165,6 @@ def getSharedAmenitiesById():
 def getSharedAmenitiesByAccommodationId(accm_id):
   return SharedAmenitiesHandler().getByAccommodationId(accm_id)
 
-# TODO add restrictions when updating shared amenities
 @app.route('/api/accommodations/amenities', methods=['PUT'])
 def updateSharedAmenities():
   return SharedAmenitiesHandler().updateSharedAmenities(request.json)
@@ -189,17 +186,18 @@ def getNoticeById():
 def getNoticesByAccommodationId():
   return NoticeHandler().getByAccommodationId(request.json)
 
-# TODO limit title character count
 @app.route('/api/notices/add', methods=['POST'])
 def addNotice():
   return NoticeHandler().addNotice(request.json)
 
-# TODO limit title character count
+# -----------------------------------------------------------------------------------------------------------------------------------------------
+# Hace falta un update notice si ya le estamos enviando emails so si quiere hacerle update seria enviar otro email?
 @app.route('/api/notices', methods=['PUT'])
 def updateNotice():
   return NoticeHandler().updateNotice(request.json)
 
-# TODO
+# ---------------------------------------------------------------------------------------------------
+# creo q notice no se remueven pq se envian emails so creo q no tiene logica borrarlos?
 @app.route('/api/notices', methods=['DELETE'])
 def removeNotice():
   return None
@@ -223,12 +221,12 @@ def getReviewsByAccommodationId(accm_id):
 def getReviewsByTenantId(tenant_id):
     return ReviewHandler().getByTenantId(tenant_id)
 
-# TODO add restrictions when creating reviews
 @app.route('/api/reviews/add', methods=['POST'])
 def addReview():
   return ReviewHandler().addReview(request.json)
 
-# TODO
+#-----------------------------------------------------------------------------------------------------------
+# creo q dijiste q reviews no lo vas a borrar individualmente solo cuando se borra el accm
 @app.route('/api/reviews', methods=['DELETE'])
 def removeReview():
   return None
@@ -248,20 +246,20 @@ def getUnitById(unit_id):
 def getUnitsByAccommodationId(accm_id):
   return UnitHandler().getByAccommodationId(accm_id)
 
-# TODO add restrictions when creating unit
 @app.route('/api/units/add', methods=['POST'])
 def addUnit():
   return UnitHandler().addUnit(request.json)
 
-# TODO add restrictions when updating unit
 @app.route('/api/units', methods=['PUT'])
 def updateUnit():
     return UnitHandler().updateUnit(request.json)
 
-# TODO
-@app.route('/api/units', methods=['DELETE'])
-def removeUnit():
-  return None
+# ----------------------------------------------------------------------------------------------------------------------
+# voy hacer este remove pero creo q hay q hacer algo para obligar a tener siempre 1 unit?
+# lo q pienso hacer sera q cuando traten de delete y solo queda 1 unit pues devuelvo un json diciendo q solo puedes editar el unit
+@app.route('/api/units/<int:unit_id>', methods=['DELETE'])
+def removeUnit(unit_id):
+  return UnitHandler().deleteUnit(unit_id)
 
 """
 PRIVATE AMENITIES (UNITS)
@@ -285,7 +283,8 @@ def getPrivateAmenitiesByUnitId(unit_id):
 def updatePrivateAmenities():
     return PrivateAmenitiesHandler().updatePrivateAmenities(request.json)
 
-# TODO
+# ----------------------------------------------------------------------------------------------------------------------
+# creo q no se debe implementar pq siempre debe haber 1 private amenities so el usuario solo debe poder update it
 @app.route('/api/units/amenities', methods=['DELETE'])
 def removePrivateAmenities():
   return None
@@ -309,6 +308,8 @@ def getLeasesByUnitId(unit_id):
 def getLeaseByTenantId(tenant_id):
     return LeaseHandler().getByTenantId(tenant_id)
 
+# -----------------------------------------------------------------------------------------
+# si quieres q envie un email pues mira el metodo de add notice
 @app.route('/api/leases/add', methods=['POST'])
 def addLease():
     return LeaseHandler().addLease(request.json)

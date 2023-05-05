@@ -59,15 +59,23 @@ class ReviewHandler:
   @praetorian.auth_required
   def addReview(self, json):
     try:
-      daoReview = self.reviews.addReview(json['rating'], json['comment'], json['accm_id'])
+      if not isinstance(json['rating'], int):
+        return jsonify('Rating must be a number not a string')
+      if isinstance(json['rating'], bool):
+        return jsonify('Rating must be a numberm not a bool')
+      if isinstance(json['comment'], bool):
+        return jsonify('Rating must be a string not a bool')
+      if len(json['comment']) > 255:
+        return jsonify('Character limit is 255')
+      accm = self.accommodations.getById(json['accm_id'])
+      if not accm:
+        return jsonify('Accommodation not found')
+      daoReview = self.reviews.addReview(json['rating'], json['comment'], json['accm_id'], praetorian.current_user_id())
       if daoReview:
-        accm = self.accommodations.getById(json['accm_id'])
-        if not accm:
-          return jsonify('Error retrieving Accommodation'), 400
-        landlord = self.landlords.updateRating(accm[9])
+        landlord = self.landlords.updateRating(accm['landlord_id'])
         if not landlord:
-          db.commit()
           return jsonify('Error updating Landlord Rating'), 400
+        db.commit()
         return jsonify(landlord), 200
       else:
         return jsonify('Error adding Review'), 400
