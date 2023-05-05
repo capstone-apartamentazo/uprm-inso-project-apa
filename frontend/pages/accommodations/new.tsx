@@ -3,41 +3,127 @@ import Link from "next/link";
 import { useEffect, useState, useMemo, useCallback } from 'react';
 
 import { useLoadScript, GoogleMap, MarkerF, Marker } from '@react-google-maps/api';
+import axios from "axios";
+import getConfig from 'next/config';
+import jwt from 'jwt-decode';
+import Cookies from 'universal-cookie';
+import { Token } from 'Token';
+import { Storage } from 'Storage';
+import { useRouter } from 'next/router'
 
+const { publicRuntimeConfig } = getConfig();
+const { url: host } = publicRuntimeConfig.site;
 
 const New = () => {
+
 
     //const [page, setPage] = useState(1);
     //const [currentPage, setCurrentPage] = useState(<></>);
     var currentPage = <></>
-    const [selectedImage1, setSelectedImage1] = useState<string>();
-    const [selectedImage2, setSelectedImage2] = useState<string>();
-    const [selectedImage3, setSelectedImage3] = useState<string>();
-    const [selectedImage4, setSelectedImage4] = useState<string>();
+    const [selectedImage1, setSelectedImage1] = useState<string|any>(null);
+    const [selectedImage2, setSelectedImage2] = useState<string|any>(null);
+    const [selectedImage3, setSelectedImage3] = useState<string|any>(null);
+    const [selectedImage4, setSelectedImage4] = useState<string|any>(null);
+
+    const [accId,setAccId] = useState<number|null>(null)
+    const [storage, setStorage] = useState<Storage>({ token: null, isLandlord: null, id: null })
+    const router = useRouter()
+    const cookies = new Cookies()
+
+    useEffect(() => {
+        console.log(host)
+        try{
+            const token = cookies.get('jwt_authorization')
+			const decoded = jwt<Token>(token)
+			setStorage({'token':token,'id':decoded['id'],'isLandlord':((decoded['rls']=="landlord")?true:false)})
+			var endpoint = `${host}/api/tenants/refresh`
+            if (storage.isLandlord) {
+                endpoint = `${host}/api/landlords/refresh`
+
+            }
+            axios({ method: 'get', url: endpoint, headers: { Authorization: `Bearer ${token}` } })
+                    .then(res => {
+                        return res.data
+                        //const obj = {'token':res.data,}
+                        //localStorage.setItem('data',res.data)
+                    })
+                    .then(result => {
+                        const newToken = result['access_token']
+                        const newDecoded = jwt<Token>(newToken)
+
+                        cookies.set("jwt_authorization", result['access_token'], {
+                            expires: new Date(newDecoded.exp*1000),
+                        })
+                        setStorage({'token':newToken,'id':newDecoded['id'],'isLandlord':((newDecoded['rls']=="landlord")?true:false)})
+                    })
+                    .catch(err => {
+                        //localStorage.removeItem('data');
+                        // console.log('in')
+                        console.error(err);
+                    })
+        }catch(err){
+            router.replace('/')
+            //console.log('out')
+            console.error(err)
+        }
+
+
+        
+    }, [])
 
 
     const handleSelect1 = async (event: any) => {
         event.preventDefault();
 
-        setSelectedImage1(URL.createObjectURL(event.target.files![0]))
+
+        const reader = new FileReader();
+        reader.onload = () => {
+            setSelectedImage1(reader.result)
+        }   
+        reader.readAsDataURL(event.target.files[0])
+
+        
+        //alert(URL.createObjectURL(event.target.files![0]))
+        //setSelectedImage1(URL.createObjectURL(event.target.files![0]))
 
     }
     const handleSelect2 = async (event: any) => {
         event.preventDefault();
 
-        setSelectedImage2(URL.createObjectURL(event.target.files![0]))
+        const reader = new FileReader();
+        reader.onload = () => {
+            setSelectedImage2(reader.result)
+        }   
+        reader.readAsDataURL(event.target.files[0])
+
+
+        //setSelectedImage2(URL.createObjectURL(event.target.files![0]))
 
     }
     const handleSelect3 = async (event: any) => {
         event.preventDefault();
 
-        setSelectedImage3(URL.createObjectURL(event.target.files![0]))
+        const reader = new FileReader();
+        reader.onload = () => {
+            setSelectedImage3(reader.result)
+        }   
+        reader.readAsDataURL(event.target.files[0])
+
+
+        //setSelectedImage3(URL.createObjectURL(event.target.files![0]))
 
     }
     const handleSelect4 = async (event: any) => {
         event.preventDefault();
 
-        setSelectedImage4(URL.createObjectURL(event.target.files![0]))
+        const reader = new FileReader();
+        reader.onload = () => {
+            setSelectedImage4(reader.result)
+        }   
+        reader.readAsDataURL(event.target.files[0])
+
+
+        //setSelectedImage4(URL.createObjectURL(event.target.files![0]))
 
     }
     const [center, setCenter] = useState<google.maps.LatLng | google.maps.LatLngLiteral>({
@@ -46,15 +132,124 @@ const New = () => {
     })
     const [currPos,setCurrPos] = useState<google.maps.LatLng>()
 
+    const uploadImage = async (image:string,accId:number,order:number) => {
+        let data = {
+            "accm_id": accId,
+            "image": image,
+            "order": order
+        }
+
+        if(accId){
+            await axios({ method: 'post', url: `${host}/api/images/accommodation`, headers: { Authorization: `Bearer ${storage.token}` },data })
+            .catch(err=>{
+                console.error(err)
+            })
+        }
+
+    }
+    const createAccommodation = async (data:any, amenities:any) =>{
+
+        if(data){
+            console.log(data)
+            await axios({ method: 'post', url: `${host}/api/accommodations/new`, headers: { Authorization: `Bearer ${storage.token}` },data })
+            .then(response => {
+                // if(response==Object){
+                //     throw new Error('Accm number exists');
+                // }
+                return response.data
+            })
+            .then(result =>{
+                //alert(result)
+                uploadImages(result['accm_id'])
+                return result
+            }).then(result =>{
+                updateAccAmenities(result['shared_amenities_id'],amenities)
+
+            }).then(()=>{
+                alert('Creation successfull')
+                router.replace('/profile')
+            })
+            .catch(err =>{
+                console.log(err)
+                alert('Creation errors')
+                //router.replace()
+            })
+        }
+    }
+    const updateAccAmenities = async (sha_id:any,amenities:any) =>{
+        var data = {
+            "shared_amenities_id": sha_id,
+            "shared_bathroom": amenities.bathroom,
+            "shared_dryer": amenities.dryer,
+            "shared_kitchen": amenities.kitchen,
+            "shared_washer": amenities.washer,
+            "pets_allowed": amenities.pets
+        }
+        if(amenities){
+            await axios({ method: 'put', url: `${host}/api/accommodations/amenities`, headers: { Authorization: `Bearer ${storage.token}` },data })
+            .then(response => {
+                return response.data
+            })
+            .then(result =>{
+                console.log(result)
+
+                
+            })
+            .catch(err =>{
+                console.log(err)
+            })
+
+        }
+    }
+    const uploadImages = async (accId:any)=>{
+        if(selectedImage1){
+            
+            uploadImage(selectedImage1,accId,1)
+            
+
+        }
+        if(selectedImage2){
+            uploadImage(selectedImage2,accId,2)
+        }
+        if(selectedImage3){
+            uploadImage(selectedImage3,accId,3)
+
+        }
+        if(selectedImage4){
+            uploadImage(selectedImage4,accId,4)
+
+        }
+    }
+
     const handleSubmit = async (event: any) => {
         event.preventDefault();
+        
+        
+        
+
         //'latitude':center.lat.toString ,'longitude':center.lng.toString
         let latitude = currPos!.lat
         let longitude = currPos!.lng
-        console.log({
-            'title': event.target.title.value, 'street': event.target.street.value, 'number': event.target.number.value, 'city': event.target.city.value, 'state': event.target.state.value, 'country': event.target.country.value,
-            'zipcode': event.target.zipcode.value,'latitude':latitude ,'longitude':longitude,'description': event.target.description.value, 'bathroom': event.target.bathroom.checked, 'washer': event.target.washer.checked, 'dryer': event.target.dryer.checked, 'kitchen': event.target.kitchen.checked, 'pets': event.target.pets.checked
-        })
+        let amenities = {'bathroom': event.target.bathroom.checked, 'washer': event.target.washer.checked, 'dryer': event.target.dryer.checked, 'kitchen': event.target.kitchen.checked, 'pets': event.target.pets.checked}
+        let details = {
+            'accm_title': event.target.title.value, 'accm_street': event.target.street.value, 'accm_number': event.target.number.value, 'accm_city': event.target.city.value, 'accm_state': event.target.state.value, 'accm_country': event.target.country.value,
+            'accm_zipcode': event.target.zipcode.value,'latitude':latitude ,'longitude':longitude,'accm_description': event.target.description.value
+        }
+
+
+
+        try{
+
+
+            createAccommodation(details,amenities)
+            
+            // uploadImage(selectedImage1!,6,1)
+
+            
+        }catch (err){
+            console.error(err)
+        }
+
 
     }
 
@@ -82,7 +277,7 @@ const New = () => {
             })
 
             .catch((error) => {
-                console.log('boo')
+                
                 console.log(error);
             });
         }
@@ -126,13 +321,20 @@ const New = () => {
 
     return (
         <Layout>
-            <form onSubmit={handleSubmit} className=" form-control my-24">
+            <div className="text-sm breadcrumbs mt-24 mx-10">
+                <ul>
+                    <li><Link href={'/profile'}>Profile</Link></li>
+                    <li>Create Accommodation</li>
+                    
+                </ul>
+            </div>
+            <form onSubmit={handleSubmit} className=" form-control mb-24">
 
                 <div className="grid lg:grid-flow-col sm:grid-flow-row shadow-lg  rounded-lg ring-1 ring-stone-200  mx-10">
 
 
                     <div className=" flex flex-col mt-4 ">
-                        <label className="font-medium text-2xl m-4 ">Create new Accommodation</label>
+                        <label className="font-medium text-2xl m-4 ">1. Create new Accommodation</label>
                         <div className="flex flex-col lg:flex-row sm:flex-col ">
                             <div className="flex flex-col gap-2 m-4  ">
                                 <label>Title</label>
@@ -193,8 +395,8 @@ const New = () => {
 
                                 </div>
                             </div>
-                            <div className="divider divider-horizontal"></div>
-                            <div className="flex flex-col mr-4">
+                            <div className="divider lg:divider-horizontal"></div>
+                            <div className="flex flex-col m-4">
                                 <label className="font-medium text-lg">Add Images</label>
                                 <label>Upload images of the accommodation itself. Better to include shared amenities and images of the building itself. You can add images of specific units in next steps.</label>
 
@@ -217,7 +419,7 @@ const New = () => {
                                             <img className='aspect-square w-52' src={selectedImage4 ? selectedImage4 : '/images/placeholder.png'} />
                                         </label>                                            </div>
                                 </div>
-                                <label>You are required to add at least one image and a maximum of four images.</label>
+                                <label className="">You are required to add at least one image and a maximum of four images.</label>
 
                             </div>
                             <input onChange={handleSelect1} id='img1' type="file" accept="image/png, image/jpeg" className="file-input file-input-bordered w-full max-w-xs hidden" />
@@ -231,9 +433,18 @@ const New = () => {
 
 
                 </div>
+                
                 <div className="grid grid-flow-row shadow-lg  rounded-lg ring-1 ring-stone-200  mx-10 my-4">
-                    <label className="font-medium text-2xl m-4 ">Locate your accommodation</label>
-                    <GoogleMap
+                    <label className="font-medium text-2xl m-4 ">2. Locate your accommodation</label>
+                    <div className="flex flex-col mx-4">
+                        <label>Coordinates:</label>
+                        <label>Latitude: {currPos?currPos.lat:'undefined'}</label>
+                        <label>Longitude: {currPos?currPos.lng:'undefined'}</label>
+                        <label className='text-accent'>Drag the pin to accommodation's precise location to get latitude and longitude.</label>
+
+                    </div>
+                    
+                    <GoogleMap 
                         options={mapOptions}
                         zoom={16}
                         center={center}
@@ -251,7 +462,7 @@ const New = () => {
 
                         />
                     </GoogleMap>
-                    <input type="submit" className="btn" value={'Create'}></input>
+                    <input type="submit" className={currPos?'btn mx-4 my-2 ring-1 ring-accent text-accent hover:bg-accent hover:ring-white hover:text-white':'hidden'} value={'Create'}></input>
 
                 </div>
 

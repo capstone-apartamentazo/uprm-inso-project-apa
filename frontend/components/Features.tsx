@@ -1,6 +1,3 @@
-import Card from './Card';
-import Hunt from '../public/images/features-hunt.gif';
-import Image from 'next/image';
 import { useEffect, useRef } from 'react';
 import lottie from 'lottie-web';
 import listings from 'public/animations/listings.json';
@@ -28,13 +25,13 @@ export default function Features(props: any) {
 		});
 	}, []);
 	var classes = 'lg:flex-row';
-	var animationClasses = 'w-[45rem] h-96';
+	var animationClasses = 'w-0 h-0 md:w-[45rem] md:h-96 ';
 	if (props.reverse === 'true') classes = 'lg:flex-row-reverse';
-	if (props.type === 'aptHunt') animationClasses = 'w-[25rem] h-96';
+	if (props.type === 'aptHunt') animationClasses = 'w-0 h-0 md:w-[25rem] md:h-96';
 
 	return (
-		<div className='hero'>
-			<div className={`hero-content flex-col ${classes}`}>
+		<div className='hero mb-10'>
+			<div className={`hero-content flex-col ${classes} bg-white rounded-2xl shadow-md`}>
 				<div className={animationClasses}>
 					<span ref={animationContainer} className='h-full w-full'></span>
 				</div>

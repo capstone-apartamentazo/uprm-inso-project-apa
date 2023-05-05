@@ -2,6 +2,10 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useListings } from 'useListings';
 import { useRouter } from 'next/router';
+import getConfig from 'next/config';
+
+const { publicRuntimeConfig } = getConfig();
+const { url: host } = publicRuntimeConfig.site;
 
 type Unit = {
 	accm_id: number;
@@ -13,6 +17,7 @@ type Unit = {
 	shared: boolean;
 	unit_id: number;
 	unit_number: string;
+	size: number;
 };
 type Amenities = {
 	air_conditioner: boolean;
@@ -23,6 +28,11 @@ type Amenities = {
 	microwave: boolean;
 	parking: boolean;
 	water: boolean;
+};
+
+type Props = {
+	accmId: string;
+	accmUnits: any;
 };
 
 function getAvailableAmenities(amenities: any) {
@@ -47,26 +57,26 @@ function getAvailableAmenities(amenities: any) {
 	return toReturn;
 }
 
-const AccommodationUnits = (accm_id: any) => {
+const AccommodationUnits: React.FC<Props> = ({ accmId, accmUnits }) => {
 	const router = useRouter();
 	let allUnits: any = [];
 	const [units, setUnits] = useState([]);
-	const { data: unitData, error: unitError } = useListings('accommodations/units/' + accm_id.accm_id);
 
 	useEffect(() => {
-		if (unitData) {
+		if (accmUnits) {
 			const options = {
 				method: 'GET',
 				headers: new Headers({ 'content-type': 'application/json' }),
 			};
-
-			unitData.map((unit: Unit) => {
-				var endpoint = 'http://127.0.0.1:5000/api/units/amenities/' + unit.unit_id;
+			console.log(accmUnits);
+			accmUnits.map((unit: Unit) => {
+				var endpoint = `${host}/api/units/amenities/` + unit.unit_id;
 				fetch(endpoint, options)
 					.then((data) => {
 						return data.json();
 					})
 					.then((data) => {
+						console.log(data);
 						allUnits.push(
 							<tr key={unit.unit_id} className='hover cursor-pointer' onClick={() => router.push('/listings/' + unit.unit_id)}>
 								<td>
@@ -77,11 +87,16 @@ const AccommodationUnits = (accm_id: any) => {
 										</div>
 									</div>
 								</td>
-								<td className='space-x-2'>{getAvailableAmenities(data)}</td>
+								{/* <td className='space-x-1'>{getAvailableAmenities(data)}</td> */}
+
+								<td className='space-x-2'>
+									{data.bedrooms} beds <span className='text-accent'>|</span> {data.bathrooms} baths
+								</td>
+								<td className='space-x-2'>{unit.size} sqft</td>
 								<td className='font-bold'>${unit.price}/m</td>
 							</tr>
 						);
-						if (allUnits.length === unitData.length) setUnits(allUnits);
+						if (allUnits.length === accmUnits.length) setUnits(allUnits);
 					})
 					.catch((err) => {
 						console.log(err);
@@ -95,10 +110,10 @@ const AccommodationUnits = (accm_id: any) => {
 					});
 			});
 		}
-	}, [accm_id.accm_id, unitData]);
+	}, [accmId, accmUnits]);
 
 	return (
-		<div id={accm_id.accm_id + '_units'} className={`h-72 card card-compact shadow text-primary-content translate-y-1 bg-accent transition-all delay-150 duration-300 overflow-hidden w-full`}>
+		<div id={accmId + '_units'} className={`h-72 card card-compact shadow text-primary-content translate-y-1 bg-accent transition-all delay-150 duration-300 overflow-hidden w-full`}>
 			<div className='card-body p-0'>
 				<h3 className='card-title'>Accommodation Units</h3>
 				<div className='overflow-x-auto w-full'>

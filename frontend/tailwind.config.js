@@ -8,9 +8,9 @@ module.exports = {
 				secondary: '#326273',
 				accent: '#E39774',
 			},
-			height:{
-				'128': '32rem',
-			}
+			height: {
+				128: '32rem',
+			},
 		},
 	},
 	daisyui: {
@@ -21,7 +21,7 @@ module.exports = {
 					secondary: '#326273',
 					accent: '#E39774',
 					neutral: '#ffffff',
-					'base-100': '#ffffff',
+					'base-100': '#f9fafb',
 				},
 			},
 		],
