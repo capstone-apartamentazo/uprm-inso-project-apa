@@ -38,7 +38,9 @@ export default function Navbar(path: any) {
 			<Link href={'../'}>
 				<span className='btn btn-ghost normal-case text-lg text-white'>Home</span>
 			</Link>
-			<div className='btn btn-ghost text-lg text-white normal-case'>About Us</div>
+			<Link href={'../about'}>
+				<div className='btn btn-ghost text-lg text-white normal-case'>About Us</div>
+			</Link>
 		</div>
 	);
 

@@ -24,7 +24,10 @@ def getAllLandlords():
 
 @app.route('/api/landlords/<int:u_id>', methods=['GET'])
 def getLandlordById(u_id):
-  return LandlordHandler().getById(u_id)
+    if request.method == 'GET':
+      return LandlordHandler().getById(u_id)
+    else:
+      return jsonify(Error="Method not allowed."), 405
 
 @app.route('/api/landlords/login', methods=['POST'])
 def loginLandlord():
@@ -210,15 +213,15 @@ def getAllReviews():
 
 @app.route('/api/reviews/<int:review_id>')
 def getReviewById(review_id):
-  return ReviewHandler().getById(review_id)
+    return ReviewHandler().getById(review_id)
 
 @app.route('/api/accommodations/reviews/<int:accm_id>')
 def getReviewsByAccommodationId(accm_id):
-  return ReviewHandler().getByAccommodationId(accm_id)
+    return ReviewHandler().getByAccommodationId(accm_id)
 
 @app.route('/api/tenants/reviews/<int:tenant_id>')
 def getReviewsByTenantId(tenant_id):
-  return ReviewHandler().getByTenantId(tenant_id)
+    return ReviewHandler().getByTenantId(tenant_id)
 
 # TODO add restrictions when creating reviews
 @app.route('/api/reviews/add', methods=['POST'])

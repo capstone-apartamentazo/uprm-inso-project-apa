@@ -133,11 +133,9 @@ class LeaseHandler:
   @praetorian.auth_required
   def deleteLeaseCascade(self, unit_id):
     try:
-      if not self.leases.getByUnitId(unit_id):
-        return True # empty list
-      if self.leases.deleteLeaseCascade(unit_id):
-        return True
-      return False
+      if not self.leases.deleteLeaseCascade(unit_id):
+        return False
+      return True
     except (Exception, pgerror) as e:
       db.rollback()
       logger.exception(e)
