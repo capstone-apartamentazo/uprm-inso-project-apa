@@ -290,6 +290,26 @@ class AccommodationHandler:
       db.rollback()
       logger.exception(e)
       return jsonify('Error Occured'), 400
+  
+  @praetorian.auth_required
+  def deleteAccommodation(self, accm_id):
+    try:
+      landlord_id = praetorian.current_user_id()
+      if(landlord_id != self.accommodations.getById(accm_id)['landlord_id']):
+        return jsonify('Your not the owner of this accommodation')
+      deletedAccommodation = self.accommodations.deleteAccommodation(accm_id)
+      deletedAmenities = self.amenities.deleteSharedAmenitiesCascade(accm_id)
+      deletedReview = self.review.deleteReviewCascade(accm_id)
+      deletedUnit = self.units.deleteUnitCascade(accm_id)
+      deletedNotice = self.notice.deleteNoticeCascade(accm_id)
+      if not deletedAccommodation and deletedAmenities and deletedReview and deletedUnit and deletedNotice:
+        return jsonify('Error deleting accommodation')
+      db.commit()
+      return jsonify('Successfully deleted accommodation!')
+    except (Exception, pgerror) as e:
+      db.rollback()
+      logger.exception(e)
+      return jsonify('Error Occured'), 400
     
   def checkInput(self, identifier, title, street, number, city, state, country, zipcode):
     # strip function removes any spaces given
