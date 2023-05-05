@@ -58,12 +58,12 @@ const New = () => {
                     })
                     .catch(err => {
                         //localStorage.removeItem('data');
-                        console.log('in')
+                        // console.log('in')
                         console.error(err);
                     })
         }catch(err){
             router.replace('/')
-            console.log('out')
+            //console.log('out')
             console.error(err)
         }
 
@@ -321,13 +321,20 @@ const New = () => {
 
     return (
         <Layout>
-            <form onSubmit={handleSubmit} className=" form-control my-24">
+            <div className="text-sm breadcrumbs mt-24 mx-10">
+                <ul>
+                    <li><Link href={'/profile'}>Profile</Link></li>
+                    <li>Create Accommodation</li>
+                    
+                </ul>
+            </div>
+            <form onSubmit={handleSubmit} className=" form-control mb-24">
 
                 <div className="grid lg:grid-flow-col sm:grid-flow-row shadow-lg  rounded-lg ring-1 ring-stone-200  mx-10">
 
 
                     <div className=" flex flex-col mt-4 ">
-                        <label className="font-medium text-2xl m-4 ">Create new Accommodation</label>
+                        <label className="font-medium text-2xl m-4 ">1. Create new Accommodation</label>
                         <div className="flex flex-col lg:flex-row sm:flex-col ">
                             <div className="flex flex-col gap-2 m-4  ">
                                 <label>Title</label>
@@ -388,8 +395,8 @@ const New = () => {
 
                                 </div>
                             </div>
-                            <div className="divider divider-horizontal"></div>
-                            <div className="flex flex-col mr-4">
+                            <div className="divider lg:divider-horizontal"></div>
+                            <div className="flex flex-col m-4">
                                 <label className="font-medium text-lg">Add Images</label>
                                 <label>Upload images of the accommodation itself. Better to include shared amenities and images of the building itself. You can add images of specific units in next steps.</label>
 
@@ -412,7 +419,7 @@ const New = () => {
                                             <img className='aspect-square w-52' src={selectedImage4 ? selectedImage4 : '/images/placeholder.png'} />
                                         </label>                                            </div>
                                 </div>
-                                <label>You are required to add at least one image and a maximum of four images.</label>
+                                <label className="">You are required to add at least one image and a maximum of four images.</label>
 
                             </div>
                             <input onChange={handleSelect1} id='img1' type="file" accept="image/png, image/jpeg" className="file-input file-input-bordered w-full max-w-xs hidden" />
@@ -428,7 +435,7 @@ const New = () => {
                 </div>
                 
                 <div className="grid grid-flow-row shadow-lg  rounded-lg ring-1 ring-stone-200  mx-10 my-4">
-                    <label className="font-medium text-2xl m-4 ">Locate your accommodation</label>
+                    <label className="font-medium text-2xl m-4 ">2. Locate your accommodation</label>
                     <div className="flex flex-col mx-4">
                         <label>Coordinates:</label>
                         <label>Latitude: {currPos?currPos.lat:'undefined'}</label>

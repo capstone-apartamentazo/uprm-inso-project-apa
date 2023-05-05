@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 
 type Props = {
     title: string,
@@ -9,7 +10,7 @@ type Props = {
 const ProfileAccommodation: React.FC<Props> = ({ title, address, id }) => {
     return (
         <div className='flex justify-center w-72 '>
-            <a data-te-ripple-init data-te-ripple-color='light'>
+            
                 <div className='block max-w-full rounded-lg bg-white shadow-lg ring-1 ring-stone-200 dark:bg-neutral-700 '>
                     <img className='rounded-t-lg aspect-video h-56' src='https://tecdn.b-cdn.net/img/new/standard/nature/186.jpg' alt='' />
                     <div className='p-4 flex menu-vertical h-36 align-middle'>
@@ -24,7 +25,10 @@ const ProfileAccommodation: React.FC<Props> = ({ title, address, id }) => {
                             {address}
                         </div>
                         <div className='flex items-center gap-2 mx-2 mt-2'>
-                            <button className='btn ring-1 ring-accent text-accent hover:bg-white hover:shadow-md hover:ring-2 grow'>Units</button>
+                            <Link href={{
+                                pathname: '/units',
+                                query: {accmid:id} // the data
+                            }} className='btn ring-1 ring-accent text-accent hover:bg-white hover:shadow-md hover:ring-2 grow'>Units</Link>
 
                             <button className='btn ring-1 ring-primary hover:bg-white hover:shadow-md  hover:ring-2  grow'>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 stroke-primary">
@@ -42,7 +46,7 @@ const ProfileAccommodation: React.FC<Props> = ({ title, address, id }) => {
 
                     </div>
                 </div>
-            </a>
+            
         </div>
     );
 };

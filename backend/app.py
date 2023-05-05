@@ -9,7 +9,6 @@ from handler.notices import NoticeHandler
 from handler.reviews import ReviewHandler
 from handler.units import UnitHandler
 from handler.private_amenities import PrivateAmenitiesHandler
-from handler.requests import RequestHandler
 from handler.leases import LeaseHandler
 
 @app.route('/')
@@ -124,6 +123,14 @@ def landlordSendsMessage():
 @app.route('/api/tenant/sends/message', methods=['POST'])
 def tenantSendsMessage():
   return MessageHandler().tenantSendsMessage(request.json)
+
+@app.route('/api/tenant/sends/request', methods=['POST'])
+def tenantSendsRequestWithoutTour():
+  return MessageHandler().tenantSendsRequestWithoutTour(request.json)
+
+@app.route('/api/tenant/sends/request/tour', methods=['POST'])
+def tenantSendsRequestWithTour():
+  return MessageHandler().tenantSendsRequestWithTour(request.json)
 
 """
 ACCOMMODATIONS (LANDLORDS)

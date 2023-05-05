@@ -40,7 +40,7 @@ const AccommodationList: React.FC<Props> = ({  }) => {
 
     
 
-    const { data: acms, error: acmsError, isLoading: isLoadingAcms } = useSWR((storage?.token != null) ? `${host}/api/accommodations/landlord/${storage.id}` : null, (url: string) => fetch(url, {
+    const { data: accms, error: accmsError, isLoading: isLoadingAccms } = useSWR((storage?.token != null) ? `${host}/api/accommodations/landlord/${storage.id}` : null, (url: string) => fetch(url, {
         headers: {
             Authorization: `Bearer ${storage?.token}`
         }
@@ -54,16 +54,16 @@ const AccommodationList: React.FC<Props> = ({  }) => {
         return <h1>User logged out</h1>
     }
 
-    if (acmsError) {
+    if (accmsError) {
         return <h1>Error</h1>
     }
-    if (isLoadingAcms) return (
+    if (isLoadingAccms) return (
         <div>
             <h1>Loading...</h1>
 
         </div>
     )
-    if (!acms || acms == 'Accommodations Not Found') {
+    if (!accms || accms == 'Accommodations Not Found') {
         return (
             <div className='mt-3'>
 
@@ -78,7 +78,7 @@ const AccommodationList: React.FC<Props> = ({  }) => {
 
     return (
         <div className='flex  gap-4  pt-4 pr-4 pb-4'>
-            {acms.slice(0,4).map((accm: Accm ) => (
+            {accms.map((accm: Accm ) => (
                 
 				<ProfileAccommodation title={accm.accm_title} address={accm.accm_street} id={accm.accm_id}/>
 
