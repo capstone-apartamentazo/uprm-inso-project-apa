@@ -73,6 +73,8 @@ class SharedAmenitiesHandler:
       valid, reason = self.checkAmenities(amenities_id)
       if not valid:
         return jsonify(reason)
+      if not isinstance(kitchen, bool) and isinstance(bathroom, bool) and isinstance(washer, bool) and isinstance(dryer, bool) and isinstance(pets_allowed, bool):
+        return jsonify('All values must be bool.')
       updatedAmenities = self.amenities.updateSharedAmenities(amenities_id, kitchen, bathroom, washer, dryer, pets_allowed)
       if updatedAmenities:
         db.commit()

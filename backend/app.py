@@ -162,7 +162,6 @@ def getSharedAmenitiesById():
 def getSharedAmenitiesByAccommodationId(accm_id):
   return SharedAmenitiesHandler().getByAccommodationId(accm_id)
 
-# TODO add restrictions when updating shared amenities
 @app.route('/api/accommodations/amenities', methods=['PUT'])
 def updateSharedAmenities():
   return SharedAmenitiesHandler().updateSharedAmenities(request.json)
