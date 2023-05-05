@@ -84,7 +84,7 @@ const Landlord = () => {
 
 	return (
 		<Layout>
-			<main className='flex flex-row flex-nowrap pt-24'>
+			<main className='flex flex-col lg:flex-row  flex-nowrap my-24'>
 				<div className='flex  flex-col flex-initial basis-1/6 pt-10 pl-6 pr-6 '>
 					<div className='block min-w-full rounded-xl pt-6 bg-white ring-stone-200 ring-1 shadow-lg dark:bg-neutral-700 items-center text-center'>
 						<div className=''>
@@ -111,17 +111,14 @@ const Landlord = () => {
 						</div>
 					</div>
 				</div>
-				<div className='flex flex-col flex-initial basis-5/6 pt-10 px-4'>
-					<div className='rounded-md p-6'>
-						<h1 className=' text-3xl font-bold text-left  '>
-
-							<label className=''>
+				<div className='flex flex-col flex-initial relative basis-5/6 mt-10 pl-6 pr-6 max-h-semi min-w-min  m-6 ring-1 ring-stone-200 rounded-md bg-white shadow-lg overflow-hidden'>
+					<div className='text-3xl font-bold text-left pt-6 px-6 rounded-md absolute bg-white top-0 left-0 right-0 '>
+						
 								Accommodations
-							</label>
-						</h1>
+						
 
 					</div>
-					<div className='flex  gap-2 mr-2'>
+					<div className='flex flex-wrap gap-4 mr-2 mt-20 p-4 mb-6 overflow-auto'>
 						{accms.map((accm: Accm) => (
 
 							<Accommodation title={accm.accm_title} address={accm.accm_street} features={accm.accm_city} price={'100'} href='/' />
