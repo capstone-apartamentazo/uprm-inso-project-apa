@@ -4,7 +4,7 @@ import getConfig from 'next/config';
 const { publicRuntimeConfig } = getConfig();
 const { url: host } = publicRuntimeConfig.site;
 
-const baseUrl = host + '/';
+const baseUrl = host + '/api/';
 const fetcher = (...args: Parameters<typeof fetch>) => fetch(...args).then((res) => res.json());
 
 export const useListings = (path: string | null | undefined) => {
