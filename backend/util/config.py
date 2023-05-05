@@ -1,5 +1,6 @@
 from flask import Flask, jsonify
 from flask_cors import CORS
+from flask_mail import Mail
 from flask_praetorian import Praetorian
 from psycopg2 import connect, Error as pgerror
 from psycopg2.extras import RealDictCursor
@@ -47,6 +48,14 @@ logger = logging.getLogger()
 # Setup app config
 app.config['SECRET_KEY'] = environ.get('SECRET_KEY')
 app.config['JWT_ACCESS_LIFESPAN'] = { 'minutes': 60 }
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USE_SSL'] = True
+app.config['MAIL_USERNAME'] = 'apartamentazopr@gmail.com'
+app.config['MAIL_PASSWORD'] = 'qukklxznwtvfyjnc'
+app.config['MAIL_DEFAULT_SENDER'] = 'apartamentazopr@gmail.com'
+mail = Mail(app)
+
 
 # Create Landlord and Tenant classes for authorization features
 class Landlord:
