@@ -1,7 +1,10 @@
 import useSWR from 'swr';
+import getConfig from 'next/config';
 
-const baseUrl2 = 'https://api.apartamentazo.com/api/';
-const baseUrl = 'http://127.0.0.1:5000/api/';
+const { publicRuntimeConfig } = getConfig();
+const { url: host } = publicRuntimeConfig.site;
+
+const baseUrl = host + '/';
 const fetcher = (...args: Parameters<typeof fetch>) => fetch(...args).then((res) => res.json());
 
 export const useListings = (path: string | null | undefined) => {
