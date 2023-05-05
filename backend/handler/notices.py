@@ -82,10 +82,11 @@ class NoticeHandler:
   @praetorian.auth_required
   def deleteNoticeCascade(self, accm_id):
     try:
-      deletedNotice = self.notices.deleteNoticeCascade(accm_id)
-      if not deletedNotice:
-        return False
-      return True
+      if not self.notices.getByAccommodationId(accm_id):
+        return True # empty list
+      if self.notices.deleteNoticeCascade(accm_id):
+        return True
+      return False
     except (Exception, pgerror) as e:
       db.rollback()
       logger.exception(e)
