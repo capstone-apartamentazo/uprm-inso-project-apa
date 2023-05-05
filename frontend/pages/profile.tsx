@@ -29,49 +29,91 @@ const languages = ['Spanish', 'English'];
 const reviewCount = 2;
 
 const Profile = () => {
-    const [storage, setStorage] = useState<Storage>({ token: null, isLandlord: null, id: null })
+	const [storage, setStorage] = useState<Storage>({ token: null, isLandlord: null, id: null })
 	const router = useRouter()
 	const cookies = new Cookies()
+	const [landlordImg, setLandlordImg] = useState('/images/default.jpeg')
+	const [imgLoading, setImageLoading] = useState(false)
 
 	useEffect(() => {
 
 
-		try{
-            const token = cookies.get('jwt_authorization')
+		try {
+			const token = cookies.get('jwt_authorization')
 			const decoded = jwt<Token>(token)
-			setStorage({'token':token,'id':decoded['id'],'isLandlord':((decoded['rls']=="landlord")?true:false)})
+			setStorage({ 'token': token, 'id': decoded['id'], 'isLandlord': ((decoded['rls'] == "landlord") ? true : false) })
 			var endpoint = `${host}/api/tenants/refresh`
-            if (storage.isLandlord) {
-                endpoint = `${host}/api/landlords/refresh`
 
-            }
-            axios({ method: 'get', url: endpoint, headers: { Authorization: `Bearer ${token}` } })
-                    .then(res => {
-                        return res.data
-                        //const obj = {'token':res.data,}
-                        //localStorage.setItem('data',res.data)
-                    })
-                    .then(result => {
-                        const newToken = result['access_token']
-                        const newDecoded = jwt<Token>(newToken)
+			if (storage.isLandlord) {
+				endpoint = `${host}/api/landlords/refresh`
 
-                        cookies.set("jwt_authorization", result['access_token'], {
-                            expires: new Date(newDecoded.exp*1000),
-                        })
-                        setStorage({'token':newToken,'id':newDecoded['id'],'isLandlord':((newDecoded['rls']=="landlord")?true:false)})
-                    })
-                    .catch(err => {
-                        //localStorage.removeItem('data');
-                        console.log('in')
-                        console.error(err);
-                    })
-        }catch(err){
+
+
+			}
+			axios({ method: 'get', url: endpoint, headers: { Authorization: `Bearer ${token}` } })
+				.then(res => {
+					return res.data
+					//const obj = {'token':res.data,}
+					//localStorage.setItem('data',res.data)
+				})
+				.then(result => {
+					const newToken = result['access_token']
+					const newDecoded = jwt<Token>(newToken)
+
+					cookies.set("jwt_authorization", result['access_token'], {
+						expires: new Date(newDecoded.exp * 1000),
+					})
+					setStorage({ 'token': newToken, 'id': newDecoded['id'], 'isLandlord': ((newDecoded['rls'] == "landlord") ? true : false) })
+				})
+
+				.catch(err => {
+					//localStorage.removeItem('data');
+					console.log('in')
+					console.error(err);
+				})
+
+
+
+
+		} catch (err) {
 			router.replace('/')
-            console.log('out')
-            console.error(err)
+			console.log('out')
+			console.error(err)
 
-        }
+		}
 	}, [])
+
+	useEffect(() => {
+		var imgEndpoint = `${host}/api/images/tenant/${storage.id}`
+
+		if (storage.isLandlord != null) {
+			if (storage.isLandlord) {
+				imgEndpoint = `${host}/api/images/landlord/${storage.id}`
+			}
+			//alert(storage.isLandlord)
+			setImageLoading(true)
+
+			axios.get(imgEndpoint)
+				.then(res => {
+					return res.data
+				})
+				.then(result => {
+					console.log(result['resources'][0])
+					return result['resources'][0]
+				})
+				.then(result => {
+					setLandlordImg(result['secure_url'])
+					setImageLoading(false)
+				}).catch(err => {
+					console.error(err)
+					setImageLoading(false)
+				})
+
+
+		}
+
+	}, [storage])
+
 	// var endpoint = `http://127.0.0.1:5000/api/tenants/${storage.id}`
 	// if (storage.isLandlord) {
 	// 	endpoint = `http://127.0.0.1:5000/api/landlords/${storage.id}`
@@ -86,7 +128,7 @@ const Profile = () => {
 
 	if (userError) {
 		console.error(userError);
-		
+
 	}
 	if (!user) {
 		console.log(user);
@@ -98,7 +140,7 @@ const Profile = () => {
 		return (
 			<div>
 				<h1>Error found</h1>
-				<button onClick ={() => {{ cookies.remove('jwt_authorization') }}} className="btn border-2 mr-4">Logout</button>
+				<button onClick={() => { { cookies.remove('jwt_authorization') } }} className="btn border-2 mr-4">Logout</button>
 			</div>
 		)
 	}
@@ -148,7 +190,7 @@ const Profile = () => {
 								{/*<Review listingTitle='2BR Condo ON THE BEACH! Restaurant- Pool- Hot Tub!' opinion='Had a great time and the place was great. The beach was beautiful and the place had everything we needed for a terrific vacation.' listingImg='https://tecdn.b-cdn.net/img/new/standard/nature/186.jpg' name='Maya Williams' date='March 2022' userImg='/images/person.png'></Review>
 								<Review listingTitle='Apartment ON THE BEACH! NO POOL' opinion='Had a horrible time and the place was nasty. There was no beach and the place had nothing we needed for a terrific vacation.' listingImg='https://tecdn.b-cdn.net/img/new/standard/nature/186.jpg' name='Robin' date='May 2022' userImg='/images/person.png'></Review>
 		*/}
-								</div>
+							</div>
 						</div>
 					</div>
 				</main>
@@ -165,7 +207,7 @@ const Profile = () => {
 						<div className=''>
 							<div className='avatar my-4 mx-10'>
 								<div className=' w-40 rounded-full ring ring-accent ring-offset-base-100 ring-offset-2 hover:ring-4 hover:shadow-lg'>
-									<a href='/'><img className='aspect-square' src='/images/user.png' /></a>
+									<img className={imgLoading ? 'aspect-square animate-pulse' : 'aspect-square'} src={landlordImg} />
 								</div>
 							</div>
 						</div>
@@ -205,7 +247,7 @@ const Profile = () => {
 
 					</div>
 
-					
+
 				</div>
 			</main>
 		</Layout>
