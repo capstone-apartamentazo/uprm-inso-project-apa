@@ -2,6 +2,10 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useListings } from 'useListings';
 import { useRouter } from 'next/router';
+import getConfig from 'next/config';
+
+const { publicRuntimeConfig } = getConfig();
+const { url: host } = publicRuntimeConfig.site;
 
 type Unit = {
 	accm_id: number;
@@ -66,7 +70,7 @@ const AccommodationUnits: React.FC<Props> = ({ accmId, accmUnits }) => {
 			};
 			console.log(accmUnits);
 			accmUnits.map((unit: Unit) => {
-				var endpoint = 'http://127.0.0.1:5000/api/units/amenities/' + unit.unit_id;
+				var endpoint = `${host}/api/units/amenities/` + unit.unit_id;
 				fetch(endpoint, options)
 					.then((data) => {
 						return data.json();
