@@ -157,6 +157,23 @@ class UnitHandler:
       db.rollback()
       logger.exception(e)
       return jsonify('Error Occured'), 400
+    
+  @praetorian.auth_required
+  def deleteUnit(self, unit_id):
+    try:
+      if len(self.units.getByAccommodationId(self.units.getById(unit_id)['accm_id'])) == 1:
+        return jsonify('You must have at least 1 unit associated to your accommodation.')
+      deletedUnit = self.units.deleteUnit(unit_id)
+      deletedPrivAmenities = self.pAmenities.deletePrivAmenitiesCascade(unit_id)
+      deletedLease = self.lease.deleteLeaseCascade(unit_id)
+      if not deletedUnit and deletedPrivAmenities and deletedLease:
+        return jsonify('Error deleting unit')
+      db.commit()
+      return jsonify('Successfully deleted unit!')
+    except (Exception, pgerror) as e:
+      db.rollback()
+      logger.exception(e)
+      return jsonify('Error Occured'), 400
 
   def checkUnit(self, identifier):
     daoUnit = self.units.getById(identifier)
