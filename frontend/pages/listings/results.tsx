@@ -32,7 +32,7 @@ const Listings = () => {
 					data.map((accm: any) => {
 						allListings.push(
 							<div key={accm} className='col-start-1 row-span-2 p-2'>
-								<ListingResult key={accm} title={accm.accm_title} address={accm.accm_street + ', ' + accm.accm_city} description={accm.accm_description} unitAmount={accm.number_of_units} id={accm.accm_id} />{' '}
+								<ListingResult key={accm} title={accm.accm_title} address={accm.accm_street + ', ' + accm.accm_city} description={accm.accm_description} unitAmount={accm.accm_units.length} id={accm.accm_id} accmUnits={accm.accm_units} />{' '}
 							</div>
 						);
 					});
