@@ -28,7 +28,7 @@ export default function Explore() {
 	return (
 		<section className='text-center m-10 mt-24'>
 			<h1 className=' text-black font-semibold text-5xl text-transparent bg-clip-text bg-gradient-to-r from-primary via-secondary to-black h-auto'>explore apartments</h1>
-			<p className='text-2xl font-light text-transparent bg-clip-text bg-gradient-to-r from-primary via-secondary to-black '>we know finding the perfect apartment is important, so we made it easy for you</p>
+			<p className='text-2xl font-light text-transparent bg-clip-text bg-gradient-to-r from-primary via-secondary to-black '>we know finding the perfect apartment is important, so we made it easy for you.</p>
 			<div className='items-center flex justify-center my-10 gap-5 flex-wrap'>
 				{/* TODO: This section changes based on whether the user is signed in or not, is a landlord, or is a student */}
 				{listings}

@@ -1,4 +1,8 @@
 import { useEffect, useState } from 'react';
+import getConfig from 'next/config';
+
+const { publicRuntimeConfig } = getConfig();
+const { url: host } = publicRuntimeConfig.site;
 
 const unit = {
 	amenities: 'water, balcony, electricity',
@@ -31,7 +35,7 @@ const UnitTableRow = (accm_id: any) => {
 				accm_id: accm_id.accm_id,
 			};
 
-			const endpoint = 'http://127.0.0.1:5000/api/accommodations/units';
+			const endpoint = `${host}/api/accommodations/units`;
 
 			const options = {
 				method: 'POST',

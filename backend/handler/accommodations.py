@@ -279,13 +279,33 @@ class AccommodationHandler:
     try:
       deletedAccommodation = self.accommodations.deleteAccommodationCascade(landlord_id)
       for accm in deletedAccommodation:
-        deletedAmenities = self.amenities.deleteSharedAmenities(accm['accm_id'])
+        deletedAmenities = self.amenities.deleteSharedAmenitiesCascade(accm['accm_id'])
         deletedReview = self.review.deleteReviewCascade(accm['accm_id'])
         deletedUnit = self.units.deleteUnitCascade(accm['accm_id'])
         deletedNotice = self.notice.deleteNoticeCascade(accm['accm_id'])
         if not deletedAmenities and deletedReview and deletedUnit and deletedNotice:
           return False
       return True
+    except (Exception, pgerror) as e:
+      db.rollback()
+      logger.exception(e)
+      return jsonify('Error Occured'), 400
+  
+  @praetorian.auth_required
+  def deleteAccommodation(self, accm_id):
+    try:
+      landlord_id = praetorian.current_user_id()
+      if(landlord_id != self.accommodations.getById(accm_id)['landlord_id']):
+        return jsonify('Your not the owner of this accommodation')
+      deletedAccommodation = self.accommodations.deleteAccommodation(accm_id)
+      deletedAmenities = self.amenities.deleteSharedAmenitiesCascade(accm_id)
+      deletedReview = self.review.deleteReviewCascade(accm_id)
+      deletedUnit = self.units.deleteUnitCascade(accm_id)
+      deletedNotice = self.notice.deleteNoticeCascade(accm_id)
+      if not deletedAccommodation and deletedAmenities and deletedReview and deletedUnit and deletedNotice:
+        return jsonify('Error deleting accommodation')
+      db.commit()
+      return jsonify('Successfully deleted accommodation!')
     except (Exception, pgerror) as e:
       db.rollback()
       logger.exception(e)

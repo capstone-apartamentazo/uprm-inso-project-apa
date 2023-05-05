@@ -27,7 +27,7 @@ const SearchBar: React.FC<Props> = ({ className, width }) => {
 			<div className={`relative ${width}`}>
 				<div className='relative w-full'>
 					<input type='text' id='search' className='appearance-none bg-white border border-accent text-gray-900 text-sm rounded-full focus:ring-accent focus:border-accent block w-full pl-5 p-3.5 pr-8' placeholder='Search for a location...' required />
-					<button type='submit' className='absolute top-0.5 right-0 p-3 text-sm font-medium text-accent rounded-r-lg'>
+					<button type='submit' className='absolute top-[0.340rem] right-2 p-2 text-sm font-medium text-accent hover:bg-accent hover:text-white transition ease-in-out duration-300 hover:shadow-sm rounded-full'>
 						<svg aria-hidden='true' className='w-6 h-6' fill='none' stroke='currentColor' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'>
 							<path strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'></path>
 						</svg>

@@ -70,6 +70,15 @@ class Accommodations:
     res = cursor.fetchall()
     cursor.close()
     return res
+  
+  # TODO add individual delete
+  def deleteAccommodation(self, identifier):
+    query = 'UPDATE accommodations SET deleted_flag = true WHERE accm_id = %s AND deleted_flag = false RETURNING *'
+    cursor = db.cursor(cursor_factory=RealDictCursor)
+    cursor.execute(query %(identifier))
+    res = cursor.fetchall()
+    cursor.close()
+    return res
 
   def getByConstraint(self, landlord, number, identifier):
     query = 'SELECT accm_number, landlord_id FROM accommodations \

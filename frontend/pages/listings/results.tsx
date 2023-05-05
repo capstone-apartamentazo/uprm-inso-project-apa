@@ -3,6 +3,10 @@ import ListingResult from '@/components/ListingResult';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import SearchBar from '../../components/SearchBar';
+import getConfig from 'next/config';
+
+const { publicRuntimeConfig } = getConfig();
+const { url: host } = publicRuntimeConfig.site;
 
 const Listings = () => {
 	let allListings: any = [];
@@ -15,7 +19,7 @@ const Listings = () => {
 
 	useEffect(() => {
 		if (search) {
-			const endpoint = `http://127.0.0.1:5000/api/search?input=${search}&offset=0`;
+			const endpoint = `${host}/api/search?input=${search}&offset=0`;
 
 			const options = {
 				method: 'GET',
@@ -32,7 +36,7 @@ const Listings = () => {
 					data.map((accm: any) => {
 						allListings.push(
 							<div key={accm} className='col-start-1 row-span-2 p-2'>
-								<ListingResult key={accm} title={accm.accm_title} address={accm.accm_street + ', ' + accm.accm_city} description={accm.accm_description} unitAmount={accm.number_of_units} id={accm.accm_id} />{' '}
+								<ListingResult key={accm} title={accm.accm_title} address={accm.accm_street + ', ' + accm.accm_city} description={accm.accm_description} unitAmount={accm.accm_units.length} id={accm.accm_id} accmUnits={accm.accm_units} />{' '}
 							</div>
 						);
 					});

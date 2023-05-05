@@ -25,9 +25,9 @@ export default function Features(props: any) {
 		});
 	}, []);
 	var classes = 'lg:flex-row';
-	var animationClasses = 'w-[45rem] h-96';
+	var animationClasses = 'w-0 h-0 md:w-[45rem] md:h-96 ';
 	if (props.reverse === 'true') classes = 'lg:flex-row-reverse';
-	if (props.type === 'aptHunt') animationClasses = 'w-[25rem] h-96';
+	if (props.type === 'aptHunt') animationClasses = 'w-0 h-0 md:w-[25rem] md:h-96';
 
 	return (
 		<div className='hero mb-10'>
