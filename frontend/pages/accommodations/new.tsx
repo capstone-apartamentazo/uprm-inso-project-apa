@@ -74,57 +74,59 @@ const New = () => {
 
     const handleSelect1 = async (event: any) => {
         event.preventDefault();
-
-
-        const reader = new FileReader();
-        reader.onload = () => {
-            setSelectedImage1(reader.result)
-        }   
-        reader.readAsDataURL(event.target.files[0])
-
-        
-        //alert(URL.createObjectURL(event.target.files![0]))
-        //setSelectedImage1(URL.createObjectURL(event.target.files![0]))
+        if (event.target.files[0].size > 10485759) {
+            alert('Image size too big. Max size is 10 Mb')
+            
+        } else {
+            const reader = new FileReader();
+            reader.onload = () => {
+                setSelectedImage1(reader.result)
+            }
+            reader.readAsDataURL(event.target.files[0])
+        }
 
     }
     const handleSelect2 = async (event: any) => {
         event.preventDefault();
 
-        const reader = new FileReader();
-        reader.onload = () => {
-            setSelectedImage2(reader.result)
-        }   
-        reader.readAsDataURL(event.target.files[0])
-
-
-        //setSelectedImage2(URL.createObjectURL(event.target.files![0]))
-
+        if (event.target.files[0].size > 10485759) {
+            alert('Image size too big. Max size is 10 Mb')
+            
+        } else {
+            const reader = new FileReader();
+            reader.onload = () => {
+                setSelectedImage2(reader.result)
+            }
+            reader.readAsDataURL(event.target.files[0])
+        }
     }
     const handleSelect3 = async (event: any) => {
         event.preventDefault();
 
-        const reader = new FileReader();
-        reader.onload = () => {
-            setSelectedImage3(reader.result)
-        }   
-        reader.readAsDataURL(event.target.files[0])
-
-
-        //setSelectedImage3(URL.createObjectURL(event.target.files![0]))
-
+        if (event.target.files[0].size > 10485759) {
+            alert('Image size too big. Max size is 10 Mb')
+            
+        } else {
+            const reader = new FileReader();
+            reader.onload = () => {
+                setSelectedImage3(reader.result)
+            }
+            reader.readAsDataURL(event.target.files[0])
+        }
     }
     const handleSelect4 = async (event: any) => {
         event.preventDefault();
 
-        const reader = new FileReader();
-        reader.onload = () => {
-            setSelectedImage4(reader.result)
-        }   
-        reader.readAsDataURL(event.target.files[0])
-
-
-        //setSelectedImage4(URL.createObjectURL(event.target.files![0]))
-
+        if (event.target.files[0].size > 10485759) {
+            alert('Image size too big. Max size is 10 Mb')
+            
+        } else {
+            const reader = new FileReader();
+            reader.onload = () => {
+                setSelectedImage4(reader.result)
+            }
+            reader.readAsDataURL(event.target.files[0])
+        }
     }
     const [center, setCenter] = useState<google.maps.LatLng | google.maps.LatLngLiteral>({
         lat: 18.4338426,
@@ -153,25 +155,42 @@ const New = () => {
             console.log(data)
             await axios({ method: 'post', url: `${host}/api/accommodations/new`, headers: { Authorization: `Bearer ${storage.token}` },data })
             .then(response => {
-                // if(response==Object){
-                //     throw new Error('Accm number exists');
-                // }
+                console.log(response.data)
+                if(response.data=='Accommodation number already exists for landlord.'){
+                    throw new Error('Accm number exists');
+                }
                 return response.data
             })
             .then(result =>{
                 //alert(result)
-                uploadImages(result['accm_id'])
+                try{
+                    uploadImages(result['accm_id'])
+                }catch(err){
+                    console.log(err)
+                    alert('Errors uploading images. Edit accommodation in profile.')
+                    throw new Error('image')
+                    
+                }
+                
                 return result
             }).then(result =>{
-                updateAccAmenities(result['shared_amenities_id'],amenities)
+                try{
+                    updateAccAmenities(result['shared_amenities_id'],amenities)
+                }catch(err){
+                    console.log(err)
+                    alert('Errors applying amenities. Edit accommodation in profile.')
+                    throw new Error('amenities')
+                }
 
             }).then(()=>{
                 alert('Creation successfull')
                 router.replace('/profile')
             })
             .catch(err =>{
+                
+
                 console.log(err)
-                alert('Creation errors')
+                alert(err)
                 //router.replace()
             })
         }
@@ -196,6 +215,7 @@ const New = () => {
                 
             })
             .catch(err =>{
+                alert(err)
                 console.log(err)
             })
 
@@ -343,9 +363,9 @@ const New = () => {
                                 <div className="grid grid-flow-row grid-cols-3 gap-2">
                                     <input id='street' type="text" placeholder="Street" className="input input-bordered w-full  col-span-2" required />
                                     <span></span>
-                                    <input id='number' type="text" placeholder="Number" className="input input-bordered w-full  " />
+                                    <input id='number' type="text" placeholder="Number" className="input input-bordered w-full  " required/>
                                     <input id='city' type="text" placeholder="City" className="input input-bordered w-full " required />
-                                    <input id='state' type="text" placeholder="State" className="input input-bordered w-full  " />
+                                    <input id='state' type="text"  placeholder="State" className="input input-bordered w-full  " />
                                     <select id='country' className="select select-bordered" required>
                                         <option disabled selected>Country</option>
                                         <option>USA</option>
