@@ -3,45 +3,269 @@ import Link from "next/link";
 import { useEffect, useState, useMemo, useCallback } from 'react';
 
 import { useLoadScript, GoogleMap, MarkerF, Marker } from '@react-google-maps/api';
+import { useRouter } from 'next/router'
+import { Storage } from 'Storage';
+import useSWR, { mutate } from 'swr';
+import axios from "axios";
 
+import jwt from 'jwt-decode';
+import Cookies from 'universal-cookie';
+import { Token } from 'Token';
+import { Accm } from 'Accm';
+import getConfig from 'next/config';
+import { Unit } from "Unit";
+
+
+const { publicRuntimeConfig } = getConfig();
+const { url: host } = publicRuntimeConfig.site;
 
 const New = () => {
-    const [selectedImage1, setSelectedImage1] = useState<string>();
-    const [selectedImage2, setSelectedImage2] = useState<string>();
-    const [selectedImage3, setSelectedImage3] = useState<string>();
-    const [selectedImage4, setSelectedImage4] = useState<string>();
+    const router = useRouter();
+
+    const [storage, setStorage] = useState<Storage>({ token: null, isLandlord: false, id: null })
+    const [accmId, setAccmId] = useState<any>(null)
+    const [logged, setLogged] = useState(false)
+    const cookies = new Cookies()
+
+    const [selectedImage1, setSelectedImage1] = useState<string | any>(null);
+    const [selectedImage2, setSelectedImage2] = useState<string | any>(null);
+    const [selectedImage3, setSelectedImage3] = useState<string | any>(null);
+    const [selectedImage4, setSelectedImage4] = useState<string | any>(null);
+
+
+
+    useEffect(() => {
+        try {
+            setAccmId((router.query.accmid))
+            try {
+
+                const token = cookies.get('jwt_authorization')
+                const decoded = jwt<Token>(token)
+                setStorage({ 'token': token, 'id': decoded['id'], 'isLandlord': ((decoded['rls'] == "landlord") ? true : false) })
+                var endpoint = `${host}/api/tenants/refresh`
+                if (storage.isLandlord) {
+                    endpoint = `${host}/api/landlords/refresh`
+
+                }
+                axios({ method: 'get', url: endpoint, headers: { Authorization: `Bearer ${token}` } })
+                    .then(res => {
+                        return res.data
+                        //const obj = {'token':res.data,}
+                        //localStorage.setItem('data',res.data)
+                    })
+                    .then(result => {
+                        const newToken = result['access_token']
+                        const newDecoded = jwt<Token>(newToken)
+
+                        cookies.set("jwt_authorization", result['access_token'], {
+                            expires: new Date(newDecoded.exp * 1000),
+                        })
+                        setStorage({ 'token': newToken, 'id': newDecoded['id'], 'isLandlord': ((newDecoded['rls'] == "landlord") ? true : false) })
+                    })
+                    .catch(err => {
+                        //localStorage.removeItem('data');
+                        console.log('in')
+                        console.error(err);
+                    })
+            } catch (err) {
+                router.replace('/')
+                //console.log('out')
+                console.error(err)
+
+            }
+        } catch (err) {
+            alert('No accommodation id found in query')
+            console.error(err)
+            router.replace('/profile')
+        }
+    }, [])
 
 
     const handleSelect1 = async (event: any) => {
         event.preventDefault();
+        if (event.target.files[0].size > 10485759) {
+            alert('Image size too big. Max size is 10 Mb')
+            
+        } else {
+            const reader = new FileReader();
+            reader.onload = () => {
+                setSelectedImage1(reader.result)
+            }
+            reader.readAsDataURL(event.target.files[0])
+        }
 
-        setSelectedImage1(URL.createObjectURL(event.target.files![0]))
 
     }
     const handleSelect2 = async (event: any) => {
         event.preventDefault();
 
-        setSelectedImage2(URL.createObjectURL(event.target.files![0]))
-
+        if (event.target.files[0].size > 10485759) {
+            alert('Image size too big. Max size is 10 Mb')
+            
+        } else {
+            const reader = new FileReader();
+            reader.onload = () => {
+                setSelectedImage2(reader.result)
+            }
+            reader.readAsDataURL(event.target.files[0])
+        }
     }
     const handleSelect3 = async (event: any) => {
         event.preventDefault();
 
-        setSelectedImage3(URL.createObjectURL(event.target.files![0]))
-
+        if (event.target.files[0].size > 10485759) {
+            alert('Image size too big. Max size is 10 Mb')
+            
+        } else {
+            const reader = new FileReader();
+            reader.onload = () => {
+                setSelectedImage3(reader.result)
+            }
+            reader.readAsDataURL(event.target.files[0])
+        }
     }
     const handleSelect4 = async (event: any) => {
         event.preventDefault();
 
-        setSelectedImage4(URL.createObjectURL(event.target.files![0]))
+        if (event.target.files[0].size > 10485759) {
+            alert('Image size too big. Max size is 10 Mb')
+            
+        } else {
+            const reader = new FileReader();
+            reader.onload = () => {
+                setSelectedImage4(reader.result)
+            }
+            reader.readAsDataURL(event.target.files[0])
+        }
 
     }
+
+    const uploadImage = async (image: string, unitId: number, order: number) => {
+        let data = {
+            "unit_id": unitId,
+            "image": image,
+            "order": order
+        }
+
+        if (unitId) {
+            await axios({ method: 'post', url: `${host}/api/images/unit`, headers: { Authorization: `Bearer ${storage.token}` }, data })
+                .catch(err => {
+                    console.error(err)
+                })
+        }
+
+    }
+    const createUnit = async (data: any, amenities: any) => {
+
+        if (data) {
+            console.log(data)
+            await axios({ method: 'post', url: `${host}/api/units/add`, headers: { Authorization: `Bearer ${storage.token}` }, data })
+                .then(response => {
+                    // if(response==Object){
+                    //     throw new Error('Accm number exists');
+                    // }
+                    return response.data
+                })
+                .then(result => {
+                    //alert(result)
+                    uploadImages(result['unit_id'])
+                    return result
+                }).then(result => {
+                    updateUnitAmenities(result['priv_amenities_id'], amenities)
+
+                }).then(() => {
+                    alert('Creation successfull')
+                    router.replace({
+                        pathname: '/units',
+                        query: { accmid: accmId } // the data
+                    })
+                })
+                .catch(err => {
+                    console.log(err)
+                    alert('Creation errors')
+                    //router.replace()
+                })
+        }
+    }
+    const updateUnitAmenities = async (pa_id: any, amenities: any) => {
+        var data = {
+            "priv_amenities_id": pa_id,
+            "bedrooms": amenities.bedrooms,
+            "bathrooms": amenities.bathrooms,
+            "electricity": amenities.electricity,
+            "water": amenities.water,
+            "internet": amenities.internet,
+            "heater": amenities.heater,
+            "private_washer": amenities['private_washer'],
+            "private_dryer": amenities['private_dryer'],
+            "air_conditioner": amenities['air_conditioner'],
+            "parking": amenities.parking,
+            "balcony": amenities.balcony
+        }
+        if (amenities) {
+            await axios({ method: 'put', url: `${host}/api/units/amenities`, headers: { Authorization: `Bearer ${storage.token}` }, data })
+                .then(response => {
+                    return response.data
+                })
+                .then(result => {
+                    console.log(result)
+
+
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+
+        }
+    }
+    const uploadImages = async (unitId: any) => {
+        if (selectedImage1) {
+
+            uploadImage(selectedImage1, unitId, 1)
+
+
+        }
+        if (selectedImage2) {
+            uploadImage(selectedImage2, unitId, 2)
+        }
+        if (selectedImage3) {
+            uploadImage(selectedImage3, unitId, 3)
+
+        }
+        if (selectedImage4) {
+            uploadImage(selectedImage4, unitId, 4)
+
+        }
+    }
+
+
+
+
+
+
+
+
+
 
     const handleSubmit = async (event: any) => {
+        event.preventDefault();
+        let amenities = { 'bedrooms': event.target.bedrooms.value, 'bathrooms': event.target.bathrooms.value, 'electricity': event.target.electricity.checked, 'water': event.target.water.checked, 'internet': event.target.internet.checked, 'heater': event.target.heater.checked, 'private_washer': event.target.washer.checked, 'private_dryer': event.target.dryer.checked, 'air_conditioner': event.target.ac.checked, 'parking': event.target.parking.checked, 'balcony': event.target.balcony.checked }
+        let details = {
+            'unit_number': event.target.number.value, 'tenant_capacity': event.target.capacity.value, 'price': event.target.price.value, 'size': event.target.size.value, 'date_available': event.target.date.value, 'contract_duration': event.target.contract.value, 'accm_id': accmId
+        }
+        try {
 
+
+            createUnit(details, amenities)
+
+            // uploadImage(selectedImage1!,6,1)
+
+
+        } catch (err) {
+            console.error(err)
+        }
 
     }
-
 
 
 
@@ -60,8 +284,8 @@ const New = () => {
             <div className="text-sm breadcrumbs mt-24 mx-10">
                 <ul>
                     <li><Link href={'/profile'}>Profile</Link></li>
-                    <li>Accommodation</li>
-                    <li><a>Units</a></li>
+                    <li>Accommodation [{accmId}]</li>
+                    <li onClick={()=>router.back()} className=" cursor-pointer hover:underline">Units</li>
                     <li>Create unit</li>
                 </ul>
             </div>
@@ -77,69 +301,126 @@ const New = () => {
                             <div className="flex flex-col gap-2 m-4  ">
                                 <label className="font-medium">Accommodation:</label>
                                 <div>
-                                    <label>[ID]Title</label>
+                                    <label>Accommodation: [{accmId}]</label>
 
                                 </div>
                                 <label className="font-medium">Details:</label>
                                 <div className="grid grid-flow-row grid-cols-3 gap-2">
-                                    <select id='shared' className="select select-bordered" required>
-                                        <option disabled selected>Shared Unit?</option>
-                                        <option>Yes</option>
-                                        <option>No</option>
+                                    <input id='number' type="text" placeholder="Unit #" className="input input-bordered w-full  " required />
+
+                                    <select id='capacity' className="select select-bordered" required>
+                                        <option disabled selected>Unit Capacity</option>
+                                        <option>1</option>
+                                        <option>2</option>
+                                        <option>3</option>
+                                        <option>4</option>
+                                        <option>5</option>
+                                        <option>6</option>
                                     </select>
 
-                                    <input id='price' type="text" placeholder="Price/month" className="input input-bordered w-full  " />
-                                    <input id='date' type="date" placeholder="Date Available" className="input input-bordered w-full " required />
-                                    <select id='shared' className="select select-bordered" required>
-                                        <option disabled selected>Contract Duration</option>
-                                        <option>6 months</option>
-                                        <option>10 months</option>
-                                        <option>1 year</option>
-                                        <option>2 years</option>
+                                    <input id='price' min="10" max="5000" type="number" placeholder="Price/month" className="input input-bordered w-full  " required />
+                                    <input id='size' min="1" max="10000" type="number" placeholder="Size in sq. ft." className="input input-bordered w-full  " required />
+
+                                    <select id='bedrooms' className="select select-bordered" required>
+                                        <option disabled selected>Bedrooms</option>
+                                        <option>1</option>
+                                        <option>2</option>
+                                        <option>3</option>
+                                        <option>5</option>
                                     </select>
+                                    <select id='bathrooms' className="select select-bordered" required>
+                                        <option disabled selected>Bathrooms</option>
+                                        <option value={0}>0</option>
+                                        <option value={0.5}>1/2</option>
+                                        <option value={1}>1</option>
+                                        <option value={1.5}>1 1/2</option>
+                                        <option value={2}>2</option>
+                                        <option value={3}>3</option>
+                                        <option value={5}>5</option>
+                                    </select>
+                                    <select id='contract' className="select select-bordered" required>
+                                        <option disabled selected>Contract Duration</option>
+                                        <option value={6}>6 months</option>
+                                        <option value={10}>10 months</option>
+                                        <option value={12}>1 year</option>
+                                        <option value={24}>2 years</option>
+                                    </select>
+
+                                </div>
+                                <label className="font-medium mt-2">Date Available:</label>
+                                <div className="grid grid-flow-row grid-cols-3 gap-2">
+
+
+                                    <input id='date' type="date" placeholder="Date Available" className="input input-bordered w-full " required />
+
                                 </div>
 
-                                <label className="mt-2">Shared Amenities:</label>
+
+
+                                <label className="mt-2">Included in Price:</label>
                                 <div className="">
                                     <div className="flex gap-2">
 
                                     </div>
                                     <div className='mb-[0.125rem] mr-4 inline-block min-h-[1.5rem]  hover:cursor-pointer'>
-                                        <input id='bathroom' type='checkbox' name='checkbox' className='hover:cursor-pointer  text-accent bg-gray-200 border-gray-200 focus:accent' />
+                                        <input id='electricity' type='checkbox' name='checkbox' className='hover:cursor-pointer  text-accent bg-gray-200 border-gray-200 focus:accent' />
                                         <label className='mt-px inline-block pl-2 hover:cursor-pointer' htmlFor=''>
-                                            Bathroom
+                                            Electricity
+                                        </label>
+                                    </div>
+                                    <div className='mb-[0.125rem] mr-4 inline-block min-h-[1.5rem]  hover:cursor-pointer'>
+                                        <input id='water' type='checkbox' name='checkbox' className='hover:cursor-pointer  text-accent bg-gray-200 border-gray-200 focus:accent' />
+                                        <label className='mt-px inline-block pl-2 hover:cursor-pointer' htmlFor=''>
+                                            Water
+                                        </label>
+                                    </div>
+                                    <div className='mb-[0.125rem] mr-4 inline-block min-h-[1.5rem]  hover:cursor-pointer'>
+                                        <input id='internet' type='checkbox' name='checkbox' className='hover:cursor-pointer  text-accent bg-gray-200 border-gray-200 focus:accent' />
+                                        <label className='mt-px inline-block pl-2 hover:cursor-pointer' htmlFor=''>
+                                            Internet
+                                        </label>
+                                    </div>
+                                    <div className='mb-[0.125rem] mr-4 inline-block min-h-[1.5rem]  hover:cursor-pointer'>
+                                        <input id='heater' type='checkbox' name='checkbox' className='hover:cursor-pointer  text-accent bg-gray-200 border-gray-200 focus:accent' />
+                                        <label className='mt-px inline-block pl-2 hover:cursor-pointer' htmlFor=''>
+                                            Heater
                                         </label>
                                     </div>
                                     <div className='mb-[0.125rem] mr-4 inline-block min-h-[1.5rem]  hover:cursor-pointer'>
                                         <input id='washer' type='checkbox' name='checkbox' className='hover:cursor-pointer  text-accent bg-gray-200 border-gray-200 focus:accent' />
                                         <label className='mt-px inline-block pl-2 hover:cursor-pointer' htmlFor=''>
-                                            Washer
+                                            Private Washer
                                         </label>
                                     </div>
                                     <div className='mb-[0.125rem] mr-4 inline-block min-h-[1.5rem]  hover:cursor-pointer'>
                                         <input id='dryer' type='checkbox' name='checkbox' className='hover:cursor-pointer  text-accent bg-gray-200 border-gray-200 focus:accent' />
                                         <label className='mt-px inline-block pl-2 hover:cursor-pointer' htmlFor=''>
-                                            Dryer
+                                            Private Dryer
                                         </label>
                                     </div>
                                     <div className='mb-[0.125rem] mr-4 inline-block min-h-[1.5rem]  hover:cursor-pointer'>
-                                        <input id='kitchen' type='checkbox' name='checkbox' className='hover:cursor-pointer  text-accent bg-gray-200 border-gray-200 focus:accent' />
+                                        <input id='ac' type='checkbox' name='checkbox' className='hover:cursor-pointer  text-accent bg-gray-200 border-gray-200 focus:accent' />
                                         <label className='mt-px inline-block pl-2 hover:cursor-pointer' htmlFor=''>
-                                            Kitchen
+                                            A/C
                                         </label>
                                     </div>
                                     <div className='mb-[0.125rem] mr-4 inline-block min-h-[1.5rem]  hover:cursor-pointer'>
-                                        <input id='pets' type='checkbox' name='checkbox' className='hover:cursor-pointer  text-accent bg-gray-200 border-gray-200 focus:accent' />
+                                        <input id='parking' type='checkbox' name='checkbox' className='hover:cursor-pointer  text-accent bg-gray-200 border-gray-200 focus:accent' />
                                         <label className='mt-px inline-block pl-2 hover:cursor-pointer' htmlFor=''>
-                                            Pets Allowed
+                                            Secure Parking Spot
                                         </label>
                                     </div>
-
+                                    <div className='mb-[0.125rem] mr-4 inline-block min-h-[1.5rem]  hover:cursor-pointer'>
+                                        <input id='balcony' type='checkbox' name='checkbox' className='hover:cursor-pointer  text-accent bg-gray-200 border-gray-200 focus:accent' />
+                                        <label className='mt-px inline-block pl-2 hover:cursor-pointer' htmlFor=''>
+                                            Balcony
+                                        </label>
+                                    </div>
 
                                 </div>
                             </div>
-                            <div className="divider divider-horizontal"></div>
-                            <div className="flex flex-col mr-4">
+                            <div className="divider lg:divider-horizontal "></div>
+                            <div className="flex flex-col relative  m-4">
                                 <label className="font-medium text-lg">Add Images</label>
                                 <label>Upload images of the <b>unit</b> itself. Better to include <b>private</b> amenities. </label>
                                 <label>Ex. bedrooms, private bathrooms, parking space, etc...</label>
@@ -163,9 +444,9 @@ const New = () => {
                                             <img className='aspect-square w-52' src={selectedImage4 ? selectedImage4 : '/images/placeholder.png'} />
                                         </label>                                            </div>
                                 </div>
-                                <div className="">
-                                    <label>You are required to add at least one image and a maximum of four images.</label>
-                                    <button className="btn ring-1 ring-accent text-accent w-40 absolute bottom-4 right-4 hover:bg-accent hover:text-white hover:ring-0 ">Create</button>
+                                <div className="flex items-center mt-auto">
+                                    <label className="m-4">You are required to add at least one image and a maximum of four images.</label>
+                                    <button className="btn  text-white w-40 shadow-md bg-accent  hover:bg-blend-multiply hover:bg-accent ">Create</button>
                                 </div>
 
                             </div>

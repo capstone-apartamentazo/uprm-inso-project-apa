@@ -1,19 +1,21 @@
 import React from 'react';
 
 type Props = {
-    tenant:string|null,
-    num: number,
-    status: boolean,
-    a_id: number
+    tenant?:string|null,
+    num?: string,
+    status?: boolean,
+    a_id?: number,
+    
 };
 
 const Unit: React.FC<Props> = ({tenant, num, status, a_id }) => {
+    
     return (
-        <div className='flex justify-center w-96 transition ease-in-out delay-50 hover:-translate-y-1 hover:scale-10 duration-200'>
-            <a data-te-ripple-init data-te-ripple-color='light'>
-                <div className='block max-w-full rounded-lg bg-white shadow-lg ring-1 ring-stone-200 dark:bg-neutral-700 '>
+        
+            
+                <div className='block max-w-full rounded-lg bg-white shadow-lg ring-1 ring-stone-200 dark:bg-neutral-700 mx-2'>
                     <div className='p-4 flex menu-vertical align-middle'>
-                        <h1 className='text-left mb-2 text-xl font-semibold  dark:text-neutral-50'>Unit 1</h1>
+                        <h1 className='text-left mb-2 text-xl font-semibold  dark:text-neutral-50'>Unit {`${num}`}</h1>
                         <h1>Status: {status?' Available':' Occupied'}</h1>
                         <h1 className={tenant?'':'hidden'}>Tenant: {tenant}</h1>
                         
@@ -36,8 +38,8 @@ const Unit: React.FC<Props> = ({tenant, num, status, a_id }) => {
 
                     </div>
                 </div>
-            </a>
-        </div>
+            
+        
     );
 };
 export default Unit;
