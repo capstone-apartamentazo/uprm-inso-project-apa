@@ -3,6 +3,13 @@ import Link from 'next/link';
 import {  useEffect, useState } from 'react'
 import axios from 'axios';
 import getConfig from 'next/config';
+import jwt from 'jwt-decode';
+import Cookies from 'universal-cookie';
+import { Token } from 'Token';
+import { Storage } from 'Storage';
+import useSWR, { mutate } from 'swr';
+
+
 
 const { publicRuntimeConfig } = getConfig();
 const { url: host } = publicRuntimeConfig.site;
@@ -14,10 +21,20 @@ type Props = {
 
 const ProfileAccommodation: React.FC<Props> = ({ title, address, id }) => {
     const [accmImg, setAccmImg] = useState('')
+    const [storage, setStorage] = useState<Storage>({ token: null, isLandlord: false, id: null })
 
 
 
     useEffect(()=>{
+        const cookies = new Cookies()
+
+        try{
+            const token = cookies.get('jwt_authorization')
+			const decoded = jwt<Token>(token)
+			setStorage({'token':token,'id':decoded['id'],'isLandlord':((decoded['rls']=="landlord")?true:false)})
+        }catch(err){
+
+        }
         axios.get(`${host}/api/images/accommodation/${id}`)
 					.then(res =>{
 						return res.data
@@ -33,9 +50,18 @@ const ProfileAccommodation: React.FC<Props> = ({ title, address, id }) => {
 
     const deleteAccommodation = async (event: any)=>{
         event.preventDefault()
-        axios.delete(`${host}/api/accommodations/${id}`)
-        .then(res=>alert(res))
-        .catch(err=>alert(err))
+
+const config = {
+    headers: { Authorization: `Bearer ${storage.token}` }
+  };
+        axios.delete(`${host}/api/accommodations/${id}`,config)
+        .then(res=>{
+            alert(res.data)
+            mutate(`${host}/api/accommodations/landlord/${storage.id}`)
+        })
+        .catch(err=>{
+            console.error(err)
+        })
 
     }
 
@@ -63,6 +89,7 @@ const ProfileAccommodation: React.FC<Props> = ({ title, address, id }) => {
                                 pathname: '/units',
                                 query: {accmid:id} // the data
                             }} className='btn ring-1 ring-accent text-accent hover:bg-white hover:shadow-md hover:ring-2 grow'>Units</Link>
+                            <div className="tooltip tooltip-primary " data-tip="Edit">
 
                             <Link href={{
                                 pathname: '/accommodations/edit',
@@ -73,12 +100,16 @@ const ProfileAccommodation: React.FC<Props> = ({ title, address, id }) => {
                                 </svg>
 
                             </Link>
+                            </div>
+                            <div className="tooltip tooltip-error " data-tip="Double click to delete">
+
                             <button onDoubleClick={deleteAccommodation} className='btn ring-1 ring-red-500 hover:bg-white hover:shadow-md  hover:ring-2 grow '>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 stroke-red-500">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                                 </svg>
 
                             </button>
+                            </div>
                         </div>
 
                     </div>
