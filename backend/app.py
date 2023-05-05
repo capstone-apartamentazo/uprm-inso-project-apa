@@ -28,7 +28,6 @@ def getLandlordById(u_id):
       return LandlordHandler().getById(u_id)
     else:
       return jsonify(Error="Method not allowed."), 405
-    
 
 @app.route('/api/landlords/login', methods=['POST'])
 def loginLandlord():
@@ -228,20 +227,17 @@ REVIEWS (ACCOMMODATIONS AND TENANTS)
 def getAllReviews():
   return ReviewHandler().getAll()
 
-@app.route('/api/reviews', methods=['POST'])
-def getReviewById():
-    return ReviewHandler().getById(request.json)
+@app.route('/api/reviews/<int:review_id>')
+def getReviewById(review_id):
+    return ReviewHandler().getById(review_id)
 
-@app.route('/api/accommodations/reviews/<int:accm_id>', methods=['GET'])
+@app.route('/api/accommodations/reviews/<int:accm_id>')
 def getReviewsByAccommodationId(accm_id):
-  if request.method == 'GET':
     return ReviewHandler().getByAccommodationId(accm_id)
-  else: 
-    return jsonify(Error="Method not allowed."), 405
 
-@app.route('/api/tenants/reviews', methods=['POST'])
-def getReviewsByTenantId():
-    return ReviewHandler().getByTenantId(request.json)
+@app.route('/api/tenants/reviews/<int:tenant_id>')
+def getReviewsByTenantId(tenant_id):
+    return ReviewHandler().getByTenantId(tenant_id)
 
 # TODO add restrictions when creating reviews
 @app.route('/api/reviews/add', methods=['POST'])
@@ -332,40 +328,34 @@ LEASES (UNITS AND TENANTS)
 def getAllLeases():
   return LeaseHandler().getAll()
 
-# TODO
-@app.route('/api/leases', methods=['POST'])
-def getLeaseById():
-    return LeaseHandler().getById(request.json)
+@app.route('/api/leases/<int:lease_id>')
+def getLeaseById(lease_id):
+    return LeaseHandler().getById(lease_id)
 
-# TODO
-@app.route('/api/units/leases', methods=['POST'])
-def getLeasesByUnitId():
-    return LeaseHandler().getByUnitId(request.json)
+@app.route('/api/units/leases/<int:unit_id>')
+def getLeasesByUnitId(unit_id):
+    return LeaseHandler().getByUnitId(unit_id)
 
-# TODO
-@app.route('/api/tenants/leases', methods=['POST'])
-def getLeaseByTenantId():
-    return LeaseHandler().getByTenantId(request.json)
+@app.route('/api/tenants/leases/<int:tenant_id>')
+def getLeaseByTenantId(tenant_id):
+    return LeaseHandler().getByTenantId(tenant_id)
 
-# TODO add restrictions when creating leases
 @app.route('/api/leases/add', methods=['POST'])
 def addLease():
     return LeaseHandler().addLease(request.json)
 
-# TODO add restrictions when updating leases
-@app.route('/api/leases', methods=['PUT'])
-def updateLease():
-    return LeaseHandler().updateLease(request.json)
+@app.route('/api/leases/current/tenant')
+def updateCurrentTenants():
+    return LeaseHandler().updateCurrentTenants()
 
-# TODO add restrictions when updating current tenant
-@app.route('/api/leases/current/tenant', methods=['PUT'])
-def updateCurrentTenant():
-    return LeaseHandler().updateCurrentTenant(request.json)
+@app.route('/api/leases/extend/<int:lease_id>', methods=['POST'])
+def extendLease(lease_id):
+    return LeaseHandler().extendLease(request.json, lease_id)
 
 # TODO
-@app.route('/api/leases', methods=['DELETE'])
-def removeLease():
-  return None
+@app.route('/api/leases/<int:lease_id>', methods=['DELETE'])
+def removeLease(lease_id):
+  return LeaseHandler().deleteLease(lease_id)
 
 """
 SEARCH AND FILTER (ACCOMMODATIONS & UNITS)
