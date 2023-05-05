@@ -161,13 +161,9 @@ const New = () => {
             console.log(data)
             await axios({ method: 'post', url: `${host}/api/units/add`, headers: { Authorization: `Bearer ${storage.token}` }, data })
                 .then(response => {
-                    // if(response==Object){
-                    //     throw new Error('Accm number exists');
-                    // }
                     return response.data
                 })
                 .then(result => {
-                    //alert(result)
                     uploadImages(result['unit_id'])
                     return result
                 }).then(result => {
@@ -251,7 +247,7 @@ const New = () => {
         event.preventDefault();
         let amenities = { 'bedrooms': event.target.bedrooms.value, 'bathrooms': event.target.bathrooms.value, 'electricity': event.target.electricity.checked, 'water': event.target.water.checked, 'internet': event.target.internet.checked, 'heater': event.target.heater.checked, 'private_washer': event.target.washer.checked, 'private_dryer': event.target.dryer.checked, 'air_conditioner': event.target.ac.checked, 'parking': event.target.parking.checked, 'balcony': event.target.balcony.checked }
         let details = {
-            'unit_number': event.target.number.value, 'tenant_capacity': event.target.capacity.value, 'price': event.target.price.value, 'size': event.target.size.value, 'date_available': event.target.date.value, 'contract_duration': event.target.contract.value, 'accm_id': accmId
+            'unit_number': event.target.number.value, 'tenant_capacity': parseInt(event.target.capacity.value,10), 'price': parseInt(event.target.price.value,10), 'size': parseInt(event.target.size.value,10), 'date_available': event.target.date.value, 'contract_duration': parseInt(event.target.contract.value,10), 'accm_id': accmId
         }
         try {
 
@@ -310,12 +306,12 @@ const New = () => {
 
                                     <select id='capacity' className="select select-bordered" required>
                                         <option disabled selected>Unit Capacity</option>
-                                        <option>1</option>
-                                        <option>2</option>
-                                        <option>3</option>
-                                        <option>4</option>
-                                        <option>5</option>
-                                        <option>6</option>
+                                        <option value={1}>1</option>
+                                        <option value={2}>2</option>
+                                        <option value={3}>3</option>
+                                        <option value={4}>4</option>
+                                        <option value={5}>5</option>
+                                        <option value={6}>6</option>
                                     </select>
 
                                     <input id='price' min="10" max="5000" type="number" placeholder="Price/month" className="input input-bordered w-full  " required />
@@ -323,10 +319,10 @@ const New = () => {
 
                                     <select id='bedrooms' className="select select-bordered" required>
                                         <option disabled selected>Bedrooms</option>
-                                        <option>1</option>
-                                        <option>2</option>
-                                        <option>3</option>
-                                        <option>5</option>
+                                        <option value={1}>1 bedroom</option>
+                                        <option value={2}>2 bedrooms</option>
+                                        <option value={3}>3 bedrooms</option>
+                                        <option value={5}>5 bedrooms</option>
                                     </select>
                                     <select id='bathrooms' className="select select-bordered" required>
                                         <option disabled selected>Bathrooms</option>

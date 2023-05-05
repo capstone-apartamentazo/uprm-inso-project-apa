@@ -11,6 +11,13 @@ module.exports = {
 			height: {
 				128: '32rem',
 			},
+			maxHeight: {
+				'128': '32rem',
+				'semi': '80vh',
+			  },
+			maxWidth:{
+				'semi':'100vh',
+			}
 		},
 	},
 	daisyui: {
