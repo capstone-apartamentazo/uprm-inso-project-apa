@@ -95,7 +95,10 @@ class PrivateAmenitiesHandler:
   @praetorian.auth_required
   def deletePrivAmenitiesCascade(self, unit_id):
     try:
-      self.amenities.deletePrivAmenitiesCascade(unit_id)
+      deletedPrivAmenities = self.amenities.deletePrivAmenitiesCascade(unit_id)
+      if not deletedPrivAmenities:
+        return False
+      return True
     except (Exception, pgerror) as e:
       db.rollback()
       logger.exception(e)
