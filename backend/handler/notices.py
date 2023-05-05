@@ -52,6 +52,10 @@ class NoticeHandler:
       valid, reason = self.checkAccm(accm_id)
       if not valid:
         return jsonify(reason)
+      if len(json['notice_title']) > 100:
+        return jsonify('Title can\'t be larger than 100 characters.')
+      if len(json['notice_content']) > 255:
+        return jsonify('Your message can\'t be larger than 255 characters.')
       daoNotice = self.notices.addNotice(json['notice_title'], json['notice_content'], accm_id)
       landlord = self.landlord.getById(praetorian.current_user_id())
       currentTenants = self.notices.getCurrentTenants(accm_id)
@@ -81,6 +85,10 @@ class NoticeHandler:
       valid, reason = self.checkNotice(notice_id)
       if not valid:
         return jsonify(reason)
+      if len(json['notice_title']) > 100:
+        return jsonify('Title can\'t be larger than 100 characters.')
+      if len(json['notice_content']) > 255:
+        return jsonify('Your message can\'t be larger than 255 characters.')
       updatedNotice = self.notices.updateNotice(notice_id, json['notice_title'], json['notice_content'])
       if updatedNotice:
         db.commit()

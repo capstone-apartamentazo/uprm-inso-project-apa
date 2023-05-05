@@ -183,12 +183,12 @@ def getNoticeById():
 def getNoticesByAccommodationId():
   return NoticeHandler().getByAccommodationId(request.json)
 
-# TODO limit title character count
 @app.route('/api/notices/add', methods=['POST'])
 def addNotice():
   return NoticeHandler().addNotice(request.json)
 
-# TODO limit title character count
+# -----------------------------------------------------------------------------------------------------------------------------------------------
+# Hace falta update notice si ya le estamos enviando emails so si quiere hacerle update seria enviar otro email?
 @app.route('/api/notices', methods=['PUT'])
 def updateNotice():
   return NoticeHandler().updateNotice(request.json)
