@@ -188,7 +188,7 @@ def addNotice():
   return NoticeHandler().addNotice(request.json)
 
 # -----------------------------------------------------------------------------------------------------------------------------------------------
-# Hace falta update notice si ya le estamos enviando emails so si quiere hacerle update seria enviar otro email?
+# Hace falta un update notice si ya le estamos enviando emails so si quiere hacerle update seria enviar otro email?
 @app.route('/api/notices', methods=['PUT'])
 def updateNotice():
   return NoticeHandler().updateNotice(request.json)
@@ -218,7 +218,6 @@ def getReviewsByAccommodationId(accm_id):
 def getReviewsByTenantId(tenant_id):
   return ReviewHandler().getByTenantId(tenant_id)
 
-# TODO add restrictions when creating reviews
 @app.route('/api/reviews/add', methods=['POST'])
 def addReview():
   return ReviewHandler().addReview(request.json)
