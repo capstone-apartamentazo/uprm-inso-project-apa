@@ -19,7 +19,7 @@ const Listings = () => {
 
 	useEffect(() => {
 		if (search) {
-			const endpoint = `${host}search?input=${search}&offset=0`;
+			const endpoint = `${host}/api/search?input=${search}&offset=0`;
 
 			const options = {
 				method: 'GET',
