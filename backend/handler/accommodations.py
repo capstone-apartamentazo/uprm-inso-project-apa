@@ -279,7 +279,7 @@ class AccommodationHandler:
     try:
       deletedAccommodation = self.accommodations.deleteAccommodationCascade(landlord_id)
       for accm in deletedAccommodation:
-        deletedAmenities = self.amenities.deleteSharedAmenities(accm['accm_id'])
+        deletedAmenities = self.amenities.deleteSharedAmenitiesCascade(accm['accm_id'])
         deletedReview = self.review.deleteReviewCascade(accm['accm_id'])
         deletedUnit = self.units.deleteUnitCascade(accm['accm_id'])
         deletedNotice = self.notice.deleteNoticeCascade(accm['accm_id'])

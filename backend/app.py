@@ -24,11 +24,7 @@ def getAllLandlords():
 
 @app.route('/api/landlords/<int:u_id>', methods=['GET'])
 def getLandlordById(u_id):
-    if request.method == 'GET':
-      return LandlordHandler().getById(u_id)
-    else:
-      return jsonify(Error="Method not allowed."), 405
-    
+  return LandlordHandler().getById(u_id)
 
 @app.route('/api/landlords/login', methods=['POST'])
 def loginLandlord():
@@ -64,10 +60,7 @@ def getAllTenants():
 
 @app.route('/api/tenants/<int:u_id>', methods=['GET'])
 def getTenantById(u_id):
-    if request.method == 'GET':
-      return TenantHandler().getById(u_id)
-    else:
-      return jsonify(Error="Method not allowed."), 405
+  return TenantHandler().getById(u_id)
 
 @app.route('/api/tenants/login', methods=['POST'])
 def loginTenant():
