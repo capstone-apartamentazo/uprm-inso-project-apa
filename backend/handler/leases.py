@@ -60,7 +60,7 @@ class LeaseHandler:
       end = json['end_date']
       unit = json['unit_id']
       tenant = json['tenant_id']
-      if not self.validLandlord(daoLease['unit_id']):
+      if not self.validLandlord(unit):
         return jsonify('Unit not own by Landlord')
       if self.leases.invalidTenant(tenant, start):
         return jsonify('Tenant already rents a Unit')

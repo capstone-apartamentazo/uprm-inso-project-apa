@@ -150,7 +150,7 @@ class UnitHandler:
       for unit in deletedUnit:
         deletedPrivAmenities = self.pAmenities.deletePrivAmenitiesCascade(unit['unit_id'])
         deletedLease = self.lease.deleteLeaseCascade(unit['unit_id'])
-        if not deletedPrivAmenities and deletedLease:
+        if not deletedPrivAmenities and not deletedLease:
           return False
       return True
     except (Exception, pgerror) as e:
