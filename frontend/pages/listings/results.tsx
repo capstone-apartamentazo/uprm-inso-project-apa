@@ -3,6 +3,10 @@ import ListingResult from '@/components/ListingResult';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import SearchBar from '../../components/SearchBar';
+import getConfig from 'next/config';
+
+const { publicRuntimeConfig } = getConfig();
+const { url: host } = publicRuntimeConfig.site;
 
 const Listings = () => {
 	let allListings: any = [];
@@ -15,7 +19,7 @@ const Listings = () => {
 
 	useEffect(() => {
 		if (search) {
-			const endpoint = `http://127.0.0.1:5000/api/search?input=${search}&offset=0`;
+			const endpoint = `${host}search?input=${search}&offset=0`;
 
 			const options = {
 				method: 'GET',
