@@ -16,6 +16,7 @@ const Unit = () => {
 	const { data: accmData, error: accmError } = useListings(unitData ? 'accommodations/' + unitData.accm_id : null);
 	const { data: accmAmenities, error: accmAmenitiesError } = useListings(unitData ? 'accommodations/amenities/' + unitData.accm_id : null);
 	const { data: accmReviews, error: accmReviewsError } = useListings(unitData ? 'accommodations/reviews/' + unitData.accm_id : null);
+	const { data: accmPics, error: accmPicsError } = useListings(unitData ? 'images/accommodation/' + unitData.accm_id : null);
 
 	// TODO start loading landlord data
 	const { data: landlord, error: landlordError } = useListings(accmData ? 'landlords/' + accmData.landlord_id : null);
@@ -23,8 +24,8 @@ const Unit = () => {
 
 	// TODO: Add loading cards, default error cards
 	// TODO: actual loading screen
-	if (unitError || accmError || unitAmenitiesError || accmAmenitiesError || landlordError || landlordPicError || unitPicsError) return <div>Failed to load</div>;
-	if ((!unitData && !accmData) || unitData === undefined || accmData === undefined || unitAmenities === undefined || accmAmenities === undefined || landlord === undefined || landlordPic === undefined || unitPics === undefined) return <div>Loading...</div>;
+	if (accmPicsError || unitError || accmError || unitAmenitiesError || accmAmenitiesError || landlordError || landlordPicError || unitPicsError) return <div>Failed to load</div>;
+	if (!accmPics || accmPics === undefined || (!unitData && !accmData) || unitData === undefined || accmData === undefined || unitAmenities === undefined || accmAmenities === undefined || landlord === undefined || landlordPic === undefined || unitPics === undefined) return <div>Loading...</div>;
 
 	let tempAmenities = {
 		'Air Conditioner': unitAmenities['air_conditioner'],
@@ -99,19 +100,21 @@ const Unit = () => {
 	let allUnitPics: any[] = [];
 
 	try {
-		unitPics.resources.forEach((pic: { secure_url: any }) => {
-			if (allUnitPics.length === 0)
-				allUnitPics.push(
-					<div className='row-span-2 h-96 w-auto'>
-						<img src={pic.secure_url} className='rounded-2xl object-cover h-96 w-full' />
-					</div>
-				);
-			else
-				allUnitPics.push(
-					<div className='col-start-2 h-auto w-96'>
-						<img src={pic.secure_url} className='rounded-2xl object-cover h-full w-full' />
-					</div>
-				);
+		console.log(unitPics);
+		unitPics.forEach((pic: { secure_url: any }) => {
+			allUnitPics.push(
+				<div className='carousel-item w-96'>
+					<img src={pic.secure_url} className='rounded-box object-cover' />
+				</div>
+			);
+		});
+
+		accmPics.forEach((pic: { secure_url: any }) => {
+			allUnitPics.push(
+				<div className='carousel-item w-96'>
+					<img src={pic.secure_url} className='rounded-box object-cover' />
+				</div>
+			);
 		});
 	} catch (ex) {
 		allUnitPics.push(
@@ -147,22 +150,22 @@ const Unit = () => {
 		lat: accmData.latitude,
 		lng: accmData.longitude,
 	};
-
 	return (
 		<Layout>
 			<section className='pt-32 pl-20 pr-20 bg-gray-50'>
 				<div className='grid grid-flow-row gap-4'>
 					<div className='row-span-2 row-start-1 col-start-1 text-3xl align-middle'>
-						<h1 className='font-semibold'>
+						<h1 className='font-semibold w-full'>
 							Unit {unitData.unit_number} <span className='text-accent'>|</span> {accmData.accm_title}
-							{unit}
 						</h1>
 						<h3 className='text-lg'>
 							{accmData.accm_street}, {accmData.accm_city}, {accmData.accm_country}, {accmData.accm_zipcode}
 						</h3>
 					</div>
-					<div className='row-start-3 col-span-4 h-[26rem] bg-gray-100 rounded-2xl shadow-inner p-4'>
-						<div className='grid grid-rows-2 grid-flow-col gap-4 h-96'>{allUnitPics}</div>
+					<div className='row-start-3 col-span-4 h-[28rem] bg-gray-100 rounded-2xl shadow-inner p-4'>
+						<div className='grid grid-rows-2 grid-flow-col gap-4 h-[28rem] overflow-auto'>
+							<div className='carousel carousel-center p-4 space-x-4 bg-neutral rounded-box h-[26rem]'>{allUnitPics}</div>
+						</div>
 					</div>
 					<div className='row-start-4 col-span-2 space-y-1'>
 						<p className='font-semibold text-xl'>
@@ -208,7 +211,6 @@ const Unit = () => {
 						<LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}>
 							<GoogleMap options={mapOptions} mapContainerStyle={containerStyle} center={center} zoom={17}>
 								<Marker position={center} />
-								<></>
 							</GoogleMap>
 						</LoadScript>
 					</div>
