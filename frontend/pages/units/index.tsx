@@ -117,7 +117,7 @@ const Index = () => {
                     <Link href={{
                         pathname: '/units/new',
                         query: {accmid:accmId} // the data
-                    }} className='absolute right-4 top-4 bg-accent  font-medium text-white p-2 rounded-md shadow-md hover:mix-blend-multiply' >Add New Unit</Link>
+                    }} className='absolute right-4 top-4 bg-accent  font-medium text-white p-2 rounded-md shadow-md hover:bg-accent-focus' >Add New Unit</Link>
                     <h1 className="font-semibold text-3xl mx-6 py-4">Units</h1>
                     <div className="">
                         <div className="flex mx-4">
