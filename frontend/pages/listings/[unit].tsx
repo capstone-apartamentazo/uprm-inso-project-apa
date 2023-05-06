@@ -3,32 +3,45 @@ import { useListings } from 'useListings';
 import Review from '@/components/Review';
 import ReviewList from '@/components/ReviewList';
 import { useRouter } from 'next/router';
+import { GoogleMap, MarkerF, useLoadScript } from '@react-google-maps/api';
+import { useMemo, useState } from 'react';
 
 const Unit = () => {
 	const router = useRouter();
 	const { unit } = router.query;
+	const [latitude, setLatitude] = useState(18.210928163335723);
+	const [longitude, setLongitude] = useState(-67.14091054778946);
 
-	// TODO: actual loading screen
-	if (!unit) return <div>LOADING UNIT</div>;
-	const { data: unitData, error: unitError } = useListings('units/' + unit);
-	const { data: unitAmenities, error: unitAmenitiesError } = useListings('units/amenities/' + unit);
-	const { data: unitPics, error: unitPicsError } = useListings('images/unit/' + unit);
-	// return <div></div>;
+	const { data: unitData, error: unitError } = useListings(unit ? 'units/' + unit : null);
+	const { data: unitAmenities, error: unitAmenitiesError } = useListings(unit ? 'units/amenities/' + unit : null);
+	const { data: unitPics, error: unitPicsError } = useListings(unit ? 'images/unit/' + unit : null);
 
-	// if (!unitData) return <div>Loading Unit Data</div>;
 	// TODO start loading accommodation stuff
 	const { data: accmData, error: accmError } = useListings(unitData ? 'accommodations/' + unitData.accm_id : null);
 	const { data: accmAmenities, error: accmAmenitiesError } = useListings(unitData ? 'accommodations/amenities/' + unitData.accm_id : null);
 	const { data: accmReviews, error: accmReviewsError } = useListings(unitData ? 'accommodations/reviews/' + unitData.accm_id : null);
 
 	// TODO start loading landlord data
-	// if (!accmData) return <div>Loading Accm Data</div>;
 	const { data: landlord, error: landlordError } = useListings(accmData ? 'landlords/' + accmData.landlord_id : null);
 	const { data: landlordPic, error: landlordPicError } = useListings(accmData ? 'images/landlord/' + accmData.landlord_id : null);
 
+	const mapCenter = useMemo(() => ({ lat: latitude, lng: longitude }), [latitude, longitude]);
+	const mapOptions = useMemo<google.maps.MapOptions>(
+		() => ({
+			disableDefaultUI: false,
+			clickableIcons: true,
+			scrollwheel: false,
+		}),
+		[]
+	);
+
+	const { isLoaded } = useLoadScript({
+		googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY as string,
+	});
 	// TODO: Add loading cards, default error cards
+	// TODO: actual loading screen
 	if (unitError || accmError || unitAmenitiesError || accmAmenitiesError || landlordError || landlordPicError || unitPicsError) return <div>Failed to load</div>;
-	if ((!unitData && !accmData) || unitData === undefined || accmData === undefined || unitAmenities === undefined || accmAmenities === undefined || landlord === undefined || landlordPic === undefined || unitPics === undefined) return <div>Loading...</div>;
+	if (!isLoaded || (!unitData && !accmData) || unitData === undefined || accmData === undefined || unitAmenities === undefined || accmAmenities === undefined || landlord === undefined || landlordPic === undefined || unitPics === undefined) return <div>Loading...</div>;
 
 	let tempAmenities = {
 		'Air Conditioner': unitAmenities['air_conditioner'],
@@ -83,16 +96,6 @@ const Unit = () => {
 		);
 	}
 
-	let reviews: any[] = [];
-	if (typeof accmReviews != 'string') {
-		accmReviews.map((review: any) => {
-			console.log(review);
-			reviews.push(<Review listingTitle={review.comment} opinion='' listingImg='https://tecdn.b-cdn.net/img/new/standard/nature/186.jpg' name={review.tenant_id} date={review.review_send_date} userImg='/images/person.png' rating={review.rating}></Review>);
-		});
-	} else {
-		reviews.push(<>NO REVIEWS FOUND</>);
-	}
-
 	const rating = landlord.landlord_rating;
 	let ratingStars = [];
 
@@ -105,7 +108,7 @@ const Unit = () => {
 	}
 	var landlordPicLink;
 	try {
-		landlordPicLink = landlordPic.resources[242].secure_url;
+		landlordPicLink = landlordPic.resources[0].secure_url;
 	} catch (ex) {
 		landlordPicLink = '/images/user.png';
 	}
@@ -114,7 +117,6 @@ const Unit = () => {
 
 	try {
 		unitPics.resources.forEach((pic: { secure_url: any }) => {
-			console.log('PICCCC' + pic.secure_url);
 			if (allUnitPics.length === 0)
 				allUnitPics.push(
 					<div className='row-span-2 h-96 w-auto'>
@@ -129,7 +131,19 @@ const Unit = () => {
 				);
 		});
 	} catch (ex) {
-		console.log('No unit pics');
+		allUnitPics.push(
+			<>
+				<div className='row-span-2 h-96 w-auto'>
+					<img src='/images/default.jpg' className='rounded-2xl object-cover h-96 w-full' />
+				</div>
+				<div className='col-start-2 h-auto w-96'>
+					<img src='/images/default.jpg' className='rounded-2xl object-cover h-full w-full' />
+				</div>
+				<div className='col-start-2 h-auto w-96'>
+					<img src='/images/default.jpg' className='rounded-2xl object-cover h-full w-full' />
+				</div>
+			</>
+		);
 	}
 
 	return (
@@ -145,13 +159,8 @@ const Unit = () => {
 							{accmData.accm_street}, {accmData.accm_city}, {accmData.accm_country}, {accmData.accm_zipcode}
 						</h3>
 					</div>
-					<div className='row-start-3 col-span-4 h-96'>
-						<div className='grid grid-rows-2 grid-flow-col gap-4 h-96'>
-							{allUnitPics}
-							<div className='col-start-2 h-auto w-96'>
-								<img src='https://cache.umusic.com/_sites/_halo/zrskt/nwff/utbd.jpg' className='rounded-2xl object-cover h-full w-full' />
-							</div>
-						</div>
+					<div className='row-start-3 col-span-4 h-[26rem] bg-gray-100 rounded-2xl shadow-inner p-4'>
+						<div className='grid grid-rows-2 grid-flow-col gap-4 h-96'>{allUnitPics}</div>
 					</div>
 					<div className='row-start-4 col-span-2 space-y-1'>
 						<p className='font-semibold text-xl'>
@@ -172,9 +181,9 @@ const Unit = () => {
 					<div className='row-start-5 col-start-1 col-span-2 mt-10'>
 						<h3 className='text-2xl'>About</h3>
 						<div className='w-full break-all'>
-							<p>{accmData.accm_description}</p>
+							<p className='mt-4 mb-4 font-semibold'>{accmData.accm_description}</p>
 						</div>
-						<div className='rounded-lg shadow-lg w-full py-4 flex'>
+						<div className='rounded-2xl shadow-lg w-full py-4 flex bg-white'>
 							<div className='w-32 overflow-hidden mx-4'>
 								<img src={landlordPicLink} alt='landlord' className='rounded-2xl h-full w-full object-cover' />
 							</div>
@@ -186,21 +195,38 @@ const Unit = () => {
 									<p className='ml-2 text-sm font-medium text-gray-500 dark:text-gray-400'>{landlord.landlord_rating} out of 5</p>
 									<span className='w-1 h-1 mx-1.5 bg-gray-500 rounded-full dark:bg-gray-400'></span>
 									<a href='#' className='text-sm font-medium text-gray-900 underline hover:no-underline'>
-										{reviews.length} {reviews.length > 1 ? 'reviews' : 'review'}
+										{typeof accmReviews === 'string' ? 0 : accmReviews.length} {typeof accmReviews === 'string' ? 'reviews' : accmReviews.length > 1 ? 'reviews' : 'review'}
 									</a>
 								</div>
 								<button className='btn btn-primary btn-sm leading-5 mt-2'>Contact</button>
 							</div>
 						</div>
 					</div>
-					<div className='row-start-5 col-start-3 bg-gray-200 col-span-2 text-center mt-10'>Map</div>
+					<div className='row-start-5 col-start-3 col-span-2 text-center ml-10 mt-10 justifty-end items-end justify-content-end right-0 invisible md:visible'>
+						{' '}
+						<GoogleMap
+							options={mapOptions}
+							zoom={14}
+							center={mapCenter}
+							mapTypeId={google.maps.MapTypeId.ROADMAP}
+							mapContainerStyle={{ width: '40rem', height: '20rem' }}
+							onLoad={() => {
+								setLatitude(accmData.latitude);
+								setLongitude(accmData.longitude);
+							}}>
+							{' '}
+							<MarkerF position={mapCenter} onLoad={() => console.log('Marker loaded!')} />
+						</GoogleMap>
+					</div>
 					<div className='row-start-6 col-span-4 mt-10'>
 						<h3 className='text-2xl'>Amenities</h3>
 						<ul className='space-y-1 text-gray-500 list-inside mt-4 max-h-32 w-full flex flex-wrap flex-col'>{amenities}</ul>{' '}
 					</div>
 					<div className='row-start-7 col-span-4 mt-10'>
 						<h3 className='text-2xl'>Accommodation Reviews</h3>
-						<div className='mb-24'>{/* <ReviewList route='accommodations/reviews/1' /> */}</div>
+						<div className='mb-24'>
+							<ReviewList route={`accommodations/reviews/${unitData.accm_id}`} />
+						</div>
 					</div>
 				</div>
 			</section>

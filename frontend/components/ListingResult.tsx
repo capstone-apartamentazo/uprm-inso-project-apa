@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import AccommodationUnits from './AccommodationUnits';
 import { useListings } from 'useListings';
+// import { v4 } from 'uuid';
 
 type Props = {
 	title: string;
@@ -11,7 +12,7 @@ type Props = {
 	accmUnits: any;
 };
 
-function getAvailableAmenities(amenities: any) {
+function getAvailableAmenities(amenities: any, id: string) {
 	let toReturn: any[] = [];
 	var topAmenities = ['pets_allowed', 'shared_dryer', 'shared_washer', 'shared_kitchen'];
 	var includedAmenities = Object.keys(amenities).filter((item) => (item != 'deleted_flag' ? amenities[item] === false : null));
@@ -19,7 +20,7 @@ function getAvailableAmenities(amenities: any) {
 
 	const allAmenities: any = {
 		pets_allowed: (
-			<span className='badge badge-ghost badge-md'>
+			<span key={'pets_allowed_' + id} className='badge badge-ghost badge-md'>
 				<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' className='bi bi-x-circle text-accent' viewBox='0 0 16 16'>
 					{' '}
 					<path d='M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z' />{' '}
@@ -29,7 +30,7 @@ function getAvailableAmenities(amenities: any) {
 			</span>
 		),
 		shared_dryer: (
-			<span className='badge badge-ghost badge-md'>
+			<span key={'shared_dryer_' + id} className='badge badge-ghost badge-md'>
 				<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' className='bi bi-check-circle text-primary' viewBox='0 0 16 16'>
 					{' '}
 					<path d='M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z' /> <path d='M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z' />{' '}
@@ -38,7 +39,7 @@ function getAvailableAmenities(amenities: any) {
 			</span>
 		),
 		shared_washer: (
-			<span className='badge badge-ghost badge-md'>
+			<span key={'shared_washer_' + id} className='badge badge-ghost badge-md'>
 				<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' className='bi bi-x-circle text-accent' viewBox='0 0 16 16'>
 					{' '}
 					<path d='M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z' />{' '}
@@ -48,7 +49,7 @@ function getAvailableAmenities(amenities: any) {
 			</span>
 		),
 		shared_kitchen: (
-			<span className='badge badge-ghost badge-md'>
+			<span key={'shared_kitchen_' + id} className='badge badge-ghost badge-md'>
 				<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' className='bi bi-x-circle text-accent' viewBox='0 0 16 16'>
 					{' '}
 					<path d='M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z' />{' '}
@@ -74,16 +75,16 @@ const ListingResult: React.FC<Props> = ({ title, address, description, unitAmoun
 		const { data: accmAmenities, error: accmAmenitiesError } = useListings(`accommodations/amenities/${id}`);
 		if (accmData) {
 			if (accmData.length === 0 || typeof accmData === 'string') picLink = '/images/default.jpg';
-			else picLink = accmData[0];
+			else picLink = accmData[0].secure_url;
 		}
-		if (accmAmenities) amenities = getAvailableAmenities(accmAmenities);
+		if (accmAmenities) amenities = getAvailableAmenities(accmAmenities, id);
 	}
 
 	function handleClick(id: string, setActive: any, setUnits: any) {
 		active ? setActive(false) : setActive(true);
 		var element = document.getElementById(id + '_units');
 
-		if (!element) setUnits(<AccommodationUnits accmId={id} accmUnits={accmUnits} />);
+		if (!element) setUnits(<AccommodationUnits key={'accmUnitsID_' + id} accmId={id} accmUnits={accmUnits} />);
 		else {
 			document.getElementById(id + '_units')?.classList.toggle('h-0');
 			document.getElementById(id + '_units')?.classList.toggle('h-72');
@@ -91,8 +92,8 @@ const ListingResult: React.FC<Props> = ({ title, address, description, unitAmoun
 	}
 
 	return (
-		<>
-			<div key={this} id={id} onClick={() => handleClick(id, setActive, setUnits)} className={`card lg:card-side shadow-xl transition ease-in-out hover:-translate-y-1 hover:scale-10 duration-150 cursor-pointer ${active ? 'border-[1px] border-accent' : ''}`}>
+		<div key={'accmID_' + id}>
+			<div id={id} onClick={() => handleClick(id, setActive, setUnits)} className={`card lg:card-side shadow-xl transition ease-in-out hover:-translate-y-1 hover:scale-10 duration-150 cursor-pointer ${active ? 'border-[1px] border-accent' : ''}`}>
 				<figure className='m-auto p-4 rounded-2xl h-auto w-auto'>
 					<img src={picLink} className='rounded-xl h-48 w-48 object-cover' alt='' />
 				</figure>
@@ -107,7 +108,7 @@ const ListingResult: React.FC<Props> = ({ title, address, description, unitAmoun
 				</div>
 			</div>
 			{units}
-		</>
+		</div>
 	);
 };
 export default ListingResult;
