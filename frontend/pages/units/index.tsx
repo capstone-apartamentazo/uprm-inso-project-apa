@@ -129,7 +129,7 @@ const Index = () => {
                     </div>
                     <h1 className="font-semibold text-3xl mx-6 py-4">Units</h1>
                     <div className="">
-                        <div className="flex mx-4">
+                        <div className="flex flex-wrap gap-4 mx-4">
                             {units.map((unit: Unit, index: any) => (
 
                                 <UnitC a_id={unit.accm_id} num={unit.unit_number} status={unit.available} id={unit.unit_id} />

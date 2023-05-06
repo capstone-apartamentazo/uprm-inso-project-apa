@@ -182,10 +182,10 @@ const New = () => {
 
                 }).then(() => {
                     alert('Creation success')
-                    // router.replace({
-                    //     pathname: '/units',
-                    //     query: { accmid: accmId } // the data
-                    // })
+                    router.replace({
+                        pathname: '/units',
+                        query: { accmid: accmId } // the data
+                    })
                 })
                 .catch(err => {
                     console.log(err)

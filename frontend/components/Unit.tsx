@@ -139,7 +139,7 @@ const Unit: React.FC<Props> = ({ num, status, a_id, id }) => {
     return (
 
 
-        <div className='block max-w-full rounded-lg bg-white shadow-lg ring-1 ring-stone-200 dark:bg-neutral-700 mx-2'>
+        <div className='block max-w-full rounded-lg bg-white shadow-lg ring-1 ring-stone-200 dark:bg-neutral-700'>
             <div className='p-4 flex menu-vertical align-middle'>
                 <h1 className='text-left mb-2 text-xl font-semibold  dark:text-neutral-50'>Unit {`${num}`}</h1>
                 <h1>Status: {available ? ' Available' : ' Occupied'}</h1>
