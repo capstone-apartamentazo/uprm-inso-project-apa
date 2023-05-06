@@ -32,7 +32,8 @@ const Messages: React.FC<Props> = ({ }) => {
     const [selected, setSelected] = useState(0)
     const router = useRouter()
     const cookies = new Cookies()
-   
+
+    
     useEffect(() => {
         console.log(host)
         try{
@@ -70,9 +71,16 @@ const Messages: React.FC<Props> = ({ }) => {
             console.error(err)
         }
 
-
-        
     }, [])
+
+    
+
+
+
+
+
+
+
     const [selectedIndex, setSelectedIndex] = useState(-1)
     function handleSelection(landlord_id: number, tenant_id: number, index:number) {
         //console.log('test')
@@ -139,6 +147,8 @@ const Messages: React.FC<Props> = ({ }) => {
     }
 
     
+
+    
     const { data: convos, error: convoError, isLoading: isLoadingConvo } = useSWR((storage.token != null) ? `${host}/api/messages` : null, url => fetch(url, {
         headers: {
             Authorization: `Bearer ${storage?.token}`
@@ -147,6 +157,7 @@ const Messages: React.FC<Props> = ({ }) => {
 
         return res.json()
     }));
+    
 
 
     if (convoError) {
@@ -242,7 +253,7 @@ const Messages: React.FC<Props> = ({ }) => {
     }
     return (
         <Layout>
-            <main  className='flex flex-col flex-nowrap mt-32 '>
+            <main  className='flex flex-col flex-nowrap my-32 '>
                 <div className='flex flex-row flex-nowrap'>
                     <div className='grid grid-rows-auto auto-rows-auto relative gap-1 ml-10 mr-6 basis-1/4  h-128 ring-1 ring-stone-200 rounded-lg shadow-lg overflow-hidden'>
                         <div className='h-16 absolute inset-x-0 top-0 '>
@@ -258,7 +269,7 @@ const Messages: React.FC<Props> = ({ }) => {
 
                                 convos.map((message: Msg, index: number) => (
 
-                                    <Conversation onClick={() => handleSelection(message.landlord_id, message.tenant_id, index)} key={message.message_id} msg={message} isLandlord={storage.isLandlord}></Conversation>
+                                    <Conversation onClick={() => handleSelection(message.landlord_id, message.tenant_id, index)} key={message.message_id} msg={message} isLandlord={storage.isLandlord} convoId={storage.isLandlord?message.tenant_id:message.landlord_id} host={host}></Conversation>
 
 
 
