@@ -235,9 +235,6 @@ def addUnit():
 def updateUnit():
     return UnitHandler().updateUnit(request.json)
 
-# ----------------------------------------------------------------------------------------------------------------------
-# voy hacer este remove pero creo q hay q hacer algo para obligar a tener siempre 1 unit?
-# lo q pienso hacer sera q cuando traten de delete y solo queda 1 unit pues devuelvo un json diciendo q solo puedes editar el unit
 @app.route('/api/units/<int:unit_id>', methods=['DELETE'])
 def removeUnit(unit_id):
   return UnitHandler().deleteUnit(unit_id)
