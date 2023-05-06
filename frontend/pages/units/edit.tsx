@@ -289,8 +289,8 @@ const Edit = () => {
     const updateUnitAmenities = async (pa_id: any, amenities: any) => {
         var data = {
             "priv_amenities_id": pa_id,
-            "bedrooms": amenities.bedrooms,
-            "bathrooms": amenities.bathrooms,
+            "bedrooms": parseInt(amenities.bedrooms,10),
+            "bathrooms": parseFloat(amenities.bathrooms),
             "electricity": amenities.electricity,
             "water": amenities.water,
             "internet": amenities.internet,

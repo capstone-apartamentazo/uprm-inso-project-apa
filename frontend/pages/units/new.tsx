@@ -164,17 +164,24 @@ const New = () => {
                     return response.data
                 })
                 .then(result => {
+                    console.log('uploading pictures')
+                    console.log(result['unit_id'])
                     uploadImages(result['unit_id'])
+                    console.log('image upload complete')
                     return result
                 }).then(result => {
+                    console.log('updating amenities')
+                    console.log(result['priv_amenities_id'])
+                    console.log(amenities)
                     updateUnitAmenities(result['priv_amenities_id'], amenities)
+                    console.log('amenities update complete')
 
                 }).then(() => {
                     alert('Creation successfull')
-                    router.replace({
-                        pathname: '/units',
-                        query: { accmid: accmId } // the data
-                    })
+                    // router.replace({
+                    //     pathname: '/units',
+                    //     query: { accmid: accmId } // the data
+                    // })
                 })
                 .catch(err => {
                     console.log(err)
@@ -186,8 +193,8 @@ const New = () => {
     const updateUnitAmenities = async (pa_id: any, amenities: any) => {
         var data = {
             "priv_amenities_id": pa_id,
-            "bedrooms": amenities.bedrooms,
-            "bathrooms": amenities.bathrooms,
+            "bedrooms": parseInt(amenities.bedrooms,10),
+            "bathrooms": parseFloat(amenities.bathrooms),
             "electricity": amenities.electricity,
             "water": amenities.water,
             "internet": amenities.internet,
