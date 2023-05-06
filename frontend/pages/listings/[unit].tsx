@@ -1,24 +1,13 @@
 import Layout from '@/components/Layout';
 import { useListings } from 'useListings';
-import Review from '@/components/Review';
 import ReviewList from '@/components/ReviewList';
 import { useRouter } from 'next/router';
-import { useLoadScript, GoogleMap, LoadScript, MarkerF, Marker } from '@react-google-maps/api';
-import { useEffect, useState, useMemo, useCallback } from 'react';
-import { Loader } from '@googlemaps/js-api-loader';
+import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 
 const Unit = () => {
 	const router = useRouter();
 	const { unit } = router.query;
-	const [latitude, setLatitude] = useState(18.210928163335723);
-	const [longitude, setLongitude] = useState(-67.14091054778946);
-	const mapOptions = {
-		disableDefaultUI: true,
-		zoomControl: true,
-		clickableIcons: true,
-		scrollwheel: true,
-		rotateControl: true,
-	};
+
 	const { data: unitData, error: unitError } = useListings(unit ? 'units/' + unit : null);
 	const { data: unitAmenities, error: unitAmenitiesError } = useListings(unit ? 'units/amenities/' + unit : null);
 	const { data: unitPics, error: unitPicsError } = useListings(unit ? 'images/unit/' + unit : null);
@@ -32,23 +21,10 @@ const Unit = () => {
 	const { data: landlord, error: landlordError } = useListings(accmData ? 'landlords/' + accmData.landlord_id : null);
 	const { data: landlordPic, error: landlordPicError } = useListings(accmData ? 'images/landlord/' + accmData.landlord_id : null);
 
-	const mapCenter = useMemo(() => ({ lat: latitude, lng: longitude }), [latitude, longitude]);
-	const mapOptions = useMemo<google.maps.MapOptions>(
-		() => ({
-			disableDefaultUI: false,
-			clickableIcons: true,
-			scrollwheel: false,
-		}),
-		[]
-	);
-
-	const { isLoaded } = useLoadScript({
-		googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY as string,
-	});
 	// TODO: Add loading cards, default error cards
 	// TODO: actual loading screen
 	if (unitError || accmError || unitAmenitiesError || accmAmenitiesError || landlordError || landlordPicError || unitPicsError) return <div>Failed to load</div>;
-	if (!isLoaded || (!unitData && !accmData) || unitData === undefined || accmData === undefined || unitAmenities === undefined || accmAmenities === undefined || landlord === undefined || landlordPic === undefined || unitPics === undefined) return <div>Loading...</div>;
+	if ((!unitData && !accmData) || unitData === undefined || accmData === undefined || unitAmenities === undefined || accmAmenities === undefined || landlord === undefined || landlordPic === undefined || unitPics === undefined) return <div>Loading...</div>;
 
 	let tempAmenities = {
 		'Air Conditioner': unitAmenities['air_conditioner'],
@@ -152,6 +128,15 @@ const Unit = () => {
 			</>
 		);
 	}
+
+	// INFO: MAP
+	const mapOptions = {
+		disableDefaultUI: true,
+		zoomControl: true,
+		clickableIcons: true,
+		scrollwheel: true,
+		rotateControl: true,
+	};
 
 	const containerStyle = {
 		width: '100%',
