@@ -24,6 +24,20 @@ class Notices:
     cursor.close()
     return res
 
+  def getTenantNotices(self, accm, tenant):
+    query = 'SELECT notice_id, notice_title, notice_content, notices.accm_id, notice_send_date FROM notices \
+            INNER JOIN accommodations on notices.accm_id = accommodations.accm_id \
+            INNER JOIN units on accommodations.accm_id = units.accm_id \
+            INNER JOIN leases on units.unit_id = leases.unit_id \
+            WHERE notices.accm_id = %s \
+            AND tenant_id = %s \
+            AND is_current_tenant = true'
+    cursor = db.cursor(cursor_factory=RealDictCursor)
+    cursor.execute(query %(accm, tenant))
+    res = cursor.fetchall()
+    cursor.close()
+    return res
+
   def addNotice(self, title, content, accm):
     cursor = db.cursor(cursor_factory=RealDictCursor)
     cursor.execute('INSERT INTO notices (notice_title, notice_content, accm_id) VALUES (%s, %s, %s) RETURNING *', (title, content, accm))

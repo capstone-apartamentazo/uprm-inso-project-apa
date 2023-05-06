@@ -173,31 +173,21 @@ NOTICES (ACCOMMODATIONS)
 def getAllNotices():
   return NoticeHandler().getAll()
 
-# TODO set for only tenants and landlords with relation to accm from notice
 @app.route('/api/notices', methods=['POST'])
 def getNoticeById():
   return NoticeHandler().getById(request.json)
 
-# TODO set for only tenants and landlords with relation to accm from notice
-@app.route('/api/accommodations/notices', methods=['POST'])
-def getNoticesByAccommodationId():
-  return NoticeHandler().getByAccommodationId(request.json)
+@app.route('/api/accommodations/notices/<int:accm_id>')
+def getNoticesByAccommodationId(accm_id):
+  return NoticeHandler().getByAccommodationId(accm_id)
+
+@app.route('/api/tenant/notices/<int:accm_id>')
+def getTenantNotices(accm_id):
+  return NoticeHandler().getTenantNotices(accm_id)
 
 @app.route('/api/notices/add', methods=['POST'])
 def addNotice():
   return NoticeHandler().addNotice(request.json)
-
-# -----------------------------------------------------------------------------------------------------------------------------------------------
-# Hace falta un update notice si ya le estamos enviando emails so si quiere hacerle update seria enviar otro email?
-@app.route('/api/notices', methods=['PUT'])
-def updateNotice():
-  return NoticeHandler().updateNotice(request.json)
-
-# ---------------------------------------------------------------------------------------------------
-# creo q notice no se remueven pq se envian emails so creo q no tiene logica borrarlos?
-@app.route('/api/notices', methods=['DELETE'])
-def removeNotice():
-  return None
 
 """
 REVIEWS (ACCOMMODATIONS AND TENANTS)
@@ -267,7 +257,6 @@ def getPrivateAmenitiesById():
 def getPrivateAmenitiesByUnitId(unit_id):
   return PrivateAmenitiesHandler().getByUnitId(unit_id)
 
-# TODO add restrictions when updating shared amenities
 @app.route('/api/units/amenities', methods=['PUT'])
 def updatePrivateAmenities():
     return PrivateAmenitiesHandler().updatePrivateAmenities(request.json)
@@ -291,8 +280,6 @@ def getLeasesByUnitId(unit_id):
 def getLeaseByTenantId(tenant_id):
     return LeaseHandler().getByTenantId(tenant_id)
 
-# -----------------------------------------------------------------------------------------
-# si quieres q envie un email pues mira el metodo de add notice
 @app.route('/api/leases/add', methods=['POST'])
 def addLease():
     return LeaseHandler().addLease(request.json)
@@ -305,7 +292,6 @@ def updateCurrentTenants():
 def extendLease(lease_id):
     return LeaseHandler().extendLease(request.json, lease_id)
 
-# TODO
 @app.route('/api/leases/<int:lease_id>', methods=['DELETE'])
 def removeLease(lease_id):
   return LeaseHandler().deleteLease(lease_id)
