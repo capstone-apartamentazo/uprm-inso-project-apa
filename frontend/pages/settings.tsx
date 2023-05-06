@@ -95,37 +95,7 @@ const Settings = () => {
 
 
 
-    function handleNameEdit() {
-        if (nameEdit) {
-            if (document.getElementById("nameInput") != null) {
-                console.log((document.getElementById("nameInput")! as HTMLInputElement).value);
-                (document.getElementById("nameInput")! as HTMLInputElement).value = "";
-            } else {
-                console.log("name form not found")
-            }
-            setNameEdit(!nameEdit);
-        } else {
-            setNameEdit(!nameEdit);
-        }
-    }
-    function handlePhoneEdit() {
-        if (phoneEdit) {
-            if (document.getElementById("phoneInput") != null) {
-                console.log((document.getElementById("phoneInput")! as HTMLInputElement).value);
-                (document.getElementById("phoneInput")! as HTMLInputElement).value = "";
-            } else {
-                console.log("phone form not found")
-            }
-            setPhoneEdit(!phoneEdit);
-        } else {
-            setPhoneEdit(!phoneEdit);
-        }
-
-
-
-
-    }
-
+    
 
     const updateLandlord = async (data: any) => {
 
@@ -137,7 +107,7 @@ const Settings = () => {
                 return response.data
             })
             .then(() => {
-                alert('Update successfull')
+                alert('Update successful')
                 mutate(`${host}/api/landlords/${storage.id}`)
             })
             .catch(err => {
@@ -149,7 +119,7 @@ const Settings = () => {
     }
 
     const updateTenant = async (data: any) => {
-        await axios({ method: 'put', url: `${host}/api/landlords`, headers: { Authorization: `Bearer ${storage.token}` }, data })
+        await axios({ method: 'put', url: `${host}/api/tenants`, headers: { Authorization: `Bearer ${storage.token}` }, data })
             .then(response => {
                 // if(response==Object){
                 //     throw new Error('Accm number exists');
@@ -157,8 +127,8 @@ const Settings = () => {
                 return response.data
             })
             .then(() => {
-                alert('Update successfull')
-                mutate(`${host}/api/landlords/${storage.id}`)
+                alert('Update successful')
+                mutate(`${host}/api/tenants/${storage.id}`)
             })
             .catch(err => {
                 console.log(err)
