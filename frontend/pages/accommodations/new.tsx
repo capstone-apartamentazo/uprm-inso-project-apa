@@ -11,6 +11,7 @@ import { Token } from 'Token';
 import { Storage } from 'Storage';
 import { useRouter } from 'next/router'
 
+
 const { publicRuntimeConfig } = getConfig();
 const { url: host } = publicRuntimeConfig.site;
 
@@ -243,6 +244,7 @@ const New = () => {
 
     const handleSubmit = async (event: any) => {
         event.preventDefault();
+        console.log(event.target)
         
         
         
@@ -276,6 +278,7 @@ const New = () => {
     
 
     const handleZipcodeChange = async (event: any) => {
+
         //alert(event.target.value)
         if(event.target.value.length>4){
         await fetch('https://maps.googleapis.com/maps/api/geocode/json?' + new URLSearchParams({
@@ -303,6 +306,7 @@ const New = () => {
         }
 
     }
+
 
     const mapOptions = useMemo<google.maps.MapOptions>(
         () => ({
@@ -332,8 +336,6 @@ const New = () => {
     }, [])
 
 
-
-
     if (!isLoaded) {
         return <p>Loading...</p>;
     }
@@ -348,7 +350,7 @@ const New = () => {
                     
                 </ul>
             </div>
-            <form onSubmit={handleSubmit} className=" form-control mb-24">
+            <form onSubmit={handleSubmit} id='mainForm' className=" form-control mb-24">
 
                 <div className="grid lg:grid-flow-col sm:grid-flow-row shadow-lg  rounded-lg ring-1 ring-stone-200  mx-10">
 

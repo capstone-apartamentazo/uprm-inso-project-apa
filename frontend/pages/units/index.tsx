@@ -132,7 +132,7 @@ const Index = () => {
                         <div className="flex mx-4">
                             {units.map((unit: Unit, index: any) => (
 
-                                <UnitC tenant={'standby'} a_id={unit.accm_id} num={unit.unit_number} status={unit.available} id={unit.unit_id} />
+                                <UnitC a_id={unit.accm_id} num={unit.unit_number} status={unit.available} id={unit.unit_id} />
 
                             ))}
                         </div>
