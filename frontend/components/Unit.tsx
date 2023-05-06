@@ -20,14 +20,23 @@ type Props = {
 
 };
 
+interface Tenant {
+    "deleted_flag": boolean,
+    "tenant_email": string,
+    "tenant_id": number,
+    "tenant_name": string
+    "tenant_password": string,
+    "tenant_phone": string
+}
+
 const Unit: React.FC<Props> = ({ num, status, a_id, id }) => {
     const router = useRouter()
 
     const [storage, setStorage] = useState<Storage>({ token: null, isLandlord: false, id: null })
     //const [lease,setLease] = useState()
-    const [tenantId, setTenant] = useState(null)
+    //const [tenantId, setTenant] = useState(null)
     const [available, setAvailable] = useState(true)
-    const [tenantName, setTenantName] = useState('')
+    const [tenant, setTenant] = useState<Tenant>()
     const [leaseId,setLeaseId] = useState()
 
 
@@ -61,7 +70,8 @@ const Unit: React.FC<Props> = ({ num, status, a_id, id }) => {
                         return res.data
                     })
                     .then(result => {
-                        setTenantName(result['tenant_name'])
+                        setTenant(result)
+                        //setTenantName(result['tenant_name'])
                         //return result
                     })
                     .catch(err => console.error(err))
@@ -133,7 +143,8 @@ const Unit: React.FC<Props> = ({ num, status, a_id, id }) => {
             <div className='p-4 flex menu-vertical align-middle'>
                 <h1 className='text-left mb-2 text-xl font-semibold  dark:text-neutral-50'>Unit {`${num}`}</h1>
                 <h1>Status: {available ? ' Available' : ' Occupied'}</h1>
-                <h1 className={!available ? '' : ''}>Tenant: {tenantName }</h1>
+                <h1 className={!available ? '' : ''}>Tenant: {tenant?tenant.tenant_name:'N/A' }</h1>
+                <h1>Tenant email: {tenant?tenant.tenant_email:'N/A'}</h1>
 
                 <div className='flex items-center gap-2  mt-2'>
                     <Link href={{
