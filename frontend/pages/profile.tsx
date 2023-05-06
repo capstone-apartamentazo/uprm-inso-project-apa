@@ -206,7 +206,7 @@ const Profile = () => {
 						</form>
 						<div className=' '>
 							<h5 className='mb-2 text-2xl pt-2 font-bold leading-tight text-neutral-800 dark:text-neutral-50'>{storage.isLandlord ? user.landlord_name : user.tenant_name}</h5>
-							<p className=' font-semibold pb-6 text-neutral-600 dark:text-neutral-200 '> {storage.isLandlord ? ('Rating:' + user.landlord_rating + '/5') : ''}</p>
+							<p className=' font-semibold pb-6 text-neutral-600 dark:text-neutral-200 '> {storage.isLandlord ? ('Rating:' + user.landlord_rating + '/5') :''}</p>
 						</div>
 					</div>
 					<div className='flex justify-center pt-4'>
@@ -216,7 +216,7 @@ const Profile = () => {
 								<ul>
 									<li className=' text-neutral-600 dark:text-neutral-200 '>Phone:  {storage.isLandlord ? user.landlord_phone : user.tenant_phone}</li>
 									<li className=' text-neutral-600 dark:text-neutral-200 '> {storage.isLandlord ? 'Account type: Landlord' : 'Account type: Normal'}</li>
-
+									<li className='text-neutral-600 dark:text-neutral-200 '>{storage.isLandlord ? '':`ID: ${storage.id}`}</li>
 								</ul>
 							</div>
 						</div>
