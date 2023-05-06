@@ -25,7 +25,7 @@ const Index = () => {
     const [accmId, setAccmId] = useState<any>(null)
     const [logged, setLogged] = useState(false)
     const cookies = new Cookies()
-    var units:[] = []
+    var units: [] = []
     useEffect(() => {
         try {
             setAccmId((router.query.accmid))
@@ -53,11 +53,11 @@ const Index = () => {
     }).then(res => {
         // mutate('http://127.0.0.1:5000/api/messages');
 
-        
+
         return res.json()
     }
     ));
-    
+
 
     if (!logged || storage?.token == null) {
         //alert('User logged out')
@@ -81,7 +81,7 @@ const Index = () => {
     }
     if (!unitsFetch || unitsFetch == 'Units Not Found in Accommodation') {
         units = []
-        
+
 
         //<UnitC tenant={''} a_id={1} num={1} status={false}></UnitC>
         // return (
@@ -90,8 +90,8 @@ const Index = () => {
         //         <h1 className='font-normal text-xl text-black'>No units listed.</h1>
         //     </div>
         // )
-    } else{
-       
+    } else {
+
         units = unitsFetch
     }
     if (storage.isLandlord == null) {
@@ -114,23 +114,32 @@ const Index = () => {
 
 
                 <div className="relative shadow-lg  rounded-lg ring-1 ring-stone-200  mx-10 pb-10">
-                    <Link href={{
-                        pathname: '/units/new',
-                        query: {accmid:accmId} // the data
-                    }} className='absolute right-4 top-4 bg-accent  font-medium text-white p-2 rounded-md shadow-md hover:bg-accent-focus' >Add New Unit</Link>
+                    <div className="flex gap-2 absolute right-4 top-4 ">
+                        <Link href={{
+                            pathname: '/',
+                            query: { accmid: accmId } // the data
+                        }} className=' bg-primary  font-medium text-white p-2 rounded-md shadow-md hover:bg-secondary ' >Send notice to Tenants</Link>
+
+                        <Link href={{
+                            pathname: '/units/new',
+                            query: { accmid: accmId } // the data
+                        }} className=' bg-accent  font-medium text-white p-2 rounded-md shadow-md hover:bg-accent-focus' >Add New Unit</Link>
+                        
+
+                    </div>
                     <h1 className="font-semibold text-3xl mx-6 py-4">Units</h1>
                     <div className="">
                         <div className="flex mx-4">
-                        {units.map((unit: Unit,index:any) => (
+                            {units.map((unit: Unit, index: any) => (
 
-                            <UnitC tenant={'standby'} a_id={unit.accm_id} num={unit.unit_number} status={unit.available} id={unit.unit_id}/>
+                                <UnitC tenant={'standby'} a_id={unit.accm_id} num={unit.unit_number} status={unit.available} id={unit.unit_id} />
 
-                        ))}
+                            ))}
                         </div>
-                        <h1 className={((units.length==0)&&!isLoadingUnits&&(logged || storage?.token != null)&&!unitsError)?'font-medium mx-4':'hidden'}>No units in accommodation</h1>
-                        <h1 className={(isLoadingUnits)?'font-medium mx-4':'hidden'}>Loading...</h1>
-                        <h1 className={(!logged || storage?.token == null)?'font-medium mx-4':'hidden'}>Logged out</h1>
-                        <h1 className={(unitsError)?'font-medium mx-4':'hidden'}>Error</h1>
+                        <h1 className={((units.length == 0) && !isLoadingUnits && (logged || storage?.token != null) && !unitsError) ? 'font-medium mx-4' : 'hidden'}>No units in accommodation</h1>
+                        <h1 className={(isLoadingUnits) ? 'font-medium mx-4' : 'hidden'}>Loading...</h1>
+                        <h1 className={(!logged || storage?.token == null) ? 'font-medium mx-4' : 'hidden'}>Logged out</h1>
+                        <h1 className={(unitsError) ? 'font-medium mx-4' : 'hidden'}>Error</h1>
 
 
 
