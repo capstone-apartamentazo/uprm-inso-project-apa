@@ -3,15 +3,22 @@ import { useListings } from 'useListings';
 import Review from '@/components/Review';
 import ReviewList from '@/components/ReviewList';
 import { useRouter } from 'next/router';
-import { GoogleMap, MarkerF, useLoadScript } from '@react-google-maps/api';
-import { useMemo, useState } from 'react';
+import { useLoadScript, GoogleMap, LoadScript, MarkerF, Marker } from '@react-google-maps/api';
+import { useEffect, useState, useMemo, useCallback } from 'react';
+import { Loader } from '@googlemaps/js-api-loader';
 
 const Unit = () => {
 	const router = useRouter();
 	const { unit } = router.query;
 	const [latitude, setLatitude] = useState(18.210928163335723);
 	const [longitude, setLongitude] = useState(-67.14091054778946);
-
+	const mapOptions = {
+		disableDefaultUI: true,
+		zoomControl: true,
+		clickableIcons: true,
+		scrollwheel: true,
+		rotateControl: true,
+	};
 	const { data: unitData, error: unitError } = useListings(unit ? 'units/' + unit : null);
 	const { data: unitAmenities, error: unitAmenitiesError } = useListings(unit ? 'units/amenities/' + unit : null);
 	const { data: unitPics, error: unitPicsError } = useListings(unit ? 'images/unit/' + unit : null);
@@ -146,6 +153,16 @@ const Unit = () => {
 		);
 	}
 
+	const containerStyle = {
+		width: '100%',
+		height: '100%',
+	};
+
+	const center = {
+		lat: accmData.latitude,
+		lng: accmData.longitude,
+	};
+
 	return (
 		<Layout>
 			<section className='pt-32 pl-20 pr-20 bg-gray-50'>
@@ -202,21 +219,13 @@ const Unit = () => {
 							</div>
 						</div>
 					</div>
-					<div className='row-start-5 col-start-3 col-span-2 text-center ml-10 mt-10 justifty-end items-end justify-content-end right-0 invisible md:visible'>
-						{' '}
-						<GoogleMap
-							options={mapOptions}
-							zoom={14}
-							center={mapCenter}
-							mapTypeId={google.maps.MapTypeId.ROADMAP}
-							mapContainerStyle={{ width: '40rem', height: '20rem' }}
-							onLoad={() => {
-								setLatitude(accmData.latitude);
-								setLongitude(accmData.longitude);
-							}}>
-							{' '}
-							<MarkerF position={mapCenter} onLoad={() => console.log('Marker loaded!')} />
-						</GoogleMap>
+					<div className='row-start-5 col-start-3 bg-gray-50 col-span-2 text-center mt-10 ring-2 ring-accent rounded-md p-1'>
+						<LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}>
+							<GoogleMap options={mapOptions} mapContainerStyle={containerStyle} center={center} zoom={17}>
+								<Marker position={center} />
+								<></>
+							</GoogleMap>
+						</LoadScript>
 					</div>
 					<div className='row-start-6 col-span-4 mt-10'>
 						<h3 className='text-2xl'>Amenities</h3>

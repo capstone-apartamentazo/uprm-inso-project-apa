@@ -1,14 +1,16 @@
 from flask import jsonify
 from psycopg2 import Error as pgerror
-from util.config import db, logger, landlord_guard as guard
+from util.config import db, logger, mail, landlord_guard as guard
 from dao.notices import Notices
 from dao.accommodations import Accommodations
 import flask_praetorian as praetorian
+from dao.landlords import Landlords
 
 class NoticeHandler:
   def __init__(self):
     self.notices = Notices()
     self.accommodations = Accommodations()
+    self.landlord = Landlords()
 
   def getAll(self):
     try:
@@ -50,8 +52,23 @@ class NoticeHandler:
       valid, reason = self.checkAccm(accm_id)
       if not valid:
         return jsonify(reason)
+      if len(json['notice_title']) > 100:
+        return jsonify('Title can\'t be larger than 100 characters.')
+      if len(json['notice_content']) > 255:
+        return jsonify('Your message can\'t be larger than 255 characters.')
       daoNotice = self.notices.addNotice(json['notice_title'], json['notice_content'], accm_id)
+      landlord = self.landlord.getById(praetorian.current_user_id())
+      currentTenants = self.notices.getCurrentTenants(accm_id)
+      tenantList = []
+      for tenant in currentTenants:
+          tenantList.append(tenant['tenant_email'])
       if daoNotice:
+        mail.send_message(
+          sender= landlord['landlord_email'],
+          subject=json['notice_title'],
+          recipients=tenantList,
+          body= json['notice_content']
+        )
         db.commit()
         return jsonify(daoNotice)
       else:
@@ -68,6 +85,10 @@ class NoticeHandler:
       valid, reason = self.checkNotice(notice_id)
       if not valid:
         return jsonify(reason)
+      if len(json['notice_title']) > 100:
+        return jsonify('Title can\'t be larger than 100 characters.')
+      if len(json['notice_content']) > 255:
+        return jsonify('Your message can\'t be larger than 255 characters.')
       updatedNotice = self.notices.updateNotice(notice_id, json['notice_title'], json['notice_content'])
       if updatedNotice:
         db.commit()
@@ -82,7 +103,11 @@ class NoticeHandler:
   @praetorian.auth_required
   def deleteNoticeCascade(self, accm_id):
     try:
-      self.notices.deleteNoticeCascade(accm_id)
+      if not self.notices.getByAccommodationId(accm_id):
+        return True # empty list
+      if self.notices.deleteNoticeCascade(accm_id):
+        return True
+      return False
     except (Exception, pgerror) as e:
       db.rollback()
       logger.exception(e)

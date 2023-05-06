@@ -62,9 +62,16 @@ class Accommodations:
     cursor.close()
     return res
 
-  # TODO add individual delete
   def deleteAccommodationCascade(self, identifier):
     query = 'UPDATE accommodations SET deleted_flag = true WHERE landlord_id = %s AND deleted_flag = false RETURNING *'
+    cursor = db.cursor(cursor_factory=RealDictCursor)
+    cursor.execute(query %(identifier))
+    res = cursor.fetchall()
+    cursor.close()
+    return res
+  
+  def deleteAccommodation(self, identifier):
+    query = 'UPDATE accommodations SET deleted_flag = true WHERE accm_id = %s AND deleted_flag = false RETURNING *'
     cursor = db.cursor(cursor_factory=RealDictCursor)
     cursor.execute(query %(identifier))
     res = cursor.fetchall()

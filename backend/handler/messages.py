@@ -1,16 +1,20 @@
 from flask import jsonify
 from psycopg2 import Error as pgerror
-from util.config import db, logger
+from util.config import db, logger, mail
 from dao.messages import Messages
 import flask_praetorian as praetorian
 from dao.units import Units
 from dao.accommodations import Accommodations
+from dao.tenants import Tenants
+from dao.landlords import Landlords
 
 class MessageHandler:
   def __init__(self):
     self.messages = Messages()
     self.units = Units()
     self.accommodations = Accommodations()
+    self.tenant = Tenants()
+    self.landlord = Landlords()
 
   def getAll(self):
     try:
@@ -75,8 +79,11 @@ class MessageHandler:
   def landlordSendsMessage(self, json):
     try:
       content = json['msg_content']
+      x = len(content)
       if not len(content.strip()):
         return jsonify('Empty Message')
+      if len(content) > 255:
+        return jsonify('Message can\'t exceeed 255 characters')
       daoMessage = self.messages.landlordSendsMessage(praetorian.current_user_id(), json['tenant_id'], content)
       if daoMessage:
         db.commit()
@@ -94,6 +101,8 @@ class MessageHandler:
       content = json['msg_content']
       if not len(content.strip()):
         return jsonify('Empty Message')
+      if len(content) > 255:
+        return jsonify('Message can\'t exceeed 255 characters')
       daoMessage = self.messages.tenantSendsMessage(json['landlord_id'], praetorian.current_user_id(), content)
       if daoMessage:
         db.commit()
@@ -108,13 +117,21 @@ class MessageHandler:
   @praetorian.auth_required
   def tenantSendsRequestWithoutTour(self, json):
     try:
-      content = 'I would like to request this unit. No need for a tour.'
       daoUnit = self.units.getById(json['unit_id'])
       if not daoUnit:
         return jsonify('Unit Not found')
       daoAccommodation = self.accommodations.getById(daoUnit['accm_id'])
+      content = 'I would like to request unit: {} from accommodation: {}. No need for a tour.'.format(daoUnit['unit_number'], daoAccommodation['accm_title'])
       daoMessage = self.messages.tenantSendsMessage(daoAccommodation['landlord_id'], praetorian.current_user_id(), content)
+      tenant = self.tenant.getById(praetorian.current_user_id())
+      landlord = self.landlord.getById(daoAccommodation['landlord_id'])
       if daoMessage:
+        mail.send_message(
+          sender= tenant['tenant_email'],
+          subject='New request without tour for your unit!',
+          recipients=[landlord['landlord_email']],
+          body= 'Request was sent from {} about your unit: {} at {}\nPlease follow up using our message system or contact your new client at: {}'.format(tenant['tenant_name'], daoUnit['unit_number'], daoAccommodation['accm_title'],tenant['tenant_email'])
+        )
         db.commit()
         return jsonify(daoMessage)
       else:
@@ -127,13 +144,21 @@ class MessageHandler:
   @praetorian.auth_required
   def tenantSendsRequestWithTour(self, json):
     try:
-      content = 'I would like to have a tour for this unit.'
       daoUnit = self.units.getById(json['unit_id'])
       if not daoUnit:
         return jsonify('Unit Not found')
       daoAccommodation = self.accommodations.getById(daoUnit['accm_id'])
+      content = 'I would like to have a tour for unit: {} at {}.'.format(daoUnit['unit_number'], daoAccommodation['accm_title'])
       daoMessage = self.messages.tenantSendsMessage(daoAccommodation['landlord_id'], praetorian.current_user_id(), content)
+      tenant = self.tenant.getById(praetorian.current_user_id())
+      landlord = self.landlord.getById(daoAccommodation['landlord_id'])
       if daoMessage:
+        mail.send_message(
+          sender= tenant['tenant_email'],
+          subject='New tour request for your unit!',
+          recipients=[landlord['landlord_email']],
+          body= 'Request was sent from {} about your unit: {} at {}\nPlease follow up using our message system or contact your new client at: {}'.format(tenant['tenant_name'], daoUnit['unit_number'], daoAccommodation['accm_title'],tenant['tenant_email'])
+        )
         db.commit()
         return jsonify(daoMessage)
       else:
@@ -141,14 +166,4 @@ class MessageHandler:
     except (Exception, pgerror) as e:
       db.rollback()
       logger.exception(e)
-      return jsonify('Error Occured'), 400
-    
-  @praetorian.auth_required
-  def deleteMessage(self, message_id):
-    try:
-      self.messages.deleteMessage(message_id)
-    except (Exception, pgerror) as e:
-      db.rollback()
-      logger.exception(e)
-      return jsonify('Error Occured'), 400
-    
+      return jsonify('Error Occured'), 400    

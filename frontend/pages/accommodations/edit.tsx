@@ -11,11 +11,29 @@ import { Token } from 'Token';
 import { Storage } from 'Storage';
 import { useRouter } from 'next/router'
 
-
 const { publicRuntimeConfig } = getConfig();
 const { url: host } = publicRuntimeConfig.site;
 
-const New = () => {
+
+
+interface accmType {
+    'accm_title': string, 'accm_street': string, 'accm_number': string, 'accm_city': string, 'accm_state': string, 'accm_country': string,
+    'accm_zipcode': string,'latitude':number ,'longitude':number,'accm_description': string,"accm_id": number,
+}
+interface shAmenitiesType {
+    "accm_id": number,
+    "deleted_flag": boolean,
+    "shared_amenities_id": number,
+    "shared_bathroom": boolean,
+    "shared_dryer":boolean,
+    "shared_kitchen": boolean,
+    "shared_washer": boolean,
+    "pets_allowed": boolean
+}
+
+
+
+const Edit = () => {
 
 
     //const [page, setPage] = useState(1);
@@ -26,13 +44,18 @@ const New = () => {
     const [selectedImage3, setSelectedImage3] = useState<string|any>(null);
     const [selectedImage4, setSelectedImage4] = useState<string|any>(null);
 
-    const [accId,setAccId] = useState<number|null>(null)
+    const [accmId,setAccmId] = useState<any>(null)
     const [storage, setStorage] = useState<Storage>({ token: null, isLandlord: null, id: null })
     const router = useRouter()
     const cookies = new Cookies()
+    const [accommodation,setAccommodation] = useState<accmType>()
+    const [shAmenities,setShAmenities] = useState<shAmenitiesType>()
+
 
     useEffect(() => {
         
+        try{
+            setAccmId(router.query.accmId)
         try{
             const token = cookies.get('jwt_authorization')
 			const decoded = jwt<Token>(token)
@@ -67,67 +90,135 @@ const New = () => {
             //console.log('out')
             console.error(err)
         }
+    } catch (err) {
+        alert('No accommodation id found in query')
+        console.error(err)
+        router.replace('/profile')
+    }
 
 
         
     }, [])
 
+    useEffect(()=>{
+        axios.get(`${host}/api/accommodations/${accmId}`)
+        .then(res=>{
+            return res.data
+        })
+        .then(result=>{
+            setAccommodation(result)
+            setCurrPos(new google.maps.LatLng({'lat':result.latitude,'lng':result.longitude}))
+            setCenter(new google.maps.LatLng({'lat':result.latitude,'lng':result.longitude}))
+        })
+        .catch(err=>{
+            console.error(err)
+        })
+    },[accmId])
+
+    useEffect(()=>{
+        axios.get(`${host}/api/accommodations/amenities/${accmId}`)
+        .then(res=>{
+            return res.data
+        })
+        .then(result=>{
+            setShAmenities(result)
+        })
+        .catch(err=>{
+            console.error(err)
+        })
+
+    },[accommodation])
+
+    useEffect(()=>{
+        axios.get(`${host}/api/images/accommodation/${accmId}`)
+        .then(res=>{
+            return res.data
+        })
+        .then(result=>{
+            console.log(result)
+            try{
+                setSelectedImage1(result[0]['secure_url'])
+            }catch(err){
+                console.log('no image 1')
+            }
+            try{
+                setSelectedImage2(result[1]['secure_url'])
+            }catch(err){
+                console.log('no image 2')
+            }
+            try{
+                setSelectedImage3(result[2]['secure_url'])
+            }catch(err){
+                console.log('no image 3')
+            }
+            try{
+                setSelectedImage4(result[3]['secure_url'])
+            }catch(err){
+                console.log('no image 4')
+            }
+            //setShAmenities(result)
+        })
+        .catch(err=>{
+            console.error(err)
+        })
+    },[accmId])
+
+   
+
 
     const handleSelect1 = async (event: any) => {
         event.preventDefault();
-        if (event.target.files[0].size > 10485759) {
-            alert('Image size too big. Max size is 10 Mb')
-            
-        } else {
-            const reader = new FileReader();
-            reader.onload = () => {
-                setSelectedImage1(reader.result)
-            }
-            reader.readAsDataURL(event.target.files[0])
-        }
+
+
+        const reader = new FileReader();
+        reader.onload = () => {
+            setSelectedImage1(reader.result)
+        }   
+        reader.readAsDataURL(event.target.files[0])
+
+        
+        //alert(URL.createObjectURL(event.target.files![0]))
+        //setSelectedImage1(URL.createObjectURL(event.target.files![0]))
 
     }
     const handleSelect2 = async (event: any) => {
         event.preventDefault();
 
-        if (event.target.files[0].size > 10485759) {
-            alert('Image size too big. Max size is 10 Mb')
-            
-        } else {
-            const reader = new FileReader();
-            reader.onload = () => {
-                setSelectedImage2(reader.result)
-            }
-            reader.readAsDataURL(event.target.files[0])
-        }
+        const reader = new FileReader();
+        reader.onload = () => {
+            setSelectedImage2(reader.result)
+        }   
+        reader.readAsDataURL(event.target.files[0])
+
+
+        //setSelectedImage2(URL.createObjectURL(event.target.files![0]))
+
     }
     const handleSelect3 = async (event: any) => {
         event.preventDefault();
 
-        if (event.target.files[0].size > 10485759) {
-            alert('Image size too big. Max size is 10 Mb')
-            
-        } else {
-            const reader = new FileReader();
-            reader.onload = () => {
-                setSelectedImage3(reader.result)
-            }
-            reader.readAsDataURL(event.target.files[0])
-        }
+        const reader = new FileReader();
+        reader.onload = () => {
+            setSelectedImage3(reader.result)
+        }   
+        reader.readAsDataURL(event.target.files[0])
+
+
+        //setSelectedImage3(URL.createObjectURL(event.target.files![0]))
+
     }
     const handleSelect4 = async (event: any) => {
         event.preventDefault();
 
-        if (event.target.files[0].size > 10485759) {
-            alert('Image size too big. Max size is 10 Mb')
-            
-        } else {
-            const reader = new FileReader();
-            reader.onload = () => {
-                setSelectedImage4(reader.result)
-            }
-            reader.readAsDataURL(event.target.files[0])
-        }
+        const reader = new FileReader();
+        reader.onload = () => {
+            setSelectedImage4(reader.result)
+        }   
+        reader.readAsDataURL(event.target.files[0])
+
+
+        //setSelectedImage4(URL.createObjectURL(event.target.files![0]))
+
     }
     const [center, setCenter] = useState<google.maps.LatLng | google.maps.LatLngLiteral>({
         lat: 18.4338426,
@@ -150,48 +241,31 @@ const New = () => {
         }
 
     }
-    const createAccommodation = async (data:any, amenities:any) =>{
+    const editAccommodation = async (data:any, amenities:any) =>{
 
         if(data){
             console.log(data)
-            await axios({ method: 'post', url: `${host}/api/accommodations/new`, headers: { Authorization: `Bearer ${storage.token}` },data })
+            await axios({ method: 'put', url: `${host}/api/accommodations`, headers: { Authorization: `Bearer ${storage.token}` },data })
             .then(response => {
-                console.log(response.data)
-                if(response.data=='Accommodation number already exists for landlord.'){
-                    throw new Error('Accm number exists');
-                }
+                // if(response==Object){
+                //     throw new Error('Accm number exists');
+                // }
                 return response.data
             })
             .then(result =>{
                 //alert(result)
-                try{
-                    uploadImages(result['accm_id'])
-                }catch(err){
-                    console.log(err)
-                    alert('Errors uploading images. Edit accommodation in profile.')
-                    throw new Error('image')
-                    
-                }
-                
+                uploadImages(result['accm_id'])
                 return result
             }).then(result =>{
-                try{
-                    updateAccAmenities(result['shared_amenities_id'],amenities)
-                }catch(err){
-                    console.log(err)
-                    alert('Errors applying amenities. Edit accommodation in profile.')
-                    throw new Error('amenities')
-                }
+                updateAccAmenities(result['shared_amenities_id'],amenities)
 
             }).then(()=>{
                 alert('Creation successfull')
                 router.replace('/profile')
             })
             .catch(err =>{
-                
-
                 console.log(err)
-                alert(err)
+                alert('Creation errors')
                 //router.replace()
             })
         }
@@ -216,7 +290,6 @@ const New = () => {
                 
             })
             .catch(err =>{
-                alert(err)
                 console.log(err)
             })
 
@@ -244,7 +317,6 @@ const New = () => {
 
     const handleSubmit = async (event: any) => {
         event.preventDefault();
-        console.log(event.target)
         
         
         
@@ -255,7 +327,7 @@ const New = () => {
         let amenities = {'bathroom': event.target.bathroom.checked, 'washer': event.target.washer.checked, 'dryer': event.target.dryer.checked, 'kitchen': event.target.kitchen.checked, 'pets': event.target.pets.checked}
         let details = {
             'accm_title': event.target.title.value, 'accm_street': event.target.street.value, 'accm_number': event.target.number.value, 'accm_city': event.target.city.value, 'accm_state': event.target.state.value, 'accm_country': event.target.country.value,
-            'accm_zipcode': event.target.zipcode.value,'latitude':latitude ,'longitude':longitude,'accm_description': event.target.description.value
+            'accm_zipcode': event.target.zipcode.value,'latitude':latitude ,'longitude':longitude,'accm_description': event.target.description.value,'accm_id':accommodation?.accm_id
         }
 
 
@@ -263,7 +335,7 @@ const New = () => {
         try{
 
 
-            createAccommodation(details,amenities)
+            editAccommodation(details,amenities)
             
             // uploadImage(selectedImage1!,6,1)
 
@@ -278,7 +350,6 @@ const New = () => {
     
 
     const handleZipcodeChange = async (event: any) => {
-
         //alert(event.target.value)
         if(event.target.value.length>4){
         await fetch('https://maps.googleapis.com/maps/api/geocode/json?' + new URLSearchParams({
@@ -306,7 +377,7 @@ const New = () => {
         }
 
     }
-
+    
 
     const mapOptions = useMemo<google.maps.MapOptions>(
         () => ({
@@ -336,6 +407,8 @@ const New = () => {
     }, [])
 
 
+
+
     if (!isLoaded) {
         return <p>Loading...</p>;
     }
@@ -346,36 +419,37 @@ const New = () => {
             <div className="text-sm breadcrumbs mt-24 mx-10">
                 <ul>
                     <li><Link href={'/profile'}>Profile</Link></li>
-                    <li>Create Accommodation</li>
+                    <li>Edit Accommodation</li>
+                    <li>Accommodation [{accmId}]</li>
                     
                 </ul>
             </div>
-            <form onSubmit={handleSubmit} id='mainForm' className=" form-control mb-24">
+            <form onSubmit={handleSubmit} className=" form-control mb-24">
 
                 <div className="grid lg:grid-flow-col sm:grid-flow-row shadow-lg  rounded-lg ring-1 ring-stone-200  mx-10">
 
 
                     <div className=" flex flex-col mt-4 ">
-                        <label className="font-medium text-2xl m-4 ">1. Create new Accommodation</label>
+                        <label className="font-medium text-2xl m-4 ">1. Describe your accommodation</label>
                         <div className="flex flex-col lg:flex-row sm:flex-col ">
                             <div className="flex flex-col gap-2 m-4  ">
                                 <label>Title</label>
-                                <input id='title' type="text" placeholder="Title" className="input input-bordered w-full   " required />
+                                <input id='title' defaultValue={accommodation?.accm_title} type="text" placeholder="Title" className="input input-bordered w-full   " required />
                                 <label>Address</label>
                                 <div className="grid grid-flow-row grid-cols-3 gap-2">
-                                    <input id='street' type="text" placeholder="Street" className="input input-bordered w-full  col-span-2" required />
+                                    <input id='street' type="text" placeholder="Street" defaultValue={accommodation?.accm_street} className="input input-bordered w-full  col-span-2" required />
                                     <span></span>
-                                    <input id='number' type="text" placeholder="Number" className="input input-bordered w-full  " required/>
-                                    <input id='city' type="text" placeholder="City" className="input input-bordered w-full " required />
-                                    <input id='state' type="text"  placeholder="State" className="input input-bordered w-full  " />
-                                    <select id='country' className="select select-bordered" required>
+                                    <input id='number' defaultValue={accommodation?.accm_number} type="text" placeholder="Number" className="input input-bordered w-full  " />
+                                    <input id='city' defaultValue={accommodation?.accm_city} type="text" placeholder="City" className="input input-bordered w-full " required />
+                                    <input id='state' defaultValue={accommodation?.accm_state} type="text" placeholder="State" className="input input-bordered w-full  " />
+                                    <select id='country' defaultValue={accommodation?.accm_country} className="select select-bordered" required>
                                         <option disabled selected>Country</option>
                                         <option>USA</option>
                                         <option>PR</option>
                                     </select>
-                                    <input onInput={handleZipcodeChange} id='zipcode' type="text" placeholder="Zipcode" className="input input-bordered w-full " required />
+                                    <input onInput={handleZipcodeChange} defaultValue={accommodation?.accm_zipcode} id='zipcode' type="text" placeholder="Zipcode" className="input input-bordered w-full " required />
                                     <label className="col-span-2 pt-2" >Description</label>
-                                    <input id='description' type="text" placeholder="" className="input input-bordered w-full  col-span-3" required />
+                                    <input id='description' type="text" placeholder="" defaultValue={accommodation?.accm_description}  className="input input-bordered w-full  col-span-3" required />
                                 </div>
 
                                 <label className="mt-2">Shared Amenities:</label>
@@ -384,31 +458,31 @@ const New = () => {
 
                                     </div>
                                     <div className='mb-[0.125rem] mr-4 inline-block min-h-[1.5rem]  hover:cursor-pointer'>
-                                        <input id='bathroom' type='checkbox' name='checkbox' className='hover:cursor-pointer  text-accent bg-gray-200 border-gray-200 focus:accent' />
+                                        <input id='bathroom' defaultChecked={shAmenities?.shared_bathroom} type='checkbox' name='checkbox' className='hover:cursor-pointer  text-accent bg-gray-200 border-gray-200 focus:accent' />
                                         <label className='mt-px inline-block pl-2 hover:cursor-pointer' htmlFor=''>
                                             Bathroom
                                         </label>
                                     </div>
                                     <div className='mb-[0.125rem] mr-4 inline-block min-h-[1.5rem]  hover:cursor-pointer'>
-                                        <input id='washer' type='checkbox' name='checkbox' className='hover:cursor-pointer  text-accent bg-gray-200 border-gray-200 focus:accent' />
+                                        <input id='washer' defaultChecked={shAmenities?.shared_washer} type='checkbox' name='checkbox' className='hover:cursor-pointer  text-accent bg-gray-200 border-gray-200 focus:accent' />
                                         <label className='mt-px inline-block pl-2 hover:cursor-pointer' htmlFor=''>
                                             Washer
                                         </label>
                                     </div>
                                     <div className='mb-[0.125rem] mr-4 inline-block min-h-[1.5rem]  hover:cursor-pointer'>
-                                        <input id='dryer' type='checkbox' name='checkbox' className='hover:cursor-pointer  text-accent bg-gray-200 border-gray-200 focus:accent' />
+                                        <input id='dryer' defaultChecked={shAmenities?.shared_dryer} type='checkbox' name='checkbox' className='hover:cursor-pointer  text-accent bg-gray-200 border-gray-200 focus:accent' />
                                         <label className='mt-px inline-block pl-2 hover:cursor-pointer' htmlFor=''>
                                             Dryer
                                         </label>
                                     </div>
                                     <div className='mb-[0.125rem] mr-4 inline-block min-h-[1.5rem]  hover:cursor-pointer'>
-                                        <input id='kitchen' type='checkbox' name='checkbox' className='hover:cursor-pointer  text-accent bg-gray-200 border-gray-200 focus:accent' />
+                                        <input id='kitchen' defaultChecked={shAmenities?.shared_kitchen} type='checkbox' name='checkbox' className='hover:cursor-pointer  text-accent bg-gray-200 border-gray-200 focus:accent' />
                                         <label className='mt-px inline-block pl-2 hover:cursor-pointer' htmlFor=''>
                                             Kitchen
                                         </label>
                                     </div>
                                     <div className='mb-[0.125rem] mr-4 inline-block min-h-[1.5rem]  hover:cursor-pointer'>
-                                        <input id='pets' type='checkbox' name='checkbox' className='hover:cursor-pointer  text-accent bg-gray-200 border-gray-200 focus:accent' />
+                                        <input id='pets' defaultChecked={shAmenities?.pets_allowed} type='checkbox' name='checkbox' className='hover:cursor-pointer  text-accent bg-gray-200 border-gray-200 focus:accent' />
                                         <label className='mt-px inline-block pl-2 hover:cursor-pointer' htmlFor=''>
                                             Pets Allowed
                                         </label>
@@ -484,7 +558,7 @@ const New = () => {
 
                         />
                     </GoogleMap>
-                    <input type="submit" className={currPos?'btn mx-4 my-2 ring-1 ring-accent text-accent hover:bg-accent hover:ring-white hover:text-white':'hidden'} value={'Create'}></input>
+                    <input type="submit" className={currPos?'btn mx-4 my-2 ring-1 ring-accent text-accent hover:bg-accent hover:ring-white hover:text-white':'hidden'} value={'Save Changes'}></input>
 
                 </div>
 
@@ -496,5 +570,5 @@ const New = () => {
     )
 
 };
-export default New;
+export default Edit;
 

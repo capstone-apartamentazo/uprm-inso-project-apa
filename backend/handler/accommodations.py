@@ -211,9 +211,7 @@ class AccommodationHandler:
       if walking_dist_matrix['elements'][0]['status'] == 'ZERO_RESULTS':
         best_dist_matrix = driving_dist_matrix['elements'][0]['duration']['value']
       else:
-        driving_duration = driving_dist_matrix['elements'][0]['duration']['value']
         walking_duration = walking_dist_matrix['elements'][0]['duration']['value']
-
         best_dist_matrix = walking_dist_matrix
         if walking_duration > 1800:
           best_dist_matrix = driving_dist_matrix
@@ -273,19 +271,38 @@ class AccommodationHandler:
       logger.exception(e)
       return jsonify('Error Occured'), 400
 
-  # TODO add individual delete function
   @praetorian.auth_required
   def deleteAccommodationCascade(self, landlord_id):
     try:
       deletedAccommodation = self.accommodations.deleteAccommodationCascade(landlord_id)
       for accm in deletedAccommodation:
-        deletedAmenities = self.amenities.deleteSharedAmenities(accm['accm_id'])
+        deletedAmenities = self.amenities.deleteSharedAmenitiesCascade(accm['accm_id'])
         deletedReview = self.review.deleteReviewCascade(accm['accm_id'])
         deletedUnit = self.units.deleteUnitCascade(accm['accm_id'])
         deletedNotice = self.notice.deleteNoticeCascade(accm['accm_id'])
         if not deletedAmenities and deletedReview and deletedUnit and deletedNotice:
           return False
       return True
+    except (Exception, pgerror) as e:
+      db.rollback()
+      logger.exception(e)
+      return jsonify('Error Occured'), 400
+  
+  @praetorian.auth_required
+  def deleteAccommodation(self, accm_id):
+    try:
+      landlord_id = praetorian.current_user_id()
+      if(landlord_id != self.accommodations.getById(accm_id)['landlord_id']):
+        return jsonify('Your not the owner of this accommodation')
+      deletedAccommodation = self.accommodations.deleteAccommodation(accm_id)
+      deletedAmenities = self.amenities.deleteSharedAmenitiesCascade(accm_id)
+      deletedReview = self.review.deleteReviewCascade(accm_id)
+      deletedUnit = self.units.deleteUnitCascade(accm_id)
+      deletedNotice = self.notice.deleteNoticeCascade(accm_id)
+      if not deletedAccommodation and deletedAmenities and deletedReview and deletedUnit and deletedNotice:
+        return jsonify('Error deleting accommodation')
+      db.commit()
+      return jsonify('Successfully deleted accommodation!')
     except (Exception, pgerror) as e:
       db.rollback()
       logger.exception(e)
@@ -300,7 +317,7 @@ class AccommodationHandler:
     if not len(street.strip()):
       return False, 'Empty Street'
     if self.accmNumValid(number):
-      return False, 'Accommodation number can only contain numbers, leters and hyphen. (Hyphen are optional but cannot start or end with a hyphen -)'
+      return False, 'Accommodation number can only contain numbers, leters and hyphen and max 10 characters. (Hyphen are optional but cannot start or end with a hyphen -)'
     if not len(city.strip()):
       return False, 'Empty City'
     if self.onlyCharacters(city):

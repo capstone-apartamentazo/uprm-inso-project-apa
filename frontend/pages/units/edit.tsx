@@ -15,15 +15,47 @@ import { Accm } from 'Accm';
 import getConfig from 'next/config';
 import { Unit } from "Unit";
 
+interface unitType {
+    "accm_id": number,
+    "available": boolean,
+    "contract_duration": number,
+    "date_available": string,
+    "deleted_flag": boolean,
+    "price": number,
+    "size": number,
+    "tenant_capacity": number,
+    "unit_id": number,
+    "unit_number": string
+}
+
+interface pAmenitiesType{
+    "air_conditioner": boolean,
+    "balcony": boolean,
+    "bathrooms": string,
+    "bedrooms": number,
+    "deleted_flag": boolean,
+    "electricity": boolean,
+    "heater": boolean,
+    "internet": boolean,
+    "parking": boolean,
+    "priv_amenities_id": number,
+    "private_dryer": boolean,
+    "private_washer": boolean,
+    "unit_id": number,
+    "water": boolean
+}
+
 
 const { publicRuntimeConfig } = getConfig();
 const { url: host } = publicRuntimeConfig.site;
 
-const New = () => {
+const Edit = () => {
     const router = useRouter();
 
     const [storage, setStorage] = useState<Storage>({ token: null, isLandlord: false, id: null })
     const [accmId, setAccmId] = useState<any>(null)
+    const [unitId,setUnitId] = useState<any>(null)
+
     const [logged, setLogged] = useState(false)
     const cookies = new Cookies()
 
@@ -32,11 +64,13 @@ const New = () => {
     const [selectedImage3, setSelectedImage3] = useState<string | any>(null);
     const [selectedImage4, setSelectedImage4] = useState<string | any>(null);
 
+    const [unit,setUnit] = useState<unitType>()
+    const [pAmenities,setPAmenities] = useState<pAmenitiesType>()
 
 
     useEffect(() => {
         try {
-            setAccmId((router.query.accmid))
+            setUnitId((router.query.unitId))
             try {
 
                 const token = cookies.get('jwt_authorization')
@@ -79,6 +113,71 @@ const New = () => {
             router.replace('/profile')
         }
     }, [])
+
+    useEffect(()=>{
+        axios.get(`${host}/api/units/${unitId}`)
+        .then(res=>{
+            return res.data
+        })
+        .then(result=>{
+            //console.log(result)
+            setUnit(result)
+            
+        })
+        .catch(err=>{
+            console.error(err)
+        })
+
+    },[unitId])
+
+    useEffect(()=>{
+        axios.get(`${host}/api/units/amenities/${unitId}`)
+        .then(res=>{
+            return res.data
+        })
+        .then(result=>{
+            console.log(result)
+            setPAmenities(result)
+            
+        })
+        .catch(err=>{
+            console.error(err)
+        })
+    },[unitId])
+
+    useEffect(()=>{
+        axios.get(`${host}/api/images/unit/${unitId}`)
+        .then(res=>{
+            return res.data
+        })
+        .then(result=>{
+            console.log(result)
+            try{
+                setSelectedImage1(result[0]['secure_url'])
+            }catch(err){
+                console.log('no image 1')
+            }
+            try{
+                setSelectedImage2(result[1]['secure_url'])
+            }catch(err){
+                console.log('no image 2')
+            }
+            try{
+                setSelectedImage3(result[2]['secure_url'])
+            }catch(err){
+                console.log('no image 3')
+            }
+            try{
+                setSelectedImage4(result[3]['secure_url'])
+            }catch(err){
+                console.log('no image 4')
+            }
+            //setShAmenities(result)
+        })
+        .catch(err=>{
+            console.error(err)
+        })
+    },[unitId])
 
 
     const handleSelect1 = async (event: any) => {
@@ -159,11 +258,15 @@ const New = () => {
 
         if (data) {
             console.log(data)
-            await axios({ method: 'post', url: `${host}/api/units/add`, headers: { Authorization: `Bearer ${storage.token}` }, data })
+            await axios({ method: 'put', url: `${host}/api/units`, headers: { Authorization: `Bearer ${storage.token}` }, data })
                 .then(response => {
+                    // if(response==Object){
+                    //     throw new Error('Accm number exists');
+                    // }
                     return response.data
                 })
                 .then(result => {
+                    //alert(result)
                     uploadImages(result['unit_id'])
                     return result
                 }).then(result => {
@@ -247,7 +350,7 @@ const New = () => {
         event.preventDefault();
         let amenities = { 'bedrooms': event.target.bedrooms.value, 'bathrooms': event.target.bathrooms.value, 'electricity': event.target.electricity.checked, 'water': event.target.water.checked, 'internet': event.target.internet.checked, 'heater': event.target.heater.checked, 'private_washer': event.target.washer.checked, 'private_dryer': event.target.dryer.checked, 'air_conditioner': event.target.ac.checked, 'parking': event.target.parking.checked, 'balcony': event.target.balcony.checked }
         let details = {
-            'unit_number': event.target.number.value, 'tenant_capacity': parseInt(event.target.capacity.value,10), 'price': parseInt(event.target.price.value,10), 'size': parseInt(event.target.size.value,10), 'date_available': event.target.date.value, 'contract_duration': parseInt(event.target.contract.value,10), 'accm_id': accmId
+            'unit_number': event.target.number.value, 'price': event.target.price.value, 'date_available': event.target.date.value, 'contract_duration': event.target.contract.value, 'unit_id': unitId
         }
         try {
 
@@ -280,9 +383,10 @@ const New = () => {
             <div className="text-sm breadcrumbs mt-24 mx-10">
                 <ul>
                     <li><Link href={'/profile'}>Profile</Link></li>
-                    <li>Accommodation [{accmId}]</li>
+                    <li>Accommodation [{unit?.accm_id}]</li>
                     <li onClick={()=>router.back()} className=" cursor-pointer hover:underline">Units</li>
-                    <li>Create unit</li>
+                    <li>Edit unit</li>
+                    <li>Unit [{unit?.unit_id}]</li>
                 </ul>
             </div>
             <form onSubmit={handleSubmit} className=" form-control mb-24">
@@ -292,40 +396,40 @@ const New = () => {
 
                     <div className=" flex flex-col mt-4 ">
 
-                        <label className="font-medium text-2xl m-4 ">Create new unit</label>
+                        <label className="font-medium text-2xl m-4 ">Edit unit</label>
                         <div className="flex flex-col lg:flex-row sm:flex-col ">
                             <div className="flex flex-col gap-2 m-4  ">
                                 <label className="font-medium">Accommodation:</label>
                                 <div>
-                                    <label>Accommodation: [{accmId}]</label>
+                                    <label>Accommodation: [{unit?.accm_id}]</label>
 
                                 </div>
                                 <label className="font-medium">Details:</label>
                                 <div className="grid grid-flow-row grid-cols-3 gap-2">
-                                    <input id='number' type="text" placeholder="Unit #" className="input input-bordered w-full  " required />
+                                    <input id='number' defaultValue={unit?.unit_number} type="text" placeholder="Unit #" className="input input-bordered w-full  " required />
 
-                                    <select id='capacity' className="select select-bordered" required>
+                                    <select id='capacity'  className="select select-bordered" required>
                                         <option disabled selected>Unit Capacity</option>
-                                        <option value={1}>1</option>
-                                        <option value={2}>2</option>
-                                        <option value={3}>3</option>
-                                        <option value={4}>4</option>
-                                        <option value={5}>5</option>
-                                        <option value={6}>6</option>
+                                        <option>1</option>
+                                        <option>2</option>
+                                        <option>3</option>
+                                        <option>4</option>
+                                        <option>5</option>
+                                        <option>6</option>
                                     </select>
 
-                                    <input id='price' min="10" max="5000" type="number" placeholder="Price/month" className="input input-bordered w-full  " required />
-                                    <input id='size' min="1" max="10000" type="number" placeholder="Size in sq. ft." className="input input-bordered w-full  " required />
+                                    <input id='price' defaultValue={unit?.price} min="10" max="5000" type="number" placeholder="Price/month" className="input input-bordered w-full  " required />
+                                    <input id='size' defaultValue={unit?.size} min="1" max="10000" type="number" placeholder="Size in sq. ft." className="input input-bordered w-full  " required />
 
-                                    <select id='bedrooms' className="select select-bordered" required>
+                                    <select id='bedrooms'  className="select select-bordered" required>
                                         <option disabled selected>Bedrooms</option>
-                                        <option value={1}>1 bedroom</option>
-                                        <option value={2}>2 bedrooms</option>
-                                        <option value={3}>3 bedrooms</option>
-                                        <option value={5}>5 bedrooms</option>
+                                        <option>1</option>
+                                        <option>2</option>
+                                        <option>3</option>
+                                        <option>5</option>
                                     </select>
-                                    <select id='bathrooms' className="select select-bordered" required>
-                                        <option disabled selected>Bathrooms</option>
+                                    <select id='bathrooms'  className="select select-bordered" required>
+                                        <option disabled selected >Bathrooms</option>
                                         <option value={0}>0</option>
                                         <option value={0.5}>1/2</option>
                                         <option value={1}>1</option>
@@ -334,7 +438,7 @@ const New = () => {
                                         <option value={3}>3</option>
                                         <option value={5}>5</option>
                                     </select>
-                                    <select id='contract' className="select select-bordered" required>
+                                    <select id='contract'  className="select select-bordered" required>
                                         <option disabled selected>Contract Duration</option>
                                         <option value={6}>6 months</option>
                                         <option value={10}>10 months</option>
@@ -347,7 +451,7 @@ const New = () => {
                                 <div className="grid grid-flow-row grid-cols-3 gap-2">
 
 
-                                    <input id='date' type="date" placeholder="Date Available" className="input input-bordered w-full " required />
+                                    <input id='date' defaultValue={unit?.date_available} type="date" placeholder="Date Available" className="input input-bordered w-full " required />
 
                                 </div>
 
@@ -359,55 +463,55 @@ const New = () => {
 
                                     </div>
                                     <div className='mb-[0.125rem] mr-4 inline-block min-h-[1.5rem]  hover:cursor-pointer'>
-                                        <input id='electricity' type='checkbox' name='checkbox' className='hover:cursor-pointer  text-accent bg-gray-200 border-gray-200 focus:accent' />
+                                        <input id='electricity' defaultChecked={pAmenities?.electricity} type='checkbox' name='checkbox' className='hover:cursor-pointer  text-accent bg-gray-200 border-gray-200 focus:accent' />
                                         <label className='mt-px inline-block pl-2 hover:cursor-pointer' htmlFor=''>
                                             Electricity
                                         </label>
                                     </div>
                                     <div className='mb-[0.125rem] mr-4 inline-block min-h-[1.5rem]  hover:cursor-pointer'>
-                                        <input id='water' type='checkbox' name='checkbox' className='hover:cursor-pointer  text-accent bg-gray-200 border-gray-200 focus:accent' />
+                                        <input id='water' defaultChecked={pAmenities?.water} type='checkbox' name='checkbox' className='hover:cursor-pointer  text-accent bg-gray-200 border-gray-200 focus:accent' />
                                         <label className='mt-px inline-block pl-2 hover:cursor-pointer' htmlFor=''>
                                             Water
                                         </label>
                                     </div>
                                     <div className='mb-[0.125rem] mr-4 inline-block min-h-[1.5rem]  hover:cursor-pointer'>
-                                        <input id='internet' type='checkbox' name='checkbox' className='hover:cursor-pointer  text-accent bg-gray-200 border-gray-200 focus:accent' />
+                                        <input id='internet' defaultChecked={pAmenities?.internet} type='checkbox' name='checkbox' className='hover:cursor-pointer  text-accent bg-gray-200 border-gray-200 focus:accent' />
                                         <label className='mt-px inline-block pl-2 hover:cursor-pointer' htmlFor=''>
                                             Internet
                                         </label>
                                     </div>
                                     <div className='mb-[0.125rem] mr-4 inline-block min-h-[1.5rem]  hover:cursor-pointer'>
-                                        <input id='heater' type='checkbox' name='checkbox' className='hover:cursor-pointer  text-accent bg-gray-200 border-gray-200 focus:accent' />
+                                        <input id='heater' defaultChecked={pAmenities?.heater} type='checkbox' name='checkbox' className='hover:cursor-pointer  text-accent bg-gray-200 border-gray-200 focus:accent' />
                                         <label className='mt-px inline-block pl-2 hover:cursor-pointer' htmlFor=''>
                                             Heater
                                         </label>
                                     </div>
                                     <div className='mb-[0.125rem] mr-4 inline-block min-h-[1.5rem]  hover:cursor-pointer'>
-                                        <input id='washer' type='checkbox' name='checkbox' className='hover:cursor-pointer  text-accent bg-gray-200 border-gray-200 focus:accent' />
+                                        <input id='washer' defaultChecked={pAmenities?.private_washer} type='checkbox' name='checkbox' className='hover:cursor-pointer  text-accent bg-gray-200 border-gray-200 focus:accent' />
                                         <label className='mt-px inline-block pl-2 hover:cursor-pointer' htmlFor=''>
                                             Private Washer
                                         </label>
                                     </div>
                                     <div className='mb-[0.125rem] mr-4 inline-block min-h-[1.5rem]  hover:cursor-pointer'>
-                                        <input id='dryer' type='checkbox' name='checkbox' className='hover:cursor-pointer  text-accent bg-gray-200 border-gray-200 focus:accent' />
+                                        <input id='dryer' defaultChecked={pAmenities?.private_dryer} type='checkbox' name='checkbox' className='hover:cursor-pointer  text-accent bg-gray-200 border-gray-200 focus:accent' />
                                         <label className='mt-px inline-block pl-2 hover:cursor-pointer' htmlFor=''>
                                             Private Dryer
                                         </label>
                                     </div>
                                     <div className='mb-[0.125rem] mr-4 inline-block min-h-[1.5rem]  hover:cursor-pointer'>
-                                        <input id='ac' type='checkbox' name='checkbox' className='hover:cursor-pointer  text-accent bg-gray-200 border-gray-200 focus:accent' />
+                                        <input id='ac' defaultChecked={pAmenities?.air_conditioner} type='checkbox' name='checkbox' className='hover:cursor-pointer  text-accent bg-gray-200 border-gray-200 focus:accent' />
                                         <label className='mt-px inline-block pl-2 hover:cursor-pointer' htmlFor=''>
                                             A/C
                                         </label>
                                     </div>
                                     <div className='mb-[0.125rem] mr-4 inline-block min-h-[1.5rem]  hover:cursor-pointer'>
-                                        <input id='parking' type='checkbox' name='checkbox' className='hover:cursor-pointer  text-accent bg-gray-200 border-gray-200 focus:accent' />
+                                        <input id='parking' defaultChecked={pAmenities?.parking} type='checkbox' name='checkbox' className='hover:cursor-pointer  text-accent bg-gray-200 border-gray-200 focus:accent' />
                                         <label className='mt-px inline-block pl-2 hover:cursor-pointer' htmlFor=''>
                                             Secure Parking Spot
                                         </label>
                                     </div>
                                     <div className='mb-[0.125rem] mr-4 inline-block min-h-[1.5rem]  hover:cursor-pointer'>
-                                        <input id='balcony' type='checkbox' name='checkbox' className='hover:cursor-pointer  text-accent bg-gray-200 border-gray-200 focus:accent' />
+                                        <input id='balcony' defaultChecked={pAmenities?.balcony} type='checkbox' name='checkbox' className='hover:cursor-pointer  text-accent bg-gray-200 border-gray-200 focus:accent' />
                                         <label className='mt-px inline-block pl-2 hover:cursor-pointer' htmlFor=''>
                                             Balcony
                                         </label>
@@ -467,5 +571,5 @@ const New = () => {
     )
 
 };
-export default New;
+export default Edit;
 
