@@ -31,12 +31,10 @@ const Listings = () => {
 					return data.json();
 				})
 				.then((data) => {
-					console.log('results');
-					console.log(data);
 					data.map((accm: any) => {
 						allListings.push(
-							<div key={accm} className='col-start-1 row-span-2 p-2'>
-								<ListingResult key={accm} title={accm.accm_title} address={accm.accm_street + ', ' + accm.accm_city} description={accm.accm_description} unitAmount={accm.accm_units.length} id={accm.accm_id} accmUnits={accm.accm_units} />{' '}
+							<div key={'accmDiv_' + accm.accm_id} className='col-start-1 row-span-2 p-2'>
+								<ListingResult key={'accmCard_' + accm.accm_id} title={accm.accm_title} address={accm.accm_street + ', ' + accm.accm_city} description={accm.accm_description} unitAmount={accm.accm_units.length} id={accm.accm_id} accmUnits={accm.accm_units} />{' '}
 							</div>
 						);
 					});
@@ -57,7 +55,7 @@ const Listings = () => {
 
 	return (
 		<Layout>
-			<section className='pt-24 pl-20 bg-gray-50 min-h-screen'>
+			<section className='pt-32 pl-20 bg-gray-50 min-h-screen'>
 				<div className='grid grid-cols-2 grid-flow-row gap-4'>
 					<div className='row-span-1'>
 						<p className='font-bold text-2xl'>

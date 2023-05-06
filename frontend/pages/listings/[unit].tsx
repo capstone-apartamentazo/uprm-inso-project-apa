@@ -1,62 +1,31 @@
 import Layout from '@/components/Layout';
 import { useListings } from 'useListings';
-import Review from '@/components/Review';
 import ReviewList from '@/components/ReviewList';
 import { useRouter } from 'next/router';
-import { useLoadScript, GoogleMap, LoadScript, MarkerF, Marker } from '@react-google-maps/api';
-import { useEffect, useState, useMemo, useCallback } from 'react';
-import { Loader } from "@googlemaps/js-api-loader"
-
+import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 
 const Unit = () => {
 	const router = useRouter();
 	const { unit } = router.query;
 
-	const mapOptions = {
-		disableDefaultUI: true,
-		zoomControl: true,
-		clickableIcons: true,
-		scrollwheel: true,
-		rotateControl: true,
-	}
+	const { data: unitData, error: unitError } = useListings(unit ? 'units/' + unit : null);
+	const { data: unitAmenities, error: unitAmenitiesError } = useListings(unit ? 'units/amenities/' + unit : null);
+	const { data: unitPics, error: unitPicsError } = useListings(unit ? 'images/unit/' + unit : null);
 
-
-
-
-
-
-
-	// TODO: actual loading screen
-	if (!unit) return <div>LOADING UNIT</div>;
-	const { data: unitData, error: unitError } = useListings('units/' + unit);
-	const { data: unitAmenities, error: unitAmenitiesError } = useListings('units/amenities/' + unit);
-	const { data: unitPics, error: unitPicsError } = useListings('images/unit/' + unit);
-	// return <div></div>;
-
-	// if (!unitData) return <div>Loading Unit Data</div>;
 	// TODO start loading accommodation stuff
 	const { data: accmData, error: accmError } = useListings(unitData ? 'accommodations/' + unitData.accm_id : null);
 	const { data: accmAmenities, error: accmAmenitiesError } = useListings(unitData ? 'accommodations/amenities/' + unitData.accm_id : null);
 	const { data: accmReviews, error: accmReviewsError } = useListings(unitData ? 'accommodations/reviews/' + unitData.accm_id : null);
-
-
-
-
-
+	const { data: accmPics, error: accmPicsError } = useListings(unitData ? 'images/accommodation/' + unitData.accm_id : null);
 
 	// TODO start loading landlord data
-	// if (!accmData) return <div>Loading Accm Data</div>;
 	const { data: landlord, error: landlordError } = useListings(accmData ? 'landlords/' + accmData.landlord_id : null);
 	const { data: landlordPic, error: landlordPicError } = useListings(accmData ? 'images/landlord/' + accmData.landlord_id : null);
 
 	// TODO: Add loading cards, default error cards
-	if (unitError || accmError || unitAmenitiesError || accmAmenitiesError || landlordError || landlordPicError || unitPicsError) return <div>Failed to load</div>;
-	if ((!unitData && !accmData) || unitData === undefined || accmData === undefined || unitAmenities === undefined || accmAmenities === undefined || landlord === undefined || landlordPic === undefined || unitPics === undefined) return <div>Loading...</div>;
-
-
-
-
-
+	// TODO: actual loading screen
+	if (accmPicsError || unitError || accmError || unitAmenitiesError || accmAmenitiesError || landlordError || landlordPicError || unitPicsError) return <div>Failed to load</div>;
+	if (!accmPics || accmPics === undefined || (!unitData && !accmData) || unitData === undefined || accmData === undefined || unitAmenities === undefined || accmAmenities === undefined || landlord === undefined || landlordPic === undefined || unitPics === undefined) return <div>Loading...</div>;
 
 	let tempAmenities = {
 		'Air Conditioner': unitAmenities['air_conditioner'],
@@ -111,16 +80,6 @@ const Unit = () => {
 		);
 	}
 
-	let reviews: any[] = [];
-	if (typeof accmReviews != 'string') {
-		accmReviews.map((review: any) => {
-			console.log(review);
-			reviews.push(<Review listingTitle={review.comment} opinion='' listingImg='https://tecdn.b-cdn.net/img/new/standard/nature/186.jpg' name={review.tenant_id} date={review.review_send_date} userImg='/images/person.png' rating={review.rating}></Review>);
-		});
-	} else {
-		reviews.push(<>NO REVIEWS FOUND</>);
-	}
-
 	const rating = landlord.landlord_rating;
 	let ratingStars = [];
 
@@ -133,7 +92,7 @@ const Unit = () => {
 	}
 	var landlordPicLink;
 	try {
-		landlordPicLink = landlordPic.resources[242].secure_url;
+		landlordPicLink = landlordPic.resources[0].secure_url;
 	} catch (ex) {
 		landlordPicLink = '/images/user.png';
 	}
@@ -141,59 +100,71 @@ const Unit = () => {
 	let allUnitPics: any[] = [];
 
 	try {
-		unitPics.resources.forEach((pic: { secure_url: any }) => {
-			console.log('PICCCC' + pic.secure_url);
-			if (allUnitPics.length === 0)
-				allUnitPics.push(
-					<div className='row-span-2 h-96 w-auto'>
-						<img src={pic.secure_url} className='rounded-2xl object-cover h-96 w-full' />
-					</div>
-				);
-			else
-				allUnitPics.push(
-					<div className='col-start-2 h-auto w-96'>
-						<img src={pic.secure_url} className='rounded-2xl object-cover h-full w-full' />
-					</div>
-				);
+		console.log(unitPics);
+		unitPics.forEach((pic: { secure_url: any }) => {
+			allUnitPics.push(
+				<div className='carousel-item w-96'>
+					<img src={pic.secure_url} className='rounded-box object-cover' />
+				</div>
+			);
+		});
+
+		accmPics.forEach((pic: { secure_url: any }) => {
+			allUnitPics.push(
+				<div className='carousel-item w-96'>
+					<img src={pic.secure_url} className='rounded-box object-cover' />
+				</div>
+			);
 		});
 	} catch (ex) {
-		console.log('No unit pics');
+		allUnitPics.push(
+			<>
+				<div className='row-span-2 h-96 w-auto'>
+					<img src='/images/default.jpg' className='rounded-2xl object-cover h-96 w-full' />
+				</div>
+				<div className='col-start-2 h-auto w-96'>
+					<img src='/images/default.jpg' className='rounded-2xl object-cover h-full w-full' />
+				</div>
+				<div className='col-start-2 h-auto w-96'>
+					<img src='/images/default.jpg' className='rounded-2xl object-cover h-full w-full' />
+				</div>
+			</>
+		);
 	}
 
-
+	// INFO: MAP
+	const mapOptions = {
+		disableDefaultUI: true,
+		zoomControl: true,
+		clickableIcons: true,
+		scrollwheel: true,
+		rotateControl: true,
+	};
 
 	const containerStyle = {
 		width: '100%',
-		height: '100%'
+		height: '100%',
 	};
 
 	const center = {
 		lat: accmData.latitude,
-		lng: accmData.longitude
+		lng: accmData.longitude,
 	};
-
-
-
-
 	return (
 		<Layout>
 			<section className='pt-32 pl-20 pr-20 bg-gray-50'>
 				<div className='grid grid-flow-row gap-4'>
 					<div className='row-span-2 row-start-1 col-start-1 text-3xl align-middle'>
-						<h1 className='font-semibold'>
+						<h1 className='font-semibold w-full'>
 							Unit {unitData.unit_number} <span className='text-accent'>|</span> {accmData.accm_title}
-							{unit}
 						</h1>
 						<h3 className='text-lg'>
 							{accmData.accm_street}, {accmData.accm_city}, {accmData.accm_country}, {accmData.accm_zipcode}
 						</h3>
 					</div>
-					<div className='row-start-3 col-span-4 h-96'>
-						<div className='grid grid-rows-2 grid-flow-col gap-4 h-96'>
-							{allUnitPics}
-							<div className='col-start-2 h-auto w-96'>
-								<img src='https://cache.umusic.com/_sites/_halo/zrskt/nwff/utbd.jpg' className='rounded-2xl object-cover h-full w-full' />
-							</div>
+					<div className='row-start-3 col-span-4 h-[28rem] bg-gray-100 rounded-2xl shadow-inner p-4'>
+						<div className='grid grid-rows-2 grid-flow-col gap-4 h-[28rem] overflow-auto'>
+							<div className='carousel carousel-center p-4 space-x-4 bg-neutral rounded-box h-[26rem]'>{allUnitPics}</div>
 						</div>
 					</div>
 					<div className='row-start-4 col-span-2 space-y-1'>
@@ -215,9 +186,9 @@ const Unit = () => {
 					<div className='row-start-5 col-start-1 col-span-2 mt-10'>
 						<h3 className='text-2xl'>About</h3>
 						<div className='w-full break-all'>
-							<p>{accmData.accm_description}</p>
+							<p className='mt-4 mb-4 font-semibold'>{accmData.accm_description}</p>
 						</div>
-						<div className='rounded-lg shadow-lg w-full py-4 flex'>
+						<div className='rounded-2xl shadow-lg w-full py-4 flex bg-white'>
 							<div className='w-32 overflow-hidden mx-4'>
 								<img src={landlordPicLink} alt='landlord' className='rounded-2xl h-full w-full object-cover' />
 							</div>
@@ -229,7 +200,7 @@ const Unit = () => {
 									<p className='ml-2 text-sm font-medium text-gray-500 dark:text-gray-400'>{landlord.landlord_rating} out of 5</p>
 									<span className='w-1 h-1 mx-1.5 bg-gray-500 rounded-full dark:bg-gray-400'></span>
 									<a href='#' className='text-sm font-medium text-gray-900 underline hover:no-underline'>
-										{reviews.length} {reviews.length > 1 ? 'reviews' : 'review'}
+										{typeof accmReviews === 'string' ? 0 : accmReviews.length} {typeof accmReviews === 'string' ? 'reviews' : accmReviews.length > 1 ? 'reviews' : 'review'}
 									</a>
 								</div>
 								<button className='btn btn-primary btn-sm leading-5 mt-2'>Contact</button>
@@ -237,20 +208,9 @@ const Unit = () => {
 						</div>
 					</div>
 					<div className='row-start-5 col-start-3 bg-gray-50 col-span-2 text-center mt-10 ring-2 ring-accent rounded-md p-1'>
-						<LoadScript
-							googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}
-						>
-							<GoogleMap
-								options={mapOptions}
-								mapContainerStyle={containerStyle}
-								center={center}
-								zoom={17}
-							>
-								<Marker
-									position={center}
-
-								/>
-								<></>
+						<LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}>
+							<GoogleMap options={mapOptions} mapContainerStyle={containerStyle} center={center} zoom={17}>
+								<Marker position={center} />
 							</GoogleMap>
 						</LoadScript>
 					</div>
@@ -260,7 +220,9 @@ const Unit = () => {
 					</div>
 					<div className='row-start-7 col-span-4 mt-10'>
 						<h3 className='text-2xl'>Accommodation Reviews</h3>
-						<div className='mb-24'>{/* <ReviewList route='accommodations/reviews/1' /> */}</div>
+						<div className='mb-24'>
+							<ReviewList route={`accommodations/reviews/${unitData.accm_id}`} />
+						</div>
 					</div>
 				</div>
 			</section>

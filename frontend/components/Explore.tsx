@@ -7,11 +7,13 @@ interface Listing {
 	accm_title: string;
 	accm_street: string;
 	accm_city: string;
+	accm_description: string;
+	accm_units: any;
 }
 
 export default function Explore() {
 	let listings: JSX.Element[] = [];
-	const { data, error } = useListings('accommodations/all');
+	const { data, error } = useListings('search?input=Mayaguez&offset=0');
 
 	if (error) return <div className='mt-20'></div>;
 	if (!data || typeof data === 'string') return <div></div>;
@@ -19,7 +21,8 @@ export default function Explore() {
 	const top = data.slice(0, 4);
 	try {
 		top.map((accm: Listing) => {
-			listings.push(<Listing key={accm.accm_id} title={accm.accm_title} address={accm.accm_street + ', ' + accm.accm_city} features={'Water & Internet included'} price={'$800'} href={''} />);
+			console.log(accm);
+			listings.push(<Listing key={accm.accm_id} id={accm.accm_id} title={accm.accm_title} address={accm.accm_street + ', ' + accm.accm_city} description={accm.accm_description} units={accm.accm_units.length} href={'/listings/results?search=Mayaguez'} />);
 		});
 	} catch (error) {
 		console.log(error);
