@@ -17,6 +17,7 @@ const { url: host } = publicRuntimeConfig.site;
 export default function Navbar(path: any) {
 	const router = useRouter();
 	const [nav, setNav] = useState({ left: <></>, right: <></> });
+	const [classes, setClasses] = useState('');
 
 	const logout = async () => {
 		cookies.remove('jwt_authorization');
@@ -26,6 +27,8 @@ export default function Navbar(path: any) {
 	};
 
 	function setupNav(signedIn: boolean, pic: string) {
+		console.log(path.path);
+		path.path === '/about' || path.path === '/' || path.path === '/#' ? setClasses('navbar text-primary-content fixed md:px-16 md:py-5 z-10') : setClasses('navbar text-primary-content fixed md:px-16 md:py-5 z-10 bg-white');
 		setNav({
 			left:
 				path.path === '/' ? (
@@ -185,7 +188,7 @@ export default function Navbar(path: any) {
 	}, []);
 
 	return (
-		<div className={`navbar text-primary-content fixed md:px-16 md:py-5 z-10 ${path.path != '/' && path.path != '/about' ? 'bg-white' : ''}`}>
+		<div className={classes}>
 			{nav.left}
 			<div className='flex-none'>
 				{' '}
