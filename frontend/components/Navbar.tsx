@@ -33,7 +33,7 @@ export default function Navbar(path: any) {
 						<div className='dropdown'>
 							<label tabIndex={0} className='btn btn-ghost md:hidden text-white'>
 								<svg xmlns='http://www.w3.org/2000/svg' className='h-5 w-5' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
-									<path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M4 6h16M4 12h8m-8 6h16' />
+									<path strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M4 6h16M4 12h8m-8 6h16' />
 								</svg>
 							</label>
 							<ul tabIndex={0} className='menu menu-compact dropdown-content mt-3 shadow-md bg-base-100 rounded-box w-52'>
@@ -60,7 +60,7 @@ export default function Navbar(path: any) {
 						<div className='dropdown md:hidden'>
 							<label tabIndex={0} className='btn btn-ghost md:hidden text-black'>
 								<svg xmlns='http://www.w3.org/2000/svg' className='h-5 w-5' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
-									<path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M4 6h16M4 12h8m-8 6h16' />
+									<path strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M4 6h16M4 12h8m-8 6h16' />
 								</svg>
 							</label>
 							<ul tabIndex={0} className='menu menu-compact dropdown-content mt-3 shadow-md bg-base-100 rounded-box w-52'>
@@ -185,7 +185,7 @@ export default function Navbar(path: any) {
 	}, []);
 
 	return (
-		<div className={`navbar text-primary-content fixed md:px-16 md:py-5 z-10 ${path.path != '/' && path.path != '/about' ? 'bg-white' : ''}` }>
+		<div className={`navbar text-primary-content fixed md:px-16 md:py-5 z-10 ${path.path != '/' && path.path != '/about' ? 'bg-white' : ''}`}>
 			{nav.left}
 			<div className='flex-none'>
 				{' '}

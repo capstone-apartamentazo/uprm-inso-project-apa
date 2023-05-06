@@ -24,7 +24,7 @@ const Home = () => {
 				<div className='mt-20 mb-8 text-center text-black font-semibold text-5xl text-transparent bg-clip-text bg-gradient-to-r from-primary via-secondary to-black h-auto'>
 					renting made easy<p className='text-2xl font-light text-transparent bg-clip-text bg-gradient-to-r from-primary via-secondary to-black '>whether you're a student or landlord, this is the perfect place for you!</p>
 				</div>
-				<Features reverse='false' title='simplifying your college apartment hunt' description={descriptions.aptHunt} type='aptHunt' />
+				<Features reverse='false' title='simplifying your college apartment search' description={descriptions.aptHunt} type='aptHunt' />
 				<Features reverse='true' title='easy access to your landlord' description={descriptions.access} type='messaging' />
 				<Features reverse='false' title='payment reminders' description={descriptions.reminders} type='reminders' />
 				<Features reverse='true' title='keep track of your listings' description={descriptions.listings} type='listings' />
