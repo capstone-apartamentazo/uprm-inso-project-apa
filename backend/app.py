@@ -183,17 +183,18 @@ def getNoticeById():
 def getNoticesByAccommodationId():
   return NoticeHandler().getByAccommodationId(request.json)
 
-# TODO limit title character count
 @app.route('/api/notices/add', methods=['POST'])
 def addNotice():
   return NoticeHandler().addNotice(request.json)
 
-# TODO limit title character count
+# -----------------------------------------------------------------------------------------------------------------------------------------------
+# Hace falta un update notice si ya le estamos enviando emails so si quiere hacerle update seria enviar otro email?
 @app.route('/api/notices', methods=['PUT'])
 def updateNotice():
   return NoticeHandler().updateNotice(request.json)
 
-# TODO
+# ---------------------------------------------------------------------------------------------------
+# creo q notice no se remueven pq se envian emails so creo q no tiene logica borrarlos?
 @app.route('/api/notices', methods=['DELETE'])
 def removeNotice():
   return None
@@ -244,10 +245,12 @@ def addUnit():
 def updateUnit():
     return UnitHandler().updateUnit(request.json)
 
-# TODO
-@app.route('/api/units', methods=['DELETE'])
-def removeUnit():
-  return None
+# ----------------------------------------------------------------------------------------------------------------------
+# voy hacer este remove pero creo q hay q hacer algo para obligar a tener siempre 1 unit?
+# lo q pienso hacer sera q cuando traten de delete y solo queda 1 unit pues devuelvo un json diciendo q solo puedes editar el unit
+@app.route('/api/units/<int:unit_id>', methods=['DELETE'])
+def removeUnit(unit_id):
+  return UnitHandler().deleteUnit(unit_id)
 
 """
 PRIVATE AMENITIES (UNITS)
@@ -288,6 +291,8 @@ def getLeasesByUnitId(unit_id):
 def getLeaseByTenantId(tenant_id):
     return LeaseHandler().getByTenantId(tenant_id)
 
+# -----------------------------------------------------------------------------------------
+# si quieres q envie un email pues mira el metodo de add notice
 @app.route('/api/leases/add', methods=['POST'])
 def addLease():
     return LeaseHandler().addLease(request.json)

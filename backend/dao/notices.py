@@ -49,3 +49,18 @@ class Notices:
     res = cursor.fetchall()
     cursor.close()
     return res
+  
+  def getCurrentTenants(self, accm):
+    query = 'SELECT tenants.tenant_id, tenants.tenant_name, tenants.tenant_email, tenants.tenant_phone \
+            FROM tenants \
+            JOIN leases ON leases.tenant_id = tenants.tenant_id \
+            JOIN units ON units.unit_id = leases.unit_id \
+            WHERE leases.is_current_tenant = true \
+            AND leases.deleted_flag = false \
+            AND units.deleted_flag = false \
+            AND units.accm_id = %s'
+    cursor = db.cursor(cursor_factory=RealDictCursor)
+    cursor.execute(query %(accm))
+    res = cursor.fetchall()
+    cursor.close()
+    return res
