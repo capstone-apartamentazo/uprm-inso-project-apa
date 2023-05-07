@@ -54,10 +54,10 @@ class Messages:
     cursor.close()
 
   def getConversation(self, landlord, tenant):
-    query = 'SELECT message_id, landlord_id, tenant_id, msg_send_date, landlord_sent_msg, msg_content, msg_read, landlord_name, tenant_name \
+    query = 'SELECT message_id, messages.landlord_id, messages.tenant_id, msg_send_date, landlord_sent_msg, msg_content, msg_read, landlord_name, tenant_name \
             FROM messages \
-            NATURAL INNER JOIN landlords NATURAL INNER JOIN tenants \
-            WHERE landlord_id = %s AND tenant_id = %s ORDER BY msg_send_date'
+            INNER JOIN landlords ON messages.landlord_id = landlords.landlord_id INNER JOIN tenants on messages.tenant_id = tenants.tenant_id \
+            WHERE messages.landlord_id = %s AND messages.tenant_id = %s ORDER BY msg_send_date'
     cursor = db.cursor(cursor_factory=RealDictCursor)
     cursor.execute(query, (landlord, tenant))
     res = cursor.fetchall()
