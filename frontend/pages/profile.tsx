@@ -292,9 +292,9 @@ const Profile = () => {
 				<div className='flex relative flex-col flex-initial basis-5/6 mt-10 pl-6 pr-6 max-h-semi min-w-min  m-6 ring-1 ring-stone-200 rounded-md bg-white shadow-lg overflow-hidden '>
 
 
-					<div className='flex flex-wrap text-3xl font-bold text-left pt-6 pb-2 px-6 rounded-md absolute  bg-white top-0 left-0 right-0 items-center'>
+					<div className='flex flex-wrap text-3xl font-bold shadow-md text-left pt-6 pb-2 px-6 rounded-md absolute  bg-white top-0 left-0 right-0 items-center '>
 						<h1 className=' text-3xl font-bold text-left  grow'>
-							Accommodations
+							My Accommodations
 
 						</h1>
 						<div className='flex  items-center '>
