@@ -100,21 +100,22 @@ class Accommodations:
     return res
 
   def filter(self, amenities, data, offset):
-    query = 'SELECT accm_id, accm_title, accm_street, accm_number, accm_city, accm_state, accm_country, accm_zipcode, accm_description, latitude, longitude,\
+    query = 'SELECT accommodations.accm_id, accm_title, accm_street, accm_number, accm_city, accm_state, accm_country, accm_zipcode, accm_description, latitude, longitude, \
             json_agg(units) AS accm_units \
-            FROM accommodations NATURAL INNER JOIN units NATURAL INNER JOIN shared_amenities \
+            FROM accommodations NATURAL INNER JOIN units \
+            INNER JOIN shared_amenities ON accommodations.accm_id = shared_amenities.accm_id \
             INNER JOIN private_amenities ON units.unit_id = private_amenities.unit_id \
             WHERE (accm_title ILIKE \'%%%s%%\' OR accm_street ILIKE \'%%%s%%\' OR accm_city ILIKE \'%%%s%%\' OR accm_state ILIKE \'%%%s%%\' OR accm_country ILIKE \'%%%s%%\') \
             AND (%s) AND units.available = true \
             AND accommodations.deleted_flag = false \
-            GROUP BY accm_id ORDER BY accm_id DESC LIMIT 10 OFFSET %s'
+            GROUP BY accommodations.accm_id ORDER BY accm_id DESC LIMIT 10 OFFSET %s'
     cursor = db.cursor(cursor_factory=RealDictCursor)
     cursor.execute(query %(data, data, data, data, data, amenities, offset))
     res = cursor.fetchall()
     cursor.close()
     return res
 
-  def calculateScore(self, distance_weight, price_weight, size_weight, amenities_weight, rating_weight, offset):
+  def calculateScore(self, amenities, data, distance_weight, price_weight, size_weight, amenities_weight, rating_weight, offset):
     query = 'WITH shared_amenities_scores AS ( \
               SELECT accm_id, sum(shared_kitchen::int)+sum(shared_bathroom::int)+sum(shared_washer::int)+sum(shared_dryer::int)+sum(pets_allowed::int) AS total_shared_amenities \
               FROM shared_amenities \
@@ -143,17 +144,22 @@ class Accommodations:
               FROM units NATURAL INNER JOIN accm_scores NATURAL INNER JOIN priv_amenities_scores \
             ), \
             unit_total_scores AS ( \
-              SELECT unit_id, unit_number, tenant_capacity, price, size, date_available, contract_duration, accm_id, distance_score, price_score, size_score, amenities_score, rating_score, \
+              SELECT unit_id, unit_number, tenant_capacity, price, size, date_available, contract_duration, accm_id, distance_score, price_score, size_score, amenities_score, available, rating_score, \
               round(((distance_score*%s)+(price_score*%s)+(size_score*%s)+(amenities_score*%s)+(rating_score*%s))::numeric,1) AS total_score \
               FROM units NATURAL INNER JOIN unit_scores \
               ORDER BY total_score DESC \
             ) \
-            SELECT accm_id, accm_title, accm_street, accm_number, accm_city, accm_state, accm_country, accm_zipcode, accm_description, \
+            SELECT accommodations.accm_id, accm_title, accm_street, accm_number, accm_city, accm_state, accm_country, accm_zipcode, accm_description, latitude, longitude, \
             json_agg(unit_total_scores) AS accm_units, round(avg(total_score)::numeric,1) as avg_score \
             FROM accommodations NATURAL INNER JOIN unit_total_scores \
-            GROUP BY accm_id ORDER BY avg_score DESC LIMIT 10 OFFSET %s'
+            INNER JOIN shared_amenities ON accommodations.accm_id = shared_amenities.accm_id \
+            INNER JOIN private_amenities ON unit_total_scores.unit_id = private_amenities.unit_id \
+            WHERE (accm_title ILIKE \'%%%s%%\' OR accm_street ILIKE \'%%%s%%\' OR accm_city ILIKE \'%%%s%%\' OR accm_state ILIKE \'%%%s%%\' OR accm_country ILIKE \'%%%s%%\') \
+            AND (%s) AND unit_total_scores.available = true \
+            AND accommodations.deleted_flag = false \
+            GROUP BY accommodations.accm_id ORDER BY avg_score DESC LIMIT 10 OFFSET %s'
     cursor = db.cursor(cursor_factory=RealDictCursor)
-    cursor.execute(query %(distance_weight, price_weight, size_weight, amenities_weight, rating_weight, offset))
+    cursor.execute(query %(distance_weight, price_weight, size_weight, amenities_weight, rating_weight, data, data, data, data, data, amenities, offset))
     res = cursor.fetchall()
     cursor.close()
     return res

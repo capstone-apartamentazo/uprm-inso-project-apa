@@ -110,16 +110,47 @@ class AccommodationHandler:
       logger.exception(e)
       return jsonify('Error Occured'), 400
 
-  def score(self, json):
+  def score(self, data, offset, json):
     try:
+      amenities = 'bedrooms >= {} and bathrooms >= {}'.format(json['bedrooms'], json['bathrooms'])
+      include = ' and '
+      if json['shared_kitchen']:
+        amenities = include.join([amenities, 'shared_kitchen = true'])
+      if json['shared_bathroom']:
+        amenities = include.join([amenities, 'shared_bathroom = true'])
+      if json['shared_washer']:
+        amenities = include.join([amenities, 'shared_washer = true'])
+      if json['shared_dryer']:
+        amenities = include.join([amenities, 'shared_dryer = true'])
+      if json['pets_allowed']:
+        amenities = include.join([amenities, 'pets_allowed = true'])
+      if json['electricity']:
+        amenities = include.join([amenities, 'electricity = true'])
+      if json['water']:
+        amenities = include.join([amenities, 'water = true'])
+      if json['internet']:
+        amenities = include.join([amenities, 'internet = true'])
+      if json['heater']:
+        amenities = include.join([amenities, 'heater = true'])
+      if json['private_washer']:
+        amenities = include.join([amenities, 'private_washer = true'])
+      if json['private_dryer']:
+        amenities = include.join([amenities, 'private_dryer = true'])
+      if json['air_conditioner']:
+        amenities = include.join([amenities, 'air_conditioner = true'])
+      if json['parking']:
+        amenities = include.join([amenities, 'parking = true'])
+      if json['balcony']:
+        amenities = include.join([amenities, 'balcony = true'])
+
       weights = { 1: 3.5, 2: 2.5, 3: 2.0, 4: 1.5, 5: 0.5 }
       distance_weight = weights[json['distance']]
       price_weight = weights[json['price']]
       size_weight = weights[json['size']]
       amenities_weight = weights[json['amenities']]
       rating_weight = weights[json['ranking']]
-      offset = json['offset']
-      daoAccommodations = self.accommodations.calculateScore(distance_weight, price_weight, size_weight, amenities_weight, rating_weight, offset)
+
+      daoAccommodations = self.accommodations.calculateScore(amenities, data, distance_weight, price_weight, size_weight, amenities_weight, rating_weight, offset)
       if daoAccommodations:
         return jsonify(daoAccommodations)
       else:

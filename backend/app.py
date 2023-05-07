@@ -317,7 +317,7 @@ SCORE
 """
 @app.route('/api/score', methods=['POST'])
 def getScoreForAccommodations():
-  return AccommodationHandler().score(request.json)
+  return AccommodationHandler().score(request.args.get('input'), request.args.get('offset'), request.json)
 
 """
 CLOUDINARY
