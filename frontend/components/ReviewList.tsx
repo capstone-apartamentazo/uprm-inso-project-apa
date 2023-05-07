@@ -8,36 +8,25 @@ type Props = {
 
 const ReviewList: React.FC<Props> = (route) => {
 	let allReviews: any[] = [];
-	const { data: reviews } = useListings(route.route);
+	const { data: reviews } = useListings(route.route != undefined ? route.route : null);
 
 	if (!reviews || reviews === undefined) return <div>Loading...</div>;
-	try {
-		reviews.map((review: any) => {
-			const { data: name } = useListings(reviews != undefined ? 'tenants/' + review.tenant_id : '');
-			const { data: tenantPic } = useListings(reviews != undefined ? 'images/tenant/' + review.tenant_id : '');
-			const { data: accmPic } = useListings(reviews != undefined ? 'images/accommodation/' + review.accm_id : '');
-			const { data: accm } = useListings(reviews != undefined ? 'accommodations/' + review.accm_id : '');
-
-			const tenantPicLink = tenantPic != undefined ? (tenantPic.total_count === 0 ? '/images/user.png' : tenantPic.resources[0].secure_url) : '';
-			const accmPicLink = accmPic != undefined ? (accmPic.length > 0 ? accmPic[0].secure_url : '/images/default.jpg') : '';
-			const tenantName = name != undefined ? name.tenant_name : '';
-			const accmName = accm != undefined ? accm.accm_title : '';
-			const rating = review != undefined ? review.rating : '';
-			allReviews.push(
-				<div key={review.review_id} className='space-y-4'>
-					<Review opinion={review.comment} listingTitle={accmName} listingImg={accmPicLink} name={tenantName} date={review.review_send_date} userImg={tenantPicLink} rating={rating} />{' '}
-				</div>
-			);
-		});
-	} catch (ex) {
+	if (reviews === 'Empty List')
 		allReviews.push(
-			<div className='card w-96 shadow-md mt-4 bg-white'>
+			<div key='no_reviews' className='card w-96 shadow-md mt-4 bg-white'>
 				<div className='card-body'>
 					<p className='text-lg'>No reviews found</p>
 				</div>
 			</div>
 		);
-	}
+	else
+		reviews.map((review: any) => {
+			allReviews.push(
+				<div key={'review_id' + review.review_id} className='space-y-4'>
+					<Review opinion={review.comment} accmID={review.accm_id} tenantID={review.tenant_id} date={review.review_send_date} rating={review.rating} />{' '}
+				</div>
+			);
+		});
 
 	return <div className='flex flex-col'>{allReviews}</div>;
 };
