@@ -45,8 +45,9 @@ class Units:
   def updateUnit(self, identifier, number, available, tenant_capacity, price, size, date_available, duration):
     query = 'UPDATE units \
             SET unit_number = %s, available = %s, tenant_capacity = %s, price = %s, size = %s, date_available = %s, contract_duration = %s \
-            WHERE unit_id = %s \
-            RETURNING *'
+            FROM private_amenities\
+            WHERE units.unit_id = %s \
+            RETURNING units.*, private_amenities.*'
     cursor = db.cursor(cursor_factory=RealDictCursor)
     cursor.execute(query, (number, available, tenant_capacity, price, size, date_available, duration, identifier))
     res = cursor.fetchone()
