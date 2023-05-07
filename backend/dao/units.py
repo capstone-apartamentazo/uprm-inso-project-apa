@@ -45,13 +45,30 @@ class Units:
   def updateUnit(self, identifier, number, available, tenant_capacity, price, size, date_available, duration):
     query = 'UPDATE units \
             SET unit_number = %s, available = %s, tenant_capacity = %s, price = %s, size = %s, date_available = %s, contract_duration = %s \
-            WHERE unit_id = %s \
-            RETURNING *'
+            FROM private_amenities\
+            WHERE units.unit_id = %s AND private_amenities.unit_id = %s\
+            RETURNING units.*, private_amenities.*'
     cursor = db.cursor(cursor_factory=RealDictCursor)
-    cursor.execute(query, (number, available, tenant_capacity, price, size, date_available, duration, identifier))
+    cursor.execute(query, (number, available, tenant_capacity, price, size, date_available, duration, identifier, identifier))
     res = cursor.fetchone()
     cursor.close()
     return res
+  
+  def getByUnitNumber(self, accm, unit_numb):
+    cursor = db.cursor(cursor_factory=RealDictCursor)
+    cursor.execute('SELECT * FROM units WHERE accm_id = %s AND unit_number = \'%s\'' %(accm, unit_numb))
+    res = cursor.fetchall()
+    cursor.close()
+    return res
+
+  def available(self, availability, unit):
+    query = 'UPDATE units\
+        SET available = %s\
+        WHERE unit_id = %s'
+    cursor = db.cursor(cursor_factory=RealDictCursor)
+    cursor.execute(query, (availability, unit))
+    cursor.close()
+    return
 
   def deleteUnitCascade(self, identifier):
     query = 'UPDATE units SET deleted_flag = true WHERE accm_id = %s AND deleted_flag = false RETURNING *'
