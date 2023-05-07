@@ -16,7 +16,7 @@ const Listings = () => {
 	const [listings, setListings] = useState<any | null>(null);
 	const [amount, setAmount] = useState<any | null>(null);
 	const [location, setLocation] = useState<any | null>(null);
-	const [accmData,setAccmData] = useState<Accm>()
+	const [accmData, setAccmData] = useState<Accm>();
 
 	const router = useRouter();
 	const { search, filter, amenities } = router.query;
@@ -35,9 +35,7 @@ const Listings = () => {
 					return data.json();
 				})
 				.then((data) => {
-					allListings = []
-					console.log('results');
-					console.log(data);
+					allListings = [];
 					data.map((accm: any, i: any) => {
 						allListings.push(
 							<div key={i} className='col-start-1 row-span-2 p-2'>
@@ -48,15 +46,19 @@ const Listings = () => {
 					setListings(allListings);
 					setAmount(allListings.length > 1 ? allListings.length + ' results' : allListings.length + ' result');
 					setLocation(search);
-					setAccmData(data)
+					setAccmData(data);
 				})
 				.catch((err) => {
 					var noListings: any = [];
-					noListings.push(<div key={0} className='col-start-1 row-span-2 p-2'>No results found</div>);
+					noListings.push(
+						<div key={0} className='col-start-1 row-span-2 p-2'>
+							No results found
+						</div>
+					);
 					setListings(noListings);
 					setAmount('No results');
 					setLocation(search);
-				})
+				});
 		}
 		if (search && filter) {
 			const endpoint = `${host}/api/filter/amenities?input=${search}&offset=0`;
@@ -64,34 +66,36 @@ const Listings = () => {
 			const options = {
 				method: 'POST',
 				headers: new Headers({ 'content-type': 'application/json' }),
-				body: (amenities as string)
+				body: amenities as string,
 			};
 			fetch(endpoint, options)
-			.then((data) => {
-				return data.json();
-			})
-			.then((data) => {
-				allListings = []
-				console.log('results');
-				console.log(data);
-				data.map((accm: any, i: any) => {
-					allListings.push(
-						<div key={i} className='col-start-1 row-span-2 p-2'>
-							<ListingResult key={i} title={accm.accm_title} address={accm.accm_street + ', ' + accm.accm_city} description={accm.accm_description} unitAmount={accm.accm_units.length} id={accm.accm_id} accmUnits={accm.accm_units} />
+				.then((data) => {
+					return data.json();
+				})
+				.then((data) => {
+					allListings = [];
+					data.map((accm: any, i: any) => {
+						allListings.push(
+							<div key={i} className='col-start-1 row-span-2 p-2'>
+								<ListingResult key={i} title={accm.accm_title} address={accm.accm_street + ', ' + accm.accm_city} description={accm.accm_description} unitAmount={accm.accm_units.length} id={accm.accm_id} accmUnits={accm.accm_units} />
+							</div>
+						);
+					});
+					setListings(allListings);
+					setAmount(allListings.length > 1 ? allListings.length + ' results' : allListings.length + ' result');
+					setLocation(search);
+				})
+				.catch((err) => {
+					var noListings: any = [];
+					noListings.push(
+						<div key={0} className='col-start-1 row-span-2 p-2'>
+							No results found
 						</div>
 					);
+					setListings(noListings);
+					setAmount('No results');
+					setLocation(search);
 				});
-				setListings(allListings);
-				setAmount(allListings.length > 1 ? allListings.length + ' results' : allListings.length + ' result');
-				setLocation(search);
-			})
-			.catch((err) => {
-				var noListings: any = [];
-				noListings.push(<div key={0} className='col-start-1 row-span-2 p-2'>No results found</div>);
-				setListings(noListings);
-				setAmount('No results');
-				setLocation(search);
-			})
 		}
 	}, [search, filter, amenities]);
 
@@ -131,12 +135,11 @@ const Listings = () => {
 						<Filter className='w-full'></Filter>
 					</div>
 					<div className='col-start-2 row-start-4'>
-					<LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}>
+						<LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}>
 							<GoogleMap options={mapOptions} mapContainerStyle={containerStyle} center={center} zoom={17}>
 								<Marker position={center} />
 							</GoogleMap>
 						</LoadScript>
-					
 					</div>
 				</div>
 			</section>
