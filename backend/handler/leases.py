@@ -2,11 +2,15 @@ from flask import jsonify
 from psycopg2 import Error as pgerror
 from util.config import db, logger, tenant_guard as guard
 from dao.leases import Leases
+from dao.tenants import Tenants
+from dao.units import Units
 import flask_praetorian as praetorian
 
 class LeaseHandler:
   def __init__(self):
     self.leases = Leases()
+    self.tenant = Tenants()
+    self.units = Units()
 
   def getAll(self):
     try: 
@@ -62,10 +66,13 @@ class LeaseHandler:
       tenant = json['tenant_id']
       if not self.validLandlord(unit):
         return jsonify('Unit not own by Landlord')
+      if not self.tenant.getById(tenant):
+        return jsonify('Tenant not found')
       if self.leases.invalidTenant(tenant, start):
         return jsonify('Tenant already rents a Unit')
       daoLease = self.leases.addLease(price, start, end, unit, tenant)
       self.updateCurrentTenants()
+      self.units.available('false', unit)
       if daoLease:
         db.commit()
         return jsonify(daoLease)
@@ -120,6 +127,7 @@ class LeaseHandler:
       if not self.validLandlord(daoLease['unit_id']):
         return jsonify('Unit not own by Landlord')
       daoLease = self.leases.deleteLease(lease_id)
+      self.units.available('true', daoLease['unit_id'])
       if daoLease:
         db.commit()
         return jsonify('Lease deleted')

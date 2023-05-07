@@ -53,6 +53,15 @@ class Units:
     res = cursor.fetchone()
     cursor.close()
     return res
+  
+  def available(self, availability, unit):
+    query = 'UPDATE units\
+        SET available = %s\
+        WHERE unit_id = %s'
+    cursor = db.cursor(cursor_factory=RealDictCursor)
+    cursor.execute(query, (availability, unit))
+    cursor.close()
+    return
 
   def deleteUnitCascade(self, identifier):
     query = 'UPDATE units SET deleted_flag = true WHERE accm_id = %s AND deleted_flag = false RETURNING *'
