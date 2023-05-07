@@ -302,7 +302,12 @@ def searchAccommodations():
 
 @app.route('/api/filter/amenities', methods=['POST'])
 def filterByAmenities():
-  return AccommodationHandler().filter(request.json)
+  return AccommodationHandler().filter(request.json, request.args.get('input'), request.args.get('offset'))
+
+# TODO filter by price
+# TODO filter by size
+# TODO filter by number of tenants
+# TODO filter by distance
 
 """
 SCORE
