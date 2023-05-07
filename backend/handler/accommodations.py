@@ -66,7 +66,7 @@ class AccommodationHandler:
       logger.exception(e)
       return jsonify('Error Occured'), 400
 
-  def filter(self, json):
+  def filter(self, json, search, offset):
     try:
       amenities = 'bedrooms >= {} and bathrooms >= {}'.format(json['bedrooms'], json['bathrooms'])
       include = ' and '
@@ -100,7 +100,7 @@ class AccommodationHandler:
         amenities = include.join([amenities, 'balcony = true'])
       if not len(amenities.strip()):
         return jsonify('No Amenities to Filter')
-      daoAmenities = self.accommodations.filter(amenities, json['offset'])
+      daoAmenities = self.accommodations.filter(amenities, search, offset)
       if daoAmenities:
         return jsonify([row for row in daoAmenities])
       else:
