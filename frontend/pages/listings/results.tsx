@@ -4,6 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import SearchBar from '../../components/SearchBar';
 import getConfig from 'next/config';
+import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
+import { Accm } from 'Accm';
 
 const { publicRuntimeConfig } = getConfig();
 const { url: host } = publicRuntimeConfig.site;
@@ -13,6 +15,7 @@ const Listings = () => {
 	const [listings, setListings] = useState<any | null>(null);
 	const [amount, setAmount] = useState<any | null>(null);
 	const [location, setLocation] = useState<any | null>(null);
+	const [accmData,setAccmData] = useState<Accm>()
 
 	const router = useRouter();
 	const { search } = router.query;
@@ -41,6 +44,7 @@ const Listings = () => {
 					setListings(allListings);
 					setAmount(allListings.length > 1 ? allListings.length + ' results' : allListings.length + ' result');
 					setLocation(search);
+					setAccmData(data)
 				})
 				.catch((err) => {
 					var noListings: any = [];
@@ -52,6 +56,25 @@ const Listings = () => {
 			setListings(listings);
 		}
 	}, [search]);
+
+	// INFO: MAP
+	const mapOptions = {
+		disableDefaultUI: true,
+		zoomControl: true,
+		clickableIcons: true,
+		scrollwheel: true,
+		rotateControl: true,
+	};
+
+	const containerStyle = {
+		width: '100%',
+		height: '100%',
+	};
+
+	const center = {
+		lat: 0,
+		lng: 0,
+	};
 
 	return (
 		<Layout>
@@ -107,7 +130,14 @@ const Listings = () => {
 							<option>Option</option>
 						</select>
 					</div>
-					<div className='col-start-2 row-start-3'>Map here</div>
+					<div className='col-start-2 row-start-3'>
+						
+					<LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}>
+							<GoogleMap options={mapOptions} mapContainerStyle={containerStyle} center={center} zoom={17}>
+								<Marker position={center} />
+							</GoogleMap>
+						</LoadScript>
+					</div>
 					{listings}
 				</div>
 			</section>

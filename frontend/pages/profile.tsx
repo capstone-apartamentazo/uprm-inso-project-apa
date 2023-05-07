@@ -32,7 +32,7 @@ const Profile = () => {
 	const [storage, setStorage] = useState<Storage>({ token: null, isLandlord: null, id: null })
 	const router = useRouter()
 	const cookies = new Cookies()
-	const [profileImg, setProfileImg] = useState<string|any>('/images/user.png')
+	const [profileImg, setProfileImg] = useState<string | any>('/images/user.png')
 	const [imgLoading, setImageLoading] = useState(false)
 
 	useEffect(() => {
@@ -119,43 +119,43 @@ const Profile = () => {
 
 
 
-	const uploadImg = async (event:any)=>{
+	const uploadImg = async (event: any) => {
 		event.preventDefault()
 		if (event.target.files[0].size > 10485759) {
-            alert('Image size too big. Max size is 10 Mb')
-            
-        } else {
-            const reader = new FileReader();
-			
-            reader.onload = () => {
+			alert('Image size too big. Max size is 10 Mb')
+
+		} else {
+			const reader = new FileReader();
+
+			reader.onload = () => {
 				let data = {
-				
+
 					"image": reader.result,
-					
+
 				}
 				var endpoint = `${host}/api/images/tenant`
-				if(storage.isLandlord){
+				if (storage.isLandlord) {
 					endpoint = `${host}/api/images/landlord`
 				}
-				axios({method: 'post',url:endpoint,headers: { Authorization: `Bearer ${storage.token}`},data})
-				.then(res=>{
-					
-					
-					setProfileImg(reader.result)
-					//alert(res)
-				})
-				.catch(err=>{
-					console.error(err)
-					alert(err)
-				})
+				axios({ method: 'post', url: endpoint, headers: { Authorization: `Bearer ${storage.token}` }, data })
+					.then(res => {
 
 
-                
+						setProfileImg(reader.result)
+						//alert(res)
+					})
+					.catch(err => {
+						console.error(err)
+						alert(err)
+					})
+
+
+
 				//router.reload()
 
-            }
-            reader.readAsDataURL(event.target.files[0])
-        }
+			}
+			reader.readAsDataURL(event.target.files[0])
+		}
 	}
 
 	// var endpoint = `http://127.0.0.1:5000/api/tenants/${storage.id}`
@@ -191,61 +191,61 @@ const Profile = () => {
 	if (!(storage.isLandlord)) {
 		return (
 			<Layout>
-			<main className='flex flex-col lg:flex-row  flex-nowrap py-24'>
-				<div className='flex  flex-col flex-initial basis-1/6 pt-10 pl-6 pr-6 '>
-					<div className='block min-w-full rounded-xl pt-6 bg-white ring-stone-200 ring-1 shadow-lg dark:bg-neutral-700 items-center text-center'>
-						<form className=' relative'>
-							<div className='avatar my-4 mx-10'>
-								<div className=' w-40 rounded-full ring ring-accent ring-offset-base-100 ring-offset-2 hover:ring-4 hover:shadow-lg'>
-									<label htmlFor='pImg'>
-										<img className={imgLoading ? 'aspect-square animate-pulse' : 'aspect-square'} src={profileImg} />
-									</label>
-									<input onChange={uploadImg} type='file' id='pImg' accept="image/png, image/jpeg" className='hidden'></input>
+				<main className='flex flex-col lg:flex-row  flex-nowrap py-24'>
+					<div className='flex  flex-col flex-initial basis-1/6 pt-10 pl-6 pr-6 '>
+						<div className='block min-w-full rounded-xl pt-6 bg-white ring-stone-200 ring-1 shadow-lg dark:bg-neutral-700 items-center text-center'>
+							<form className=' relative'>
+								<div className='avatar my-4 mx-10'>
+									<div className=' w-40 rounded-full ring ring-accent ring-offset-base-100 ring-offset-2 hover:ring-4 hover:shadow-lg'>
+										<label htmlFor='pImg'>
+											<img className={imgLoading ? 'aspect-square animate-pulse' : 'aspect-square'} src={profileImg} />
+										</label>
+										<input onChange={uploadImg} type='file' id='pImg' accept="image/png, image/jpeg" className='hidden'></input>
+									</div>
 								</div>
-							</div>
-							{/* <button className='btn absolute right-0 top-0 bg-transparent border-transparent	hover:bg-transparent hover:border-transparent'>
+								{/* <button className='btn absolute right-0 top-0 bg-transparent border-transparent	hover:bg-transparent hover:border-transparent'>
 								<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.75} stroke="currentColor" className="w-6 h-6 stroke-green-500">
 									<path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
 								</svg>
 
 							</button> */}
-						</form>
-						<div className=' '>
-							<h5 className='mb-2 text-2xl pt-2 font-bold leading-tight text-neutral-800 dark:text-neutral-50'>{storage.isLandlord ? user.landlord_name : user.tenant_name}</h5>
-							<p className=' font-semibold pb-6 text-neutral-600 dark:text-neutral-200 '> {storage.isLandlord ? ('Rating:' + user.landlord_rating + '/5') :''}</p>
+							</form>
+							<div className=' '>
+								<h5 className='mb-2 text-2xl pt-2 font-bold leading-tight text-neutral-800 dark:text-neutral-50'>{storage.isLandlord ? user.landlord_name : user.tenant_name}</h5>
+								<p className=' font-semibold pb-6 text-neutral-600 dark:text-neutral-200 '> {storage.isLandlord ? ('Rating:' + user.landlord_rating + '/5') : ''}</p>
+							</div>
 						</div>
-					</div>
-					<div className='flex justify-center pt-4'>
-						<div className='block min-w-full rounded-lg bg-white ring-1 ring-stone-200 shadow-lg dark:bg-neutral-700'>
-							<div className='p-6'>
-								<h5 className='mb-2 text-xl font-medium leading-tight text-neutral-800 dark:text-neutral-50'>Details:</h5>
-								<ul>
-									<li className=' text-neutral-600 dark:text-neutral-200 '>Phone:  {storage.isLandlord ? user.landlord_phone : user.tenant_phone}</li>
-									<li className=' text-neutral-600 dark:text-neutral-200 '> {storage.isLandlord ? 'Account type: Landlord' : 'Account type: Normal'}</li>
-									<li className='text-neutral-600 dark:text-neutral-200 '>{storage.isLandlord ? '':`ID: ${storage.id}`}</li>
-								</ul>
+						<div className='flex justify-center pt-4'>
+							<div className='block min-w-full rounded-lg bg-white ring-1 ring-stone-200 shadow-lg dark:bg-neutral-700'>
+								<div className='p-6'>
+									<h5 className='mb-2 text-xl font-medium leading-tight text-neutral-800 dark:text-neutral-50'>Details:</h5>
+									<ul>
+										<li className=' text-neutral-600 dark:text-neutral-200 '>Phone:  {storage.isLandlord ? user.landlord_phone : user.tenant_phone}</li>
+										<li className=' text-neutral-600 dark:text-neutral-200 '> {storage.isLandlord ? 'Account type: Landlord' : 'Account type: Normal'}</li>
+										<li className='text-neutral-600 dark:text-neutral-200 '>{storage.isLandlord ? '' : `ID: ${storage.id}`}</li>
+									</ul>
+								</div>
 							</div>
 						</div>
 					</div>
-				</div>
-				<div className='flex relative flex-col flex-initial basis-5/6 mt-10 pl-6 pr-6 max-h-semi min-w-min  m-6 ring-1 ring-stone-200 rounded-md bg-white shadow-lg overflow-hidden '>
+					<div className='flex relative flex-col flex-initial basis-5/6 mt-10 pl-6 pr-6 max-h-semi min-w-min  m-6 ring-1 ring-stone-200 rounded-md bg-white shadow-lg overflow-hidden '>
 
 
-					<div className='flex flex-wrap text-3xl font-bold text-left pt-6 pb-2 px-6 rounded-md absolute  bg-white top-0 left-0 right-0 items-center'>
-						<h1 className=' text-3xl font-bold text-left  grow'>
-							Active Contracts
+						<div className='flex flex-wrap text-3xl font-bold text-left pt-6 pb-2 px-6 rounded-md absolute  bg-white top-0 left-0 right-0 items-center'>
+							<h1 className=' text-3xl font-bold text-left  grow'>
+								Active Contracts
 
-						</h1>
-						
-					</div>
+							</h1>
+
+						</div>
 					// <AccommodationList></AccommodationList>
 
 
 
 
-				</div>
-			</main>
-		</Layout>
+					</div>
+				</main>
+			</Layout>
 
 		)
 	}
@@ -256,9 +256,19 @@ const Profile = () => {
 				<div className='flex  flex-col flex-initial basis-1/6 pt-10 pl-6 pr-6 '>
 					<div className='block min-w-full rounded-xl pt-6 bg-white ring-stone-200 ring-1 shadow-lg dark:bg-neutral-700 items-center text-center'>
 						<form className=' relative'>
-							<div className='avatar my-4 mx-10'>
+						<label htmlFor='pImg' className='btn btn-circle btn-sm absolute top-6 right-10 border-1  bg-accent z-40 hover:bg-accent hover:border-[1.5px]    border-white hover:border-white'>
+									<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.75} stroke="currentColor" className="w-4 h-4 stroke-white   ">
+										<path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
+									</svg>
+								</label>
+							<div className='avatar my-4 mx-10  '>
+
+								
+
+
+
 								<div className=' w-40 rounded-full ring ring-accent ring-offset-base-100 ring-offset-2 hover:ring-4 hover:shadow-lg'>
-									<label htmlFor='pImg'>
+									<label >
 										<img className={imgLoading ? 'aspect-square animate-pulse' : 'aspect-square'} src={profileImg} />
 									</label>
 									<input onChange={uploadImg} type='file' id='pImg' accept="image/png, image/jpeg" className='hidden'></input>
