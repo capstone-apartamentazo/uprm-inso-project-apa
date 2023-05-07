@@ -39,21 +39,19 @@ class Reviews:
     cursor.close()
     return res
 
-  def updateReview(self, identifier, rating, comment):
-    query = 'UPDATE reviews \
-            SET review_send_date = NOW()::TIMESTAMP(0), rating = %s, comment = %s \
-            WHERE review_id = %s \
-            RETURNING *'
-    cursor = db.cursor(cursor_factory=RealDictCursor)
-    cursor.execute(query, (rating, comment, identifier))
-    res = cursor.fetchone()
-    cursor.close()
-    return res
-
   def deleteReview(self, identifier):
     query = 'UPDATE reviews SET deleted_flag = true WHERE accm_id = %s RETURNING *'
     cursor = db.cursor(cursor_factory=RealDictCursor)
     cursor.execute(query %(identifier))
     res = cursor.fetchone()
+    cursor.close()
+    return res
+
+  def isFormerTenant(self, accm, tenant):
+    cursor = db.cursor(cursor_factory=RealDictCursor)
+    cursor.execute('SELECT leases.unit_id, tenant_id FROM leases \
+                  INNER JOIN units ON leases.unit_id = units.unit_id \
+                  WHERE accm_id = %s AND tenant_id = %s' %(accm, tenant))
+    res = cursor.fetchall()
     cursor.close()
     return res

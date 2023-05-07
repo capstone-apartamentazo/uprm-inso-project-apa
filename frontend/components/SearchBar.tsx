@@ -17,7 +17,10 @@ const SearchBar: React.FC<Props> = ({ className, width }) => {
 
 		router.push({
 			pathname: '/listings/results',
-			query: { search: event.target.search.value },
+			query: { 
+				search: event.target.search.value,
+				filter: false
+		},
 		});
 	};
 

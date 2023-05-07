@@ -88,7 +88,7 @@ class Accommodations:
     return res
 
   def search(self, data, offset):
-    query = 'SELECT accm_id, accm_title, accm_street, accm_number, accm_city, accm_state, accm_country, accm_zipcode, accm_description, json_agg(units) AS accm_units \
+    query = 'SELECT accm_id, accm_title, accm_street, accm_number, accm_city, accm_state, accm_country, accm_zipcode, accm_description, latitude, longitude, json_agg(units) AS accm_units \
             FROM accommodations NATURAL INNER JOIN units \
             WHERE (accm_title ILIKE \'%%%s%%\' OR accm_street ILIKE \'%%%s%%\' OR accm_city ILIKE \'%%%s%%\' OR accm_state ILIKE \'%%%s%%\' OR accm_country ILIKE \'%%%s%%\') \
             AND deleted_flag = false \
@@ -99,16 +99,17 @@ class Accommodations:
     cursor.close()
     return res
 
-  def filter(self, amenities, offset):
-    query = 'SELECT DISTINCT ON (accm_id) accm_id, accm_title, accm_street, accm_number, accm_city, accm_state, accm_country, accm_zipcode, accm_description, \
+  def filter(self, amenities, data, offset):
+    query = 'SELECT accm_id, accm_title, accm_street, accm_number, accm_city, accm_state, accm_country, accm_zipcode, accm_description, latitude, longitude,\
             json_agg(units) AS accm_units \
             FROM accommodations NATURAL INNER JOIN units NATURAL INNER JOIN shared_amenities \
             INNER JOIN private_amenities ON units.unit_id = private_amenities.unit_id \
-            WHERE (%s) AND units.available = true \
+            WHERE (accm_title ILIKE \'%%%s%%\' OR accm_street ILIKE \'%%%s%%\' OR accm_city ILIKE \'%%%s%%\' OR accm_state ILIKE \'%%%s%%\' OR accm_country ILIKE \'%%%s%%\') \
+            AND (%s) AND units.available = true \
             AND accommodations.deleted_flag = false \
             GROUP BY accm_id ORDER BY accm_id DESC LIMIT 10 OFFSET %s'
     cursor = db.cursor(cursor_factory=RealDictCursor)
-    cursor.execute(query %(amenities, offset))
+    cursor.execute(query %(data, data, data, data, data, amenities, offset))
     res = cursor.fetchall()
     cursor.close()
     return res
