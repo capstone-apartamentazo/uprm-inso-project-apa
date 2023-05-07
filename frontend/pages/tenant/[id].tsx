@@ -6,6 +6,7 @@ import {  useEffect, useState } from 'react'
 import axios from 'axios';
 import { Accm } from 'Accm';
 import Accommodation from '@/components/Accommodation';
+import ReviewList from '@/components/ReviewList';
 
 const { publicRuntimeConfig } = getConfig();
 const { url: host } = publicRuntimeConfig.site;
@@ -117,14 +118,20 @@ const Tenant = () => {
 						
 
 					</div>
-					<div className='flex flex-wrap gap-4 mr-2 mt-20 p-4 mb-6 overflow-auto'>
+					<div className=' mt-20'>
+						
+						<ReviewList route={`tenants/reviews/${id}`}/>
+
+					</div>
+					
+					{/* <div className='flex flex-wrap gap-4 mr-2 mt-20 p-4 mb-6 overflow-auto'>
 						{/* {accms.map((accm: Accm) => (
 
 							<Accommodation title={accm.accm_title} address={accm.accm_street} features={accm.accm_city} price={'100'} href='/' />
 
-						))} */}
+						))} }
 
-					</div>
+					</div> */}
 
 
 
