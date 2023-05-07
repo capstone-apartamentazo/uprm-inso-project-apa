@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import AccommodationUnits from './AccommodationUnits';
 import { useListings } from 'useListings';
+import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
+
 
 type Props = {
 	title: string;
@@ -9,6 +11,8 @@ type Props = {
 	id: string;
 	unitAmount: number;
 	accmUnits: any;
+	map: google.maps.Map | null;
+	coords: {lat:number,lng:number}
 };
 
 function getAvailableAmenities(amenities: any, id: string) {
@@ -48,7 +52,7 @@ function getAvailableAmenities(amenities: any, id: string) {
 	return toReturn;
 }
 
-const ListingResult: React.FC<Props> = ({ title, address, description, unitAmount, id, accmUnits }) => {
+const ListingResult: React.FC<Props> = ({ title, address, description, unitAmount, id, accmUnits,map,coords }) => {
 	const [active, setActive] = useState(false);
 	const [units, setUnits] = useState([]);
 	var picLink = '';
@@ -67,6 +71,8 @@ const ListingResult: React.FC<Props> = ({ title, address, description, unitAmoun
 	function handleClick(id: string, setActive: any, setUnits: any) {
 		active ? setActive(false) : setActive(true);
 		var element = document.getElementById(id + '_units');
+		map!.setCenter(coords)
+		map!.setZoom(17);
 
 		if (!element) setUnits(<AccommodationUnits key={'accmUnitsID_' + id} accmId={id} accmUnits={accmUnits} />);
 		else {
