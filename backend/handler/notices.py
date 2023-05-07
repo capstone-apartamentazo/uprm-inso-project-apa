@@ -34,9 +34,25 @@ class NoticeHandler:
       logger.exception(e)
       return jsonify('Error Occured'), 400
 
-  def getByAccommodationId(self, json):
+  @praetorian.auth_required
+  def getByAccommodationId(self, accm_id):
     try:
-      daoNotices = self.notices.getByAccommodationId(json['accm_id'])
+      valid, reason = self.checkAccm(accm_id)
+      if not valid:
+        return jsonify(reason)
+      daoNotices = self.notices.getByAccommodationId(accm_id)
+      if daoNotices:
+        return jsonify([row for row in daoNotices])
+      else:
+        return jsonify('Notices Not Found')
+    except (Exception, pgerror) as e:
+      logger.exception(e)
+      return jsonify('Error Occured'), 400
+
+  @praetorian.auth_required
+  def getTenantNotices(self, accm_id):
+    try:
+      daoNotices = self.notices.getTenantNotices(accm_id, praetorian.current_user_id())
       if daoNotices:
         return jsonify([row for row in daoNotices])
       else:

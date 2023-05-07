@@ -57,8 +57,13 @@ class ReviewHandler:
       return jsonify('Error Occured'), 400
 
   @praetorian.auth_required
-  def addReview(self, json):
+  def addReview(self, json, accm_id):
     try:
+      daoAccm = self.accommodations.getById(accm_id)
+      if not daoAccm:
+        return jsonify('Accommodation not found')
+      if not self.reviews.isFormerTenant(accm_id, praetorian.current_user_id()):
+        return jsonify('User is not a former tenant from accommodation')
       if not isinstance(json['rating'], int):
         return jsonify('Rating must be a number not a string')
       if isinstance(json['rating'], bool):
@@ -67,17 +72,16 @@ class ReviewHandler:
         return jsonify('Rating must be a string not a bool')
       if len(json['comment']) > 255:
         return jsonify('Character limit is 255')
-      accm = self.accommodations.getById(json['accm_id'])
-      if not accm:
-        return jsonify('Accommodation not found')
-      daoReview = self.reviews.addReview(json['rating'], json['comment'], json['accm_id'], praetorian.current_user_id())
+      daoReview = self.reviews.addReview(json['rating'], json['comment'], accm_id, praetorian.current_user_id())
       if daoReview:
-        landlord = self.landlords.updateRating(accm['landlord_id'])
-        if not landlord:
-          return jsonify('Error updating Landlord Rating'), 400
-        db.commit()
-        return jsonify(landlord), 200
+        if self.landlords.updateRating(daoAccm['landlord_id']):
+          db.commit()
+          return jsonify(daoReview)
+        else:
+          db.rollback()
+          return jsonify('Error updating landlord rating'), 400
       else:
+        db.rollback()
         return jsonify('Error adding Review'), 400
     except (Exception, pgerror) as e:
       db.rollback()

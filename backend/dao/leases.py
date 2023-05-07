@@ -32,7 +32,10 @@ class Leases:
     return res
 
   def getLandlordFromUnit(self, unit):
-    query = 'SELECT landlord_id FROM landlords NATURAL INNER JOIN accommodations NATURAL INNER JOIN units WHERE unit_id = %s'
+    query = 'SELECT landlords.landlord_id FROM landlords \
+            INNER JOIN accommodations ON landlords.landlord_id = accommodations.landlord_id \
+            INNER JOIN units ON accommodations.accm_id = units.accm_id \
+            WHERE unit_id = %s'
     cursor = db.cursor(cursor_factory=RealDictCursor)
     cursor.execute(query %(unit))
     res = cursor.fetchone()
