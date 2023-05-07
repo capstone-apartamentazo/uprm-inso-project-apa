@@ -5,14 +5,6 @@ import SpecialAccommodation from './SpecialAccommodation';
 import { Accm } from 'Accm';
 import getConfig from 'next/config';
 
-// interface Listing {
-// 	accm_id: number;
-// 	accm_title: string;
-// 	accm_street: string;
-// 	accm_city: string;
-// 	accm_description: string;
-// 	accm_units: any;
-// }
 const { publicRuntimeConfig } = getConfig();
 const { url: host } = publicRuntimeConfig.site;
 
@@ -23,23 +15,19 @@ export default function Explore() {
 	if (error) return <div className='mt-20'></div>;
 	if (!data || typeof data === 'string') return <div></div>;
 
-	const prepareAddress = (road:string,city:string,state:string|null,country:string,zipcode:string) =>{
-
-		var address = road+', '+city+', '+country+', '+zipcode
-		if(state){
-			address = road+', '+city+', '+state+', '+country+', '+zipcode
+	const prepareAddress = (road: string, city: string, state: string | null, country: string, zipcode: string) => {
+		var address = road + ', ' + city + ', ' + country + ', ' + zipcode;
+		if (state) {
+			address = road + ', ' + city + ', ' + state + ', ' + country + ', ' + zipcode;
 		}
-		return address
-
-
-	}
+		return address;
+	};
 
 	const top = data.slice(0, 4);
 	try {
 		top.map((accm: Accm) => {
 			console.log(accm);
-			listings.push(<SpecialAccommodation id={accm.accm_id} title={accm.accm_title} address={prepareAddress(accm.accm_street,accm.accm_city,accm.accm_state,accm.accm_country,accm.accm_zipcode)} description={accm.accm_description} host={host}   />
-			);
+			listings.push(<SpecialAccommodation id={accm.accm_id} title={accm.accm_title} address={prepareAddress(accm.accm_street, accm.accm_city, accm.accm_state, accm.accm_country, accm.accm_zipcode)} description={accm.accm_description} host={host} />);
 		});
 	} catch (error) {
 		console.log(error);
@@ -53,7 +41,7 @@ export default function Explore() {
 				{/* TODO: This section changes based on whether the user is signed in or not, is a landlord, or is a student */}
 				{listings}
 			</div>
-			<Link className='btn btn-accent text-white mb-10' href='/listings/results?search=Mayaguez'>
+			<Link className='btn btn-accent text-white mb-10' href='/listings/results?search=Mayaguez&filter=false'>
 				View More
 			</Link>
 		</section>

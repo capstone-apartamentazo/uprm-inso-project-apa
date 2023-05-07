@@ -16,8 +16,8 @@ const Review: React.FC<Props> = ({ tenantID, opinion, accmID, date, rating }) =>
 	const { data: accmPic } = useListings(accmID != undefined ? 'images/accommodation/' + accmID : null);
 	const { data: accm } = useListings(accmID != undefined ? 'accommodations/' + accmID : null);
 
-	const tenantPicLink = tenantPic != undefined ? (tenantPic.total_count === 0 ? '/images/user.png' : tenantPic.resources[0].secure_url) : '';
-	const accmPicLink = accmPic != undefined ? (accmPic.length > 0 ? accmPic[0].secure_url : '/images/default.jpg') : '';
+	const tenantPicLink = tenantPic != undefined ? (tenantPic.total_count === 0 || tenantPic === 'Error Occured' ? '/images/user.png' : tenantPic.resources[0].secure_url) : '/images/user.png';
+	const accmPicLink = accmPic != undefined ? (accmPic.length > 0 && accmPic != 'Error Occured' ? accmPic[0].secure_url : '/images/default.jpg') : '/images/default.jpg';
 	const tenantName = name != undefined ? name.tenant_name : '';
 	const accmName = accm != undefined ? accm.accm_title : '';
 
