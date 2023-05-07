@@ -22,11 +22,7 @@ return (
 
 <div key={message.message_id} className='snap-end '>
                 <div className={"" + (iSent ? "chat chat-end" : "chat chat-start")}>
-                    <div className="chat-image avatar">
-                        <div className="w-10 rounded-full">
-                            <img src="/images/person.png" />
-                        </div>
-                    </div>
+                    
                     <div className="chat-header">
                         {message.landlord_sent_msg ? message.landlord_name : message.tenant_name}
                         <time className="text-xs opacity-50 ">{message.msg_send_date}</time>
