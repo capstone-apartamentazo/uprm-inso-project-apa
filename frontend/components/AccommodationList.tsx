@@ -77,7 +77,7 @@ const AccommodationList: React.FC<Props> = ({  }) => {
 
 
     return (
-        <div className='flex flex-wrap gap-4 mr-2 mt-20 p-4 mb-6 overflow-auto'>
+        <div className='flex justify-center flex-wrap gap-4 mr-2 mt-20 p-4 mb-6 overflow-auto'>
             {accms.map((accm: Accm ) => (
                 
 				<ProfileAccommodation title={accm.accm_title} address={accm.accm_street+', '+accm.accm_city+', '+accm.accm_zipcode} id={accm.accm_id}/>
