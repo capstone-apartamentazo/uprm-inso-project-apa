@@ -1,10 +1,6 @@
 import React from 'react';
 import Review from '@/components/Review';
-import getConfig from 'next/config';
 import { useListings } from 'useListings';
-
-const { publicRuntimeConfig } = getConfig();
-const { url: host } = publicRuntimeConfig.site;
 
 type Props = {
 	route: string;
@@ -22,12 +18,11 @@ const ReviewList: React.FC<Props> = (route) => {
 			const { data: accmPic } = useListings(reviews != undefined ? 'images/accommodation/' + review.accm_id : '');
 			const { data: accm } = useListings(reviews != undefined ? 'accommodations/' + review.accm_id : '');
 
-			const tenantPicLink = tenantPic != undefined ? tenantPic.resources[0].secure_url : '';
-			const accmPicLink = accmPic != undefined ? accmPic.resources[0].secure_url : '';
+			const tenantPicLink = tenantPic != undefined ? (tenantPic.total_count === 0 ? '/images/user.png' : tenantPic.resources[0].secure_url) : '';
+			const accmPicLink = accmPic != undefined ? (accmPic.length > 0 ? accmPic[0].secure_url : '/images/default.jpg') : '';
 			const tenantName = name != undefined ? name.tenant_name : '';
 			const accmName = accm != undefined ? accm.accm_title : '';
 			const rating = review != undefined ? review.rating : '';
-
 			allReviews.push(
 				<div key={review.review_id} className='space-y-4'>
 					<Review opinion={review.comment} listingTitle={accmName} listingImg={accmPicLink} name={tenantName} date={review.review_send_date} userImg={tenantPicLink} rating={rating} />{' '}

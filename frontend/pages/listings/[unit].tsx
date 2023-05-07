@@ -3,10 +3,28 @@ import { useListings } from 'useListings';
 import ReviewList from '@/components/ReviewList';
 import { useRouter } from 'next/router';
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
+import jwt from 'jwt-decode';
+import Cookies from 'universal-cookie';
+import { Storage } from 'Storage';
+import { Token } from 'Token';
+import { useEffect, useState } from 'react';
+import WriteReview from '@/components/WriteReview';
 
 const Unit = () => {
 	const router = useRouter();
 	const { unit } = router.query;
+	const [storage, setStorage] = useState<Storage>({ token: null, id: null, isLandlord: null });
+
+	const cookies = new Cookies();
+	useEffect(() => {
+		try {
+			const token = cookies.get('jwt_authorization');
+			const decoded = jwt<Token>(token);
+			setStorage({ token: token, id: decoded['id'], isLandlord: decoded['rls'] == 'landlord' ? true : false });
+		} catch (err) {
+			console.log('No tokens found in cookies');
+		}
+	}, []);
 
 	const { data: unitData, error: unitError } = useListings(unit ? 'units/' + unit : null);
 	const { data: unitAmenities, error: unitAmenitiesError } = useListings(unit ? 'units/amenities/' + unit : null);
@@ -100,10 +118,24 @@ const Unit = () => {
 	let allUnitPics: any[] = [];
 
 	try {
-		console.log(unitPics);
+		if (unitPics.length === 0 && accmPics.length === 0) {
+			allUnitPics.push(
+				<>
+					<div className='carousel-item w-2/5'>
+						<img src='/images/default.jpg' className='rounded-box object-cover' />
+					</div>
+					<div className='carousel-item w-2/5'>
+						<img src='/images/default.jpg' className='rounded-box object-cover' />
+					</div>
+					<div className='carousel-item w-2/5'>
+						<img src='/images/default.jpg' className='rounded-box object-cover' />
+					</div>
+				</>
+			);
+		}
 		unitPics.forEach((pic: { secure_url: any }) => {
 			allUnitPics.push(
-				<div className='carousel-item w-96'>
+				<div className='carousel-item w-2/5'>
 					<img src={pic.secure_url} className='rounded-box object-cover' />
 				</div>
 			);
@@ -111,7 +143,7 @@ const Unit = () => {
 
 		accmPics.forEach((pic: { secure_url: any }) => {
 			allUnitPics.push(
-				<div className='carousel-item w-96'>
+				<div className='carousel-item w-2/5'>
 					<img src={pic.secure_url} className='rounded-box object-cover' />
 				</div>
 			);
@@ -119,14 +151,14 @@ const Unit = () => {
 	} catch (ex) {
 		allUnitPics.push(
 			<>
-				<div className='row-span-2 h-96 w-auto'>
-					<img src='/images/default.jpg' className='rounded-2xl object-cover h-96 w-full' />
+				<div className='carousel-item w-2/5'>
+					<img src='/images/default.jpg' className='rounded-box object-cover' />
 				</div>
-				<div className='col-start-2 h-auto w-96'>
-					<img src='/images/default.jpg' className='rounded-2xl object-cover h-full w-full' />
+				<div className='carousel-item w-2/5'>
+					<img src='/images/default.jpg' className='rounded-box object-cover' />
 				</div>
-				<div className='col-start-2 h-auto w-96'>
-					<img src='/images/default.jpg' className='rounded-2xl object-cover h-full w-full' />
+				<div className='carousel-item w-2/5'>
+					<img src='/images/default.jpg' className='rounded-box object-cover' />
 				</div>
 			</>
 		);
@@ -150,6 +182,7 @@ const Unit = () => {
 		lat: accmData.latitude,
 		lng: accmData.longitude,
 	};
+
 	return (
 		<Layout>
 			<section className='pt-32 pl-20 pr-20 bg-gray-50'>
@@ -161,6 +194,9 @@ const Unit = () => {
 						<h3 className='text-lg'>
 							{accmData.accm_street}, {accmData.accm_city}, {accmData.accm_country}, {accmData.accm_zipcode}
 						</h3>
+					</div>
+					<div className={`row-span-1 row-start-2 col-start-4 align-middle text-end ${storage.isLandlord ? 'hidden' : storage.isLandlord === null ? 'hidden' : ''}`}>
+						<WriteReview accmID={accmData.accm_id} token={storage.token} />
 					</div>
 					<div className='row-start-3 col-span-4 h-[28rem] bg-gray-100 rounded-2xl shadow-inner p-4'>
 						<div className='grid grid-rows-2 grid-flow-col gap-4 h-[28rem] overflow-auto'>
@@ -186,7 +222,7 @@ const Unit = () => {
 					<div className='row-start-5 col-start-1 col-span-2 mt-10'>
 						<h3 className='text-2xl'>About</h3>
 						<div className='w-full break-all'>
-							<p className='mt-4 mb-4 font-semibold'>{accmData.accm_description}</p>
+							<p className='mt-4 mb-4'>{accmData.accm_description}</p>
 						</div>
 						<div className='rounded-2xl shadow-lg w-full py-4 flex bg-white'>
 							<div className='w-32 overflow-hidden mx-4'>
