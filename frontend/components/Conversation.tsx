@@ -27,7 +27,7 @@ type Props = {
 const Conversation: React.FC<Props> = ({ msg, isLandlord, onClick, convoId, host }) => {
     var iSent = ((isLandlord && msg.landlord_sent_msg) || (!(isLandlord || msg.landlord_sent_msg)))
     var needRead = ((iSent || msg.msg_read))
-    const [currImage, setCurrImage] = useState<string | any>('/images/default.jpeg')
+    const [currImage, setCurrImage] = useState<string | any>('/images/user.png')
 
 
     useEffect(() => {

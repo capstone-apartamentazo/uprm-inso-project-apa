@@ -35,6 +35,7 @@ const New = () => {
 
 
     useEffect(() => {
+        if(router.isReady){
         try {
             setAccmId((router.query.accmid))
             try {
@@ -78,7 +79,8 @@ const New = () => {
             console.error(err)
             router.replace('/profile')
         }
-    }, [])
+    }
+    }, [router.isReady])
 
 
     const handleSelect1 = async (event: any) => {
@@ -149,8 +151,12 @@ const New = () => {
 
         if (unitId) {
             await axios({ method: 'post', url: `${host}/api/images/unit`, headers: { Authorization: `Bearer ${storage.token}` }, data })
+                .then(res=>{
+                    console.log(`successfully uploaded image: ${order}`)
+                })
                 .catch(err => {
                     console.error(err)
+                    alert(`Error uploading image: ${order}, edit unit to upload images again.`)
                 })
         }
 
@@ -164,13 +170,20 @@ const New = () => {
                     return response.data
                 })
                 .then(result => {
+                    console.log('uploading pictures')
+                    console.log(result['unit_id'])
                     uploadImages(result['unit_id'])
+                    console.log('image upload complete')
                     return result
                 }).then(result => {
+                    console.log('updating amenities')
+                    console.log(result['priv_amenities_id'])
+                    console.log(amenities)
                     updateUnitAmenities(result['priv_amenities_id'], amenities)
+                    //console.log('amenities update complete')
 
                 }).then(() => {
-                    alert('Creation successfull')
+                    alert('Creation success')
                     router.replace({
                         pathname: '/units',
                         query: { accmid: accmId } // the data
@@ -186,8 +199,8 @@ const New = () => {
     const updateUnitAmenities = async (pa_id: any, amenities: any) => {
         var data = {
             "priv_amenities_id": pa_id,
-            "bedrooms": amenities.bedrooms,
-            "bathrooms": amenities.bathrooms,
+            "bedrooms": parseInt(amenities.bedrooms,10),
+            "bathrooms": parseFloat(amenities.bathrooms),
             "electricity": amenities.electricity,
             "water": amenities.water,
             "internet": amenities.internet,
@@ -205,11 +218,13 @@ const New = () => {
                 })
                 .then(result => {
                     console.log(result)
+                    console.log('update amenities success')
 
 
                 })
                 .catch(err => {
                     console.log(err)
+                    alert('Error updating private amenities. Edit unit to add available private amenities.')
                 })
 
         }

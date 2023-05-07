@@ -32,6 +32,7 @@ const Messages: React.FC<Props> = ({ }) => {
     const [selected, setSelected] = useState(0)
     const router = useRouter()
     const cookies = new Cookies()
+    const [currentConvoName, setCurrentConvoName] = useState('')
 
     
     useEffect(() => {
@@ -82,14 +83,17 @@ const Messages: React.FC<Props> = ({ }) => {
 
 
     const [selectedIndex, setSelectedIndex] = useState(-1)
-    function handleSelection(landlord_id: number, tenant_id: number, index:number) {
+    function handleSelection(landlord_id: number, tenant_id: number, index:number,tenant_name:string,landlord_name:string) {
         //console.log('test')
+        console.log(tenant_name+landlord_name)
         setSelectedIndex(index)
         if (storage?.isLandlord) {
             //console.log(storage.isLandlord);
             setSelected(tenant_id);
+            setCurrentConvoName(tenant_name)
         } else {
             setSelected(landlord_id);
+            setCurrentConvoName(landlord_name)
         }
 
     }
@@ -269,7 +273,7 @@ const Messages: React.FC<Props> = ({ }) => {
 
                                 convos.map((message: Msg, index: number) => (
 
-                                    <Conversation onClick={() => handleSelection(message.landlord_id, message.tenant_id, index)} key={message.message_id} msg={message} isLandlord={storage.isLandlord} convoId={storage.isLandlord?message.tenant_id:message.landlord_id} host={host}></Conversation>
+                                    <Conversation onClick={() => {handleSelection(message.landlord_id, message.tenant_id, index, message.tenant_name , message.landlord_name)}} key={message.message_id} msg={message} isLandlord={storage.isLandlord} convoId={storage.isLandlord?message.tenant_id:message.landlord_id} host={host}></Conversation>
 
 
 
@@ -285,14 +289,14 @@ const Messages: React.FC<Props> = ({ }) => {
                         <div className='absolute inset-x-0 top-0'>
                             <div className='flex flex-row flex-nowrap h-16 bg-white   drop-shadow-md items-center '>
 
-                                <div className="avatar p-4">
+                                <div className="avatar p-4 hidden">
                                     <div className=" w-10 rounded-full ring-1 ring-accent ring-offset-base-100 ring-offset-2 hover:shadow-lg hover:ring-2">
                                         <a href='' className=''><img className='aspect-square' src='/images/person.png' /></a>
                                     </div>
                                 </div>
 
 
-                                <h1 className='font-semibold text-xl'>{(selectedIndex<0)?"":(storage.isLandlord ? convos.at(selectedIndex).tenant_name:convos.at(selectedIndex).landlord_name)}</h1>
+                                <h1 className='font-semibold text-xl'>{currentConvoName}</h1>
                             </div>
                         </div>
 

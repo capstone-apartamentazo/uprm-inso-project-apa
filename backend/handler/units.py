@@ -55,10 +55,10 @@ class UnitHandler:
   @praetorian.auth_required
   def addUnit(self, json):
     try:
-      valid, reason = self.checkInput(json['unit_number'], json['tenant_capacity'], json['price'], json['size'], json['contract_duration'])
+      valid, reason = self.checkAccm(json['accm_id'])
       if not valid:
         return jsonify(reason)
-      valid, reason = self.checkAccm(json['accm_id'])
+      valid, reason = self.checkInput(json['unit_number'], json['tenant_capacity'], json['price'], json['size'], json['contract_duration'], json['accm_id'])
       if not valid:
         return jsonify(reason)
       daoUnit = self.units.addUnit(json['unit_number'], json['tenant_capacity'], json['price'], json['size'], json['date_available'], json['contract_duration'], json['accm_id'])
@@ -75,10 +75,10 @@ class UnitHandler:
   @praetorian.auth_required
   def updateUnit(self, json):
     try:
-      valid, reason = self.checkInput(json['unit_number'], json['tenant_capacity'], json['price'], json['size'], json['contract_duration'])
+      valid, reason = self.checkUnit(json['unit_id'])
       if not valid:
         return jsonify(reason)
-      valid, reason = self.checkUnit(json['unit_id'])
+      valid, reason = self.checkInput(json['unit_number'], json['tenant_capacity'], json['price'], json['size'], json['contract_duration'], self.units.getById(json['unit_id'])['accm_id'])
       if not valid:
         return jsonify(reason)
       daoUnit = self.units.updateUnit(json['unit_id'], json['unit_number'], json['available'], json['tenant_capacity'], json['price'], json['size'], json['date_available'], json['contract_duration'])
@@ -188,9 +188,11 @@ class UnitHandler:
     else:
       return True , ''
 
-  def checkInput(self, unit_number, tenant_capacity, price, size, contract_duration):
+  def checkInput(self, unit_number, tenant_capacity, price, size, contract_duration, accm_num):
     if isinstance(unit_number, bool):
       return False, 'unit_number can\'t be bool'
+    if self.units.getByUnitNumber(accm_num, unit_number):
+      return False, 'Unit number taken'
     if self.unitNumValid(unit_number):
       return False, 'Unit number can only contain numbers, leters and hyphen and max 10 characters. (Hyphen are optional but cannot start or end with a hyphen -)'
     if not isinstance(tenant_capacity, int):
