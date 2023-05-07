@@ -164,7 +164,7 @@ export default function Navbar(path: any) {
 			const decoded = jwt<Token>(token);
 			setStorage({ token: token, id: decoded['id'], isLandlord: decoded['rls'] == 'landlord' ? true : false });
 
-			const endpoint = `${host}/api/images/landlord/${decoded['id']}`;
+			const endpoint = `${host}/api/images/${storage.isLandlord ? 'landlord' : 'tenant'}/${decoded['id']}`;
 
 			const options = {
 				method: 'GET',
