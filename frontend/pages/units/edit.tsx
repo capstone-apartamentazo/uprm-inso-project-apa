@@ -69,6 +69,7 @@ const Edit = () => {
 
 
     useEffect(() => {
+        if(router.isReady){
         try {
             setUnitId((router.query.unitId))
             try {
@@ -107,12 +108,14 @@ const Edit = () => {
                 console.error(err)
 
             }
+
         } catch (err) {
             alert('No unit id found in query')
             console.error(err)
             router.replace('/profile')
         }
-    }, [])
+    }
+    }, [router.isReady])
 
     useEffect(()=>{
         axios.get(`${host}/api/units/${unitId}`)

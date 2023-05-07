@@ -35,6 +35,7 @@ const New = () => {
 
 
     useEffect(() => {
+        if(router.isReady){
         try {
             setAccmId((router.query.accmid))
             try {
@@ -78,7 +79,8 @@ const New = () => {
             console.error(err)
             router.replace('/profile')
         }
-    }, [])
+    }
+    }, [router.isReady])
 
 
     const handleSelect1 = async (event: any) => {

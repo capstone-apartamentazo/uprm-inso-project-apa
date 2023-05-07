@@ -15,6 +15,8 @@ import { Accm } from 'Accm';
 import getConfig from 'next/config';
 import { Unit } from "Unit";
 
+import Notice from "@/components/Notice";
+
 const { publicRuntimeConfig } = getConfig();
 const { url: host } = publicRuntimeConfig.site;
 
@@ -27,6 +29,7 @@ const Index = () => {
     const cookies = new Cookies()
     var units: [] = []
     useEffect(() => {
+        if(router.isReady){
         try {
             setAccmId((router.query.accmid))
             try {
@@ -44,7 +47,8 @@ const Index = () => {
             console.error(err)
             router.replace('/profile')
         }
-    }, [])
+    }
+    }, [router.isReady])
 
     const { data: unitsFetch, error: unitsError, isLoading: isLoadingUnits } = useSWR((storage?.token != null) ? `${host}/api/accommodations/units/${accmId}` : null, (url: string) => fetch(url, {
         headers: {
@@ -115,21 +119,22 @@ const Index = () => {
 
                 <div className="relative shadow-lg  rounded-lg ring-1 ring-stone-200  mx-10 pb-10">
                     <div className="flex gap-2 absolute right-4 top-4 ">
-                        <Link href={{
+                        <Notice accmId={accmId}/>
+                        {/* <Link href={{
                             pathname: '/',
                             query: { accmid: accmId } // the data
-                        }} className=' bg-primary  font-medium text-white p-2 rounded-md shadow-md hover:bg-secondary ' >Send notice to Tenants</Link>
+                        }} className=' bg-primary  font-medium text-white p-2 rounded-md shadow-md hover:bg-secondary ' >Send notice to Tenants</Link> */}
 
                         <Link href={{
                             pathname: '/units/new',
                             query: { accmid: accmId } // the data
-                        }} className=' bg-accent  font-medium text-white p-2 rounded-md shadow-md hover:bg-accent-focus' >Add New Unit</Link>
+                        }} className=' bg-accent  font-medium text-white p-2 rounded-md shadow-md hover:bg-accent-focus text-center' >Add New Unit</Link>
                         
 
                     </div>
                     <h1 className="font-semibold text-3xl mx-6 py-4">Units</h1>
                     <div className="">
-                        <div className="flex flex-wrap gap-4 mx-4">
+                        <div className="flex flex-wrap gap-4 my-2 mx-4">
                             {units.map((unit: Unit, index: any) => (
 
                                 <UnitC a_id={unit.accm_id} num={unit.unit_number} status={unit.available} id={unit.unit_id} />

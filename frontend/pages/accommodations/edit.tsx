@@ -53,6 +53,7 @@ const Edit = () => {
 
 
     useEffect(() => {
+        if(router.isReady){
         
         try{
             setAccmId(router.query.accmId)
@@ -96,9 +97,9 @@ const Edit = () => {
         router.replace('/profile')
     }
 
-
+        }
         
-    }, [])
+    }, [router.isReady])
 
     useEffect(()=>{
         axios.get(`${host}/api/accommodations/${accmId}`)
