@@ -195,9 +195,19 @@ const Profile = () => {
 					<div className='flex  flex-col flex-initial basis-1/6 pt-10 pl-6 pr-6 '>
 						<div className='block min-w-full rounded-xl pt-6 bg-white ring-stone-200 ring-1 shadow-lg dark:bg-neutral-700 items-center text-center'>
 							<form className=' relative'>
-								<div className='avatar my-4 mx-10'>
+								<label htmlFor='pImg' className='btn btn-circle btn-sm absolute top-6 right-10 border-1  bg-accent z-40 hover:bg-accent hover:border-[1.5px]    border-white hover:border-white'>
+									<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.75} stroke="currentColor" className="w-4 h-4 stroke-white   ">
+										<path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
+									</svg>
+								</label>
+								<div className='avatar my-4 mx-10  '>
+
+
+
+
+
 									<div className=' w-40 rounded-full ring ring-accent ring-offset-base-100 ring-offset-2 hover:ring-4 hover:shadow-lg'>
-										<label htmlFor='pImg'>
+										<label >
 											<img className={imgLoading ? 'aspect-square animate-pulse' : 'aspect-square'} src={profileImg} />
 										</label>
 										<input onChange={uploadImg} type='file' id='pImg' accept="image/png, image/jpeg" className='hidden'></input>
@@ -256,14 +266,14 @@ const Profile = () => {
 				<div className='flex  flex-col flex-initial basis-1/6 pt-10 pl-6 pr-6 '>
 					<div className='block min-w-full rounded-xl pt-6 bg-white ring-stone-200 ring-1 shadow-lg dark:bg-neutral-700 items-center text-center'>
 						<form className=' relative'>
-						<label htmlFor='pImg' className='btn btn-circle btn-sm absolute top-6 right-10 border-1  bg-accent z-40 hover:bg-accent hover:border-[1.5px]    border-white hover:border-white'>
-									<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.75} stroke="currentColor" className="w-4 h-4 stroke-white   ">
-										<path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
-									</svg>
-								</label>
+							<label htmlFor='pImg' className='btn btn-circle btn-sm absolute top-6 right-10 border-1  bg-accent z-40 hover:bg-accent hover:border-[1.5px]    border-white hover:border-white'>
+								<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.75} stroke="currentColor" className="w-4 h-4 stroke-white   ">
+									<path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
+								</svg>
+							</label>
 							<div className='avatar my-4 mx-10  '>
 
-								
+
 
 
 
