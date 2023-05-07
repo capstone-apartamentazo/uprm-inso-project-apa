@@ -112,15 +112,15 @@ const Tenant = () => {
 					</div>
 				</div>
 				<div className='flex flex-col flex-initial relative basis-5/6 mt-10 pl-6 pr-6 max-h-semi min-w-min  m-6 ring-1 ring-stone-200 rounded-md bg-white shadow-lg overflow-hidden'>
-					<div className='text-3xl font-bold text-left pt-6 px-6 rounded-md absolute bg-white top-0 left-0 right-0 '>
+					<div className='text-3xl font-bold text-left shadow-md pt-6 pb-2 px-6 rounded-md absolute bg-white top-0 left-0 right-0 '>
 						
 								Reviews made:
 						
 
 					</div>
-					<div className=' mt-20'>
+					<div className='overflow-auto p-4  mt-20 '>
 						
-						<ReviewList route={`tenants/reviews/${id}`}/>
+						<ReviewList route={`tenants/reviews/${tenant.tenant_id}`}/>
 
 					</div>
 					
