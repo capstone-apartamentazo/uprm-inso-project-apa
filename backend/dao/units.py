@@ -56,7 +56,7 @@ class Units:
   
   def getByUnitNumber(self, accm, unit_numb):
     cursor = db.cursor(cursor_factory=RealDictCursor)
-    cursor.execute('SELECT * FROM units WHERE accm_id = %s AND unit_number = %s' %(accm, unit_numb))
+    cursor.execute('SELECT * FROM units WHERE accm_id = %s AND unit_number = \'%s\'' %(accm, unit_numb))
     res = cursor.fetchall()
     cursor.close()
     return res

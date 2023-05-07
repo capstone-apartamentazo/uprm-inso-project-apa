@@ -191,8 +191,8 @@ class UnitHandler:
   def checkInput(self, unit_number, tenant_capacity, price, size, contract_duration, accm_num):
     if isinstance(unit_number, bool):
       return False, 'unit_number can\'t be bool'
-    # if self.units.getByUnitNumber(accm_num, unit_number):
-    #   return False, 'Unit number taken'
+    if self.units.getByUnitNumber(accm_num, unit_number):
+      return False, 'Unit number taken'
     if self.unitNumValid(unit_number):
       return False, 'Unit number can only contain numbers, leters and hyphen and max 10 characters. (Hyphen are optional but cannot start or end with a hyphen -)'
     if not isinstance(tenant_capacity, int):
