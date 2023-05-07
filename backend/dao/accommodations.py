@@ -100,7 +100,7 @@ class Accommodations:
     return res
 
   def filter(self, amenities, data, offset):
-    query = 'SELECT accm_id, accm_title, accm_street, accm_number, accm_city, accm_state, accm_country, accm_zipcode, accm_description, \
+    query = 'SELECT accm_id, accm_title, accm_street, accm_number, accm_city, accm_state, accm_country, accm_zipcode, accm_description, latitude, longitude,\
             json_agg(units) AS accm_units \
             FROM accommodations NATURAL INNER JOIN units NATURAL INNER JOIN shared_amenities \
             INNER JOIN private_amenities ON units.unit_id = private_amenities.unit_id \
