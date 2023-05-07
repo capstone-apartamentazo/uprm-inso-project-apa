@@ -32,7 +32,7 @@ const Profile = () => {
 	const [storage, setStorage] = useState<Storage>({ token: null, isLandlord: null, id: null })
 	const router = useRouter()
 	const cookies = new Cookies()
-	const [profileImg, setProfileImg] = useState<string|any>('/images/default.jpeg')
+	const [profileImg, setProfileImg] = useState<string|any>('/images/user.png')
 	const [imgLoading, setImageLoading] = useState(false)
 
 	useEffect(() => {
@@ -90,6 +90,7 @@ const Profile = () => {
 			if (storage.isLandlord) {
 				imgEndpoint = `${host}/api/images/landlord/${storage.id}`
 			}
+			//alert(imgEndpoint)
 			//alert(storage.isLandlord)
 			setImageLoading(true)
 
@@ -98,6 +99,7 @@ const Profile = () => {
 					return res.data
 				})
 				.then(result => {
+					console.log(result)
 					console.log(result['resources'][0])
 					return result['resources'][0]
 				})
@@ -131,7 +133,11 @@ const Profile = () => {
 					"image": reader.result,
 					
 				}
-				axios({method: 'post',url:`${host}/api/images/landlord`,headers: { Authorization: `Bearer ${storage.token}`},data})
+				var endpoint = `${host}/api/images/tenant`
+				if(storage.isLandlord){
+					endpoint = `${host}/api/images/landlord`
+				}
+				axios({method: 'post',url:endpoint,headers: { Authorization: `Bearer ${storage.token}`},data})
 				.then(res=>{
 					
 					
@@ -227,7 +233,7 @@ const Profile = () => {
 
 					<div className='flex flex-wrap text-3xl font-bold text-left pt-6 pb-2 px-6 rounded-md absolute  bg-white top-0 left-0 right-0 items-center'>
 						<h1 className=' text-3xl font-bold text-left  grow'>
-							Accommodations
+							Active Contracts
 
 						</h1>
 						
