@@ -35,28 +35,6 @@ type Props = {
 	accmUnits: any;
 };
 
-function getAvailableAmenities(amenities: any) {
-	let toReturn: any[] = [];
-	var topAmenities = ['electricity', 'water', 'internet', 'parking'];
-	var includedAmenities = Object.keys(amenities).filter((item) => (item != 'deleted_flag' ? amenities[item] === false : null));
-	const filteredAmenities = includedAmenities.filter((value) => topAmenities.includes(value));
-
-	while (filteredAmenities.length < 4 && includedAmenities.length >= filteredAmenities.length) {
-		var lastItem: any = includedAmenities.pop();
-		if (filteredAmenities.includes(lastItem)) continue;
-		filteredAmenities.push(lastItem);
-	}
-
-	filteredAmenities.forEach((amenity) =>
-		toReturn.push(
-			<span key={amenity} className='badge badge-ghost badge-sm'>
-				{amenity}
-			</span>
-		)
-	);
-	return toReturn;
-}
-
 const AccommodationUnits: React.FC<Props> = ({ accmId, accmUnits }) => {
 	const router = useRouter();
 	let allUnits: any = [];
@@ -68,7 +46,7 @@ const AccommodationUnits: React.FC<Props> = ({ accmId, accmUnits }) => {
 				method: 'GET',
 				headers: new Headers({ 'content-type': 'application/json' }),
 			};
-			console.log(accmUnits);
+
 			accmUnits.map((unit: Unit) => {
 				var endpoint = `${host}/api/units/amenities/` + unit.unit_id;
 				fetch(endpoint, options)
@@ -76,19 +54,16 @@ const AccommodationUnits: React.FC<Props> = ({ accmId, accmUnits }) => {
 						return data.json();
 					})
 					.then((data) => {
-						console.log(data);
 						allUnits.push(
-							<tr key={unit.unit_id} className='hover cursor-pointer' onClick={() => router.push('/listings/' + unit.unit_id)}>
+							<tr key={'unit_' + unit.unit_id} className='hover cursor-pointer' onClick={() => router.push('/listings/' + unit.unit_id)}>
 								<td>
 									<div className='flex items-center space-x-3'>
 										<div>
 											<div className='font-bold'>Unit {unit.unit_number}</div>
-											<div className='text-sm opacity-50'>{unit.available ? 'Available' : 'Unavailable'}</div>
+											<div className='text-sm opacity-50'>{unit.available === true ? 'Available' : 'Unavailable'}</div>
 										</div>
 									</div>
 								</td>
-								{/* <td className='space-x-1'>{getAvailableAmenities(data)}</td> */}
-
 								<td className='space-x-2'>
 									{data.bedrooms} beds <span className='text-accent'>|</span> {data.bathrooms} baths
 								</td>
@@ -102,7 +77,7 @@ const AccommodationUnits: React.FC<Props> = ({ accmId, accmUnits }) => {
 						console.log(err);
 						var noListings: any = [];
 						noListings.push(
-							<tr>
+							<tr key={accmId + '_noListings'}>
 								<td className='text-center font-semibold'>No Units Found</td>
 							</tr>
 						);
@@ -113,12 +88,12 @@ const AccommodationUnits: React.FC<Props> = ({ accmId, accmUnits }) => {
 	}, [accmId, accmUnits]);
 
 	return (
-		<div id={accmId + '_units'} className={`h-72 card card-compact shadow text-primary-content translate-y-1 bg-accent transition-all delay-150 duration-300 overflow-hidden w-full`}>
+		<div key={accmId + '_units'} id={accmId + '_units'} className={`${accmUnits.length === 1 ? 'h-[10rem]' : accmUnits.length === 2 ? 'h-[15rem]' : 'h-[19rem]'} card card-compact shadow text-primary-content translate-y-1 bg-accent transition-all delay-150 duration-300 overflow-hidden w-full`}>
 			<div className='card-body p-0'>
 				<h3 className='card-title'>Accommodation Units</h3>
-				<div className='overflow-x-auto w-full'>
-					<table className='table w-full rounded-xl'>
-						<tbody>{units}</tbody>
+				<div className='overflow-x-auto overflow-y-auto overflow-scroll w-full h-[14.5rem] rounded-xl'>
+					<table className='table w-full rounded-xl overflow-scroll'>
+						<tbody className='overflow-y-auto'>{units}</tbody>
 					</table>
 				</div>
 			</div>

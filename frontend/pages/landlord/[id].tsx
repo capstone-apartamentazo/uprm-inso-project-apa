@@ -6,6 +6,7 @@ import {  useEffect, useState } from 'react'
 import axios from 'axios';
 import { Accm } from 'Accm';
 import Accommodation from '@/components/Accommodation';
+import SpecialAccommodation from '@/components/SpecialAccommodation';
 
 const { publicRuntimeConfig } = getConfig();
 const { url: host } = publicRuntimeConfig.site;
@@ -49,7 +50,7 @@ const Landlord = () => {
 		}
 	}, [id])
 
-
+	var accmsList:[] = []
 
 	const { data: accms, error: accmsError, isLoading: isLoadingAccms } = useSWR(`${host}/api/accommodations/landlord/${id}`, (url: string) => fetch(url).then(res => res.json()));
 
@@ -65,18 +66,30 @@ const Landlord = () => {
 		</div>
 	)
 	if (!accms || accms == 'Accommodations Not Found') {
-		return (
-			<div className='mt-3'>
+		accmsList = []
+		// return (
+		// 	<div className='mt-3'>
 
-				<h1 className='font-normal text-xl text-black'>No properties listed.</h1>
-			</div>
-		)
+		// 		<h1 className='font-normal text-xl text-black'>No properties listed.</h1>
+		// 	</div>
+		// )
+	}else{
+		accmsList = accms
 	}
 
 
 
 
+	const prepareAddress = (road:string,city:string,state:string|null,country:string,zipcode:string) =>{
 
+		var address = road+', '+city+', '+country+', '+zipcode
+		if(state){
+			address = road+', '+city+', '+state+', '+country+', '+zipcode
+		}
+		return address
+
+
+	}
 
 
 
@@ -118,10 +131,9 @@ const Landlord = () => {
 						
 
 					</div>
-					<div className='flex flex-wrap gap-4 mr-2 mt-20 p-4 mb-6 overflow-auto'>
-						{accms.map((accm: Accm) => (
-
-							<Accommodation title={accm.accm_title} address={accm.accm_street} features={accm.accm_city} price={'100'} href='/' />
+					<div className='flex flex-wrap justify-center  gap-4 mr-2 mt-20 p-4 mb-6 overflow-auto'>
+						{accmsList.map((accm: Accm) => (
+							<SpecialAccommodation id={accm.accm_id} title={accm.accm_title} address={prepareAddress(accm.accm_street,accm.accm_city,accm.accm_state,accm.accm_country,accm.accm_zipcode)} description={accm.accm_description} host={host}   />
 
 						))}
 

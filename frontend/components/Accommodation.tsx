@@ -1,19 +1,28 @@
 import React from 'react';
+import { useListings } from 'useListings';
 
 type Props = {
+	id: number;
 	title: string;
 	address: string;
-	features: string;
-	price: string;
+	description: string;
+	units: string;
 	href: string;
 };
 
-const Listing: React.FC<Props> = ({ title, address, features, price, href }) => {
+const Listing: React.FC<Props> = ({ id, title, address, description, units, href }) => {
+	const { data, error } = useListings('images/accommodation/' + id);
+	let pic: string;
+
+	if (error) return <div className='mt-20'></div>;
+	if (!data || typeof data === 'string' || data.length === 0) pic = '/images/default.jpg';
+	else pic = data[0].secure_url;
+
 	return (
 		<div className='flex justify-center w-72 transition ease-in-out delay-50 hover:-translate-y-1 hover:scale-10 duration-200'>
 			<a href={href} data-te-ripple-init data-te-ripple-color='light'>
 				<div className='block max-w-full rounded-lg bg-white shadow-lg ring-1 ring-stone-200 dark:bg-neutral-700 '>
-					<img className='rounded-t-lg aspect-video h-56' src='https://tecdn.b-cdn.net/img/new/standard/nature/186.jpg' alt='' />
+					<img className='rounded-t-lg aspect-video h-56 object-cover' src={pic} alt='' />
 					<div className='p-4 flex menu-vertical h-48 align-middle'>
 						<h1 className='text-left mb-2 text-xl font-bold leading-tight text-neutral-800 dark:text-neutral-50'>{title}</h1>
 						<div className='text-left text-base text-neutral-600 dark:text-neutral-200 flex align-middle gap-1 h-16'>
@@ -33,9 +42,9 @@ const Listing: React.FC<Props> = ({ title, address, features, price, href }) => 
 									d='M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z'
 								/>
 							</svg>
-							<p className='h-10 text-left font-semibold truncate'>{features}</p>
+							<p className='h-10 text-left font-semibold truncate'>{description}</p>
 						</div>
-						<h2 className='font-bold text-right'>{price}/m</h2>
+						<h2 className='font-bold text-right'>{units} units</h2>
 					</div>
 				</div>
 			</a>

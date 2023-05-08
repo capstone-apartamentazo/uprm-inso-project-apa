@@ -54,7 +54,7 @@ const Edit = () => {
 
     const [storage, setStorage] = useState<Storage>({ token: null, isLandlord: false, id: null })
     const [accmId, setAccmId] = useState<any>(null)
-    const [unitId,setUnitId] = useState<any>(null)
+    const [unitId,setUnitId] = useState<any>()
 
     const [logged, setLogged] = useState(false)
     const cookies = new Cookies()
@@ -69,6 +69,7 @@ const Edit = () => {
 
 
     useEffect(() => {
+        if(router.isReady){
         try {
             setUnitId((router.query.unitId))
             try {
@@ -107,12 +108,14 @@ const Edit = () => {
                 console.error(err)
 
             }
+
         } catch (err) {
-            alert('No accommodation id found in query')
+            alert('No unit id found in query')
             console.error(err)
             router.replace('/profile')
         }
-    }, [])
+    }
+    }, [router.isReady])
 
     useEffect(()=>{
         axios.get(`${host}/api/units/${unitId}`)
@@ -122,10 +125,12 @@ const Edit = () => {
         .then(result=>{
             //console.log(result)
             setUnit(result)
+            setAccmId(result.accm_id)
             
         })
         .catch(err=>{
             console.error(err)
+            //router.back()
         })
 
     },[unitId])
@@ -248,8 +253,13 @@ const Edit = () => {
 
         if (unitId) {
             await axios({ method: 'post', url: `${host}/api/images/unit`, headers: { Authorization: `Bearer ${storage.token}` }, data })
-                .catch(err => {
+            .then(res=>{
+                console.log(`successfully uploaded image: ${order}`)
+            })    
+            .catch(err => {
                     console.error(err)
+                    alert(`Error uploading image: ${order}. Check that accommodation id and unit id are being recognized on the top.`)
+
                 })
         }
 
@@ -267,13 +277,19 @@ const Edit = () => {
                 })
                 .then(result => {
                     //alert(result)
+                    console.log('uploading images')
+                    console.log(`Unit ID:${result['unit_id']}`)
                     uploadImages(result['unit_id'])
+                    console.log('image upload complete')
                     return result
                 }).then(result => {
+                    console.log('updating amenities')
+                    console.log(`Private Amenities ID:${result['priv_amenities_id']}`)
+                    console.log(amenities)
                     updateUnitAmenities(result['priv_amenities_id'], amenities)
 
                 }).then(() => {
-                    alert('Creation successfull')
+                    alert('Creation successful')
                     router.replace({
                         pathname: '/units',
                         query: { accmid: accmId } // the data
@@ -308,11 +324,14 @@ const Edit = () => {
                 })
                 .then(result => {
                     console.log(result)
+                    console.log('update amenities success')
 
 
                 })
                 .catch(err => {
                     console.log(err)
+                    alert('Error updating private amenities. Check that accommodation id and unit id are being recognized on the top.')
+
                 })
 
         }
@@ -350,7 +369,7 @@ const Edit = () => {
         event.preventDefault();
         let amenities = { 'bedrooms': event.target.bedrooms.value, 'bathrooms': event.target.bathrooms.value, 'electricity': event.target.electricity.checked, 'water': event.target.water.checked, 'internet': event.target.internet.checked, 'heater': event.target.heater.checked, 'private_washer': event.target.washer.checked, 'private_dryer': event.target.dryer.checked, 'air_conditioner': event.target.ac.checked, 'parking': event.target.parking.checked, 'balcony': event.target.balcony.checked }
         let details = {
-            'unit_number': event.target.number.value, 'price': event.target.price.value, 'date_available': event.target.date.value, 'contract_duration': event.target.contract.value, 'unit_id': unitId
+            'unit_number': event.target.number.value, 'price': parseInt(event.target.price.value,10), 'date_available': event.target.date.value, 'contract_duration': parseInt(event.target.contract.value,10), 'unit_id': unitId, 'tenant_capacity': parseInt(event.target.capacity.value,10), 'size': parseInt(event.target.size.value,10),'available':unit?.available
         }
         try {
 
@@ -445,7 +464,7 @@ const Edit = () => {
                                         <option value={12}>1 year</option>
                                         <option value={24}>2 years</option>
                                     </select>
-
+                                    
                                 </div>
                                 <label className="font-medium mt-2">Date Available:</label>
                                 <div className="grid grid-flow-row grid-cols-3 gap-2">

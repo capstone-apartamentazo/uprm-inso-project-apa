@@ -35,6 +35,7 @@ const New = () => {
 
 
     useEffect(() => {
+        if(router.isReady){
         try {
             setAccmId((router.query.accmid))
             try {
@@ -78,7 +79,8 @@ const New = () => {
             console.error(err)
             router.replace('/profile')
         }
-    }, [])
+    }
+    }, [router.isReady])
 
 
     const handleSelect1 = async (event: any) => {
@@ -149,8 +151,12 @@ const New = () => {
 
         if (unitId) {
             await axios({ method: 'post', url: `${host}/api/images/unit`, headers: { Authorization: `Bearer ${storage.token}` }, data })
+                .then(res=>{
+                    console.log(`successfully uploaded image: ${order}`)
+                })
                 .catch(err => {
                     console.error(err)
+                    alert(`Error uploading image: ${order}, edit unit to upload images again.`)
                 })
         }
 
@@ -174,14 +180,14 @@ const New = () => {
                     console.log(result['priv_amenities_id'])
                     console.log(amenities)
                     updateUnitAmenities(result['priv_amenities_id'], amenities)
-                    console.log('amenities update complete')
+                    //console.log('amenities update complete')
 
                 }).then(() => {
-                    alert('Creation successfull')
-                    // router.replace({
-                    //     pathname: '/units',
-                    //     query: { accmid: accmId } // the data
-                    // })
+                    alert('Creation success')
+                    router.replace({
+                        pathname: '/units',
+                        query: { accmid: accmId } // the data
+                    })
                 })
                 .catch(err => {
                     console.log(err)
@@ -212,11 +218,13 @@ const New = () => {
                 })
                 .then(result => {
                     console.log(result)
+                    console.log('update amenities success')
 
 
                 })
                 .catch(err => {
                     console.log(err)
+                    alert('Error updating private amenities. Edit unit to add available private amenities.')
                 })
 
         }

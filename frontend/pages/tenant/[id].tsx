@@ -1,86 +1,47 @@
 import Layout from '@/components/Layout';
 import { useRouter } from 'next/router';
 import getConfig from 'next/config';
-import useSWR, { mutate } from 'swr';
-import {  useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Accm } from 'Accm';
-import Accommodation from '@/components/Accommodation';
+import ReviewList from '@/components/ReviewList';
 
 const { publicRuntimeConfig } = getConfig();
 const { url: host } = publicRuntimeConfig.site;
 
-
 const Tenant = () => {
 	const router = useRouter();
 	const { id } = router.query;
-	//const [landlordId, setLandlordId] = useState<any>(null)
-	const [tenant, setTenant] = useState({ deleted_flag: false, tenant_email: "", tenant_id: 0, tenant_name: "", tenant_password: "", tenant_phone: "" })
-	const [tenantImg, setTenantImg] = useState('/images/default.jpeg')
+	const [tenant, setTenant] = useState({ deleted_flag: false, tenant_email: '', tenant_id: 0, tenant_name: '', tenant_password: '', tenant_phone: '' });
+	const [tenantImg, setTenantImg] = useState('/images/default.jpeg');
+
 	useEffect(() => {
-		if (id != null) {
-			
+		if (id != null || id != undefined) {
+			axios
+				.get(`${host}/api/tenants/${id}`)
+				.then((res) => {
+					return res.data;
+				})
+				.then((result) => {
+					setTenant(result);
+				})
+				.catch((err) => {
+					console.error(err);
+				});
 
-
-				axios.get(`${host}/api/tenants/${id}`)
-					.then(res => {
-						return res.data
-					})
-					.then(result => {
-						console.log(result)
-						setTenant(result)
-					}).catch(err=>{
-						console.error(err)
-					})
-
-				axios.get(`${host}/api/images/tenant/${id}`)
-					.then(res =>{
-						return res.data
-					})
-					.then(result =>{
-						//console.log(result['resources'][0])
-						return result['resources'][0]
-					})
-					.then(result =>{
-						setTenantImg(result['secure_url'])
-					}).catch(err=>console.error(err))
-
-			
+			axios
+				.get(`${host}/api/images/tenant/${id}`)
+				.then((res) => {
+					return res.data;
+				})
+				.then((result) => {
+					return result['resources'][0];
+				})
+				.then((result) => {
+					setTenantImg(result['secure_url']);
+				})
+				.catch((err) => console.error(err));
 		}
-	}, [id])
-
-
-
-	// const { data: accms, error: accmsError, isLoading: isLoadingAccms } = useSWR(`${host}/api/accommodations/landlord/${id}`, (url: string) => fetch(url).then(res => res.json()));
-
-
-
-	// if (accmsError) {
-	// 	return <h1>Error</h1>
-	// }
-	// if (isLoadingAccms) return (
-	// 	<div>
-	// 		<h1>Loading...</h1>
-
-	// 	</div>
-	// )
-	// if (!accms || accms == 'Accommodations Not Found') {
-	// 	return (
-	// 		<div className='mt-3'>
-
-	// 			<h1 className='font-normal text-xl text-black'>No properties listed.</h1>
-	// 		</div>
-	// 	)
-	// }
-
-
-
-
-
-
-
-
-
+	}, [id]);
 
 	return (
 		<Layout>
@@ -104,30 +65,16 @@ const Tenant = () => {
 								<h5 className='mb-2 text-xl font-medium leading-tight text-neutral-800 dark:text-neutral-50'>Details:</h5>
 								<ul>
 									<li className=' text-neutral-600 dark:text-neutral-200 '>Phone: {tenant.tenant_phone}</li>
-									
 								</ul>
 							</div>
 						</div>
 					</div>
 				</div>
 				<div className='flex flex-col flex-initial relative basis-5/6 mt-10 pl-6 pr-6 max-h-semi min-w-min  m-6 ring-1 ring-stone-200 rounded-md bg-white shadow-lg overflow-hidden'>
-					<div className='text-3xl font-bold text-left pt-6 px-6 rounded-md absolute bg-white top-0 left-0 right-0 '>
-						
-								Reviews made:
-						
-
+					<div className='text-3xl font-bold text-left shadow-md pt-6 pb-2 px-6 rounded-md absolute bg-white top-0 left-0 right-0 '>Reviews made:</div>
+					<div className='overflow-auto p-4  mt-20 '>
+						<ReviewList route={`tenants/reviews/${tenant.tenant_id}`} />
 					</div>
-					<div className='flex flex-wrap gap-4 mr-2 mt-20 p-4 mb-6 overflow-auto'>
-						{/* {accms.map((accm: Accm) => (
-
-							<Accommodation title={accm.accm_title} address={accm.accm_street} features={accm.accm_city} price={'100'} href='/' />
-
-						))} */}
-
-					</div>
-
-
-
 				</div>
 			</main>
 		</Layout>

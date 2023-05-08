@@ -29,6 +29,7 @@ const AddTenant = () => {
 
 
     useEffect(() => {
+        if(router.isReady){
         try {
             setUnitId((router.query.unitId))
             
@@ -38,7 +39,8 @@ const AddTenant = () => {
             console.error(err)
             router.replace('/profile')
         }
-    }, [])
+    }
+    }, [router.isReady])
     useEffect(()=>{
         try {
             setTenantId((router.query.tenantId))

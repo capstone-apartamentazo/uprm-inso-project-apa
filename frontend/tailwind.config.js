@@ -17,7 +17,13 @@ module.exports = {
 			  },
 			maxWidth:{
 				'semi':'100vh',
-			}
+			},
+			spacing: {
+				82: '22rem'
+			},
+			minHeight: (theme) => ({
+				...theme('spacing'),
+			  }),
 		},
 	},
 	daisyui: {
