@@ -80,7 +80,7 @@ const AccommodationList: React.FC<Props> = ({  }) => {
         <div className='flex justify-center flex-wrap gap-4 mr-2 mt-20 p-4 mb-6 overflow-auto'>
             {accms.map((accm: Accm ) => (
                 
-				<ProfileAccommodation title={accm.accm_title} address={accm.accm_street+', '+accm.accm_city+', '+accm.accm_zipcode} id={accm.accm_id}/>
+				<ProfileAccommodation key={accm.accm_id} title={accm.accm_title} address={accm.accm_street+', '+accm.accm_city+', '+accm.accm_zipcode} id={accm.accm_id}/>
 
             ))}
             {/* <Link href='/' className=' flex flex-col bg-white justify-center  w-40 rounded-md  shadow-md ring-1 ring-stone-200 transition ease-in-out delay-50 hover:-translate-y-1 hover:scale-10 duration-200 cursor-pointer'>
