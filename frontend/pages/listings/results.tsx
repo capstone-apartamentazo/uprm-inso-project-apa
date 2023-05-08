@@ -106,7 +106,7 @@ const Listings = () => {
 					setLocation(search);
 				});
 		}
-	}, [search, filter, amenities]);
+	}, [search, filter, amenities,map]);
 
 	// INFO: MAP
 	const mapOptions = {
@@ -146,7 +146,7 @@ const Listings = () => {
 					<div className='col-start-1 row-start-2 col-end-2'>
 						<SearchBar className='w-full' width='' />
 					</div>
-					<div className='col-start-1 row-start-4 h-128 overflow-auto no-scrollbar'>
+					<div className='col-start-1 row-start-4 h-screen overflow-auto no-scrollbar'>
 						{listings}
 					</div>
 
@@ -165,7 +165,7 @@ const Listings = () => {
 									{(clusterer) =>
 									accmData.map((accm: Accm, index: number) => (
 
-										<Marker clusterer={clusterer} onClick={() => { setCenter({ lat: accm.latitude!, lng: accm.longitude! }); map!.setZoom(17); }} label={String(index + 1)} position={{ lat: accm.latitude!, lng: accm.longitude! }} />
+										<Marker key={accm.accm_id} clusterer={clusterer} onClick={() => { setCenter({ lat: accm.latitude!, lng: accm.longitude! }); map!.setZoom(17); }} label={String(index + 1)} position={{ lat: accm.latitude!, lng: accm.longitude! }} />
 
 									))
 										
