@@ -156,20 +156,20 @@ const Listings = () => {
 				<div className='grid grid-cols-2 grid-flow-row gap-4'>
 					<div className='row-span-1'>
 						<p className='font-bold text-2xl'>
-							{amount} for <span className='text-accent'>'{location}'</span>
+							{amount} accommodations for <span className='text-accent'>'{location}'</span>
 						</p>
 					</div>
 					<div className='col-start-1 row-start-2 col-end-2'>
 						<SearchBar className='w-full' width='' />
 					</div>
-					<div className='col-start-1 row-start-4 h-screen overflow-auto no-scrollbar'>{listings}</div>
-					<div className='col-start-1 row-start-3 flex justify-center'>
+					<div className='col-start-1 row-start-4 h-screen overflow-auto no-scrollbar -ml-2'>{listings}</div>
+					<div className='col-start-1 row-start-3 flex justify-start'>
 						<Filter className='w-full' />
 					</div>
 					<div className='col-start-2 row-start-2 row-span-6'>
 						<ExtraFilters className='w-full' />
 					</div>
-					<div className='col-start-2 row-start-2 row-span-3 m-6 '>
+					<div className='col-start-2 row-start-2 row-span-3 m-6 mt-16'>
 						{isLoaded && (
 							<GoogleMap
 								onLoad={(map) => {

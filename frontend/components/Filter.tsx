@@ -75,19 +75,23 @@ const Filter: React.FC<Props> = () => {
 	const waterBtn = () => {
 		if (water) {
 			return (
-				<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden rounded-full group bg-gradient-to-br from-cyan-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-1 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800'>
-					<span className='relative px-5 py-2.5 text-white rounded-full dark:bg-gray-900 group-hover:bg-opacity-0' data-te-toggle='tooltip' title='water bill' onClick={() => setWater(false)}>
-						<IoWaterOutline />
-					</span>
-				</button>
+				<div className='tooltip tooltip-accent' data-tip='Water Bill included'>
+					<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden rounded-full group bg-gradient-to-br from-cyan-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-1 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800'>
+						<span className='relative px-5 py-2.5 text-white rounded-full dark:bg-gray-900 group-hover:bg-opacity-0 tooltip' title='water bill' onClick={() => setWater(false)}>
+							<IoWaterOutline />
+						</span>
+					</button>
+				</div>
 			);
 		} else {
 			return (
-				<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden rounded-full group bg-gradient-to-br from-cyan-400 to-blue-600 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-1 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800'>
-					<span className='relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-full group-hover:bg-opacity-0' data-te-toggle='tooltip' title='water bill' onClick={() => setWater(true)}>
-						<IoWaterOutline />
-					</span>
-				</button>
+				<div className='tooltip tooltip-accent' data-tip='Water Bill included'>
+					<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden rounded-full group bg-gradient-to-br from-cyan-400 to-blue-600 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-1 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800'>
+						<span className='relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-full group-hover:bg-opacity-0 tooltip' title='water bill' onClick={() => setWater(true)}>
+							<IoWaterOutline />
+						</span>
+					</button>
+				</div>
 			);
 		}
 	};
@@ -95,19 +99,23 @@ const Filter: React.FC<Props> = () => {
 	const airBtn = () => {
 		if (airConditioner) {
 			return (
-				<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden rounded-full group bg-gradient-to-br from-cyan-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-1 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800'>
-					<span className='relative px-5 py-2.5 text-white rounded-full dark:bg-gray-900 group-hover:bg-opacity-0' data-te-toggle='tooltip' title='air conditioner' onClick={() => setAirConditioner(false)}>
-						<TbAirConditioningDisabled />
-					</span>
-				</button>
+				<div className='tooltip' data-tip='Air Conditioner included'>
+					<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden rounded-full group bg-gradient-to-br from-cyan-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-1 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800'>
+						<span className='relative px-5 py-2.5 text-white rounded-full dark:bg-gray-900 group-hover:bg-opacity-0' title='air conditioner' onClick={() => setAirConditioner(false)}>
+							<TbAirConditioningDisabled />
+						</span>
+					</button>
+				</div>
 			);
 		} else {
 			return (
-				<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden rounded-full group bg-gradient-to-br from-cyan-400 to-blue-600 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-2 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800'>
-					<span className='relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-full group-hover:bg-opacity-0' data-te-toggle='tooltip' title='air conditioner' onClick={() => setAirConditioner(true)}>
-						<TbAirConditioningDisabled />
-					</span>
-				</button>
+				<div className='tooltip tooltip-accent' data-tip='Air Conditioner included'>
+					<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden rounded-full group bg-gradient-to-br from-cyan-400 to-blue-600 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-2 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800'>
+						<span className='relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-full group-hover:bg-opacity-0' title='air conditioner' onClick={() => setAirConditioner(true)}>
+							<TbAirConditioningDisabled />
+						</span>
+					</button>
+				</div>
 			);
 		}
 	};
@@ -115,19 +123,23 @@ const Filter: React.FC<Props> = () => {
 	const privWasherBtn = () => {
 		if (privWasher) {
 			return (
-				<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden rounded-full group bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-2 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800'>
-					<span className='relative px-5 py-2.5 text-white rounded-full dark:bg-gray-900 group-hover:bg-opacity-0' data-te-toggle='tooltip' title='private washer' onClick={() => setPrivWasher(false)}>
-						<TbWashMachine />
-					</span>
-				</button>
+				<div className='tooltip tooltip-accent' data-tip='Private Washer included'>
+					<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden rounded-full group bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-2 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800 '>
+						<span className='relative px-5 py-2.5 text-white rounded-full dark:bg-gray-900 group-hover:bg-opacity-0' data-te-toggle='tooltip' title='private washer' onClick={() => setPrivWasher(false)}>
+							<TbWashMachine />
+						</span>
+					</button>
+				</div>
 			);
 		} else {
 			return (
-				<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden text-gray-900 rounded-full group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-2 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800'>
-					<span className='relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-full group-hover:bg-opacity-0' data-te-toggle='tooltip' title='private washer' onClick={() => setPrivWasher(true)}>
-						<TbWashMachine />
-					</span>
-				</button>
+				<div className='tooltip tooltip-accent' data-tip='Private Washer included'>
+					<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden text-gray-900 rounded-full group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-2 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800'>
+						<span className='relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-full group-hover:bg-opacity-0' data-te-toggle='tooltip' title='private washer' onClick={() => setPrivWasher(true)}>
+							<TbWashMachine />
+						</span>
+					</button>
+				</div>
 			);
 		}
 	};
@@ -135,19 +147,23 @@ const Filter: React.FC<Props> = () => {
 	const privDryerBtn = () => {
 		if (privDryer) {
 			return (
-				<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden rounded-full group bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-2 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800'>
-					<span className='relative px-5 py-2.5 text-white rounded-full dark:bg-gray-900 group-hover:bg-opacity-0' data-te-toggle='tooltip' title='private dryer' onClick={() => setPrivDryer(false)}>
-						<CgSmartHomeWashMachine />
-					</span>
-				</button>
+				<div className='tooltip tooltip-accent' data-tip='Private Dryer included'>
+					<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden rounded-full group bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-2 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800'>
+						<span className='relative px-5 py-2.5 text-white rounded-full dark:bg-gray-900 group-hover:bg-opacity-0' title='private dryer' onClick={() => setPrivDryer(false)}>
+							<CgSmartHomeWashMachine />
+						</span>
+					</button>
+				</div>
 			);
 		} else {
 			return (
-				<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden text-gray-900 rounded-full group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-2 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800'>
-					<span className='relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-full group-hover:bg-opacity-0' data-te-toggle='tooltip' title='private dryer' onClick={() => setPrivDryer(true)}>
-						<CgSmartHomeWashMachine />
-					</span>
-				</button>
+				<div className='tooltip tooltip-accent' data-tip='Private Dryer included'>
+					<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden text-gray-900 rounded-full group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-2 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800'>
+						<span className='relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-full group-hover:bg-opacity-0' data-te-toggle='tooltip' title='private dryer' onClick={() => setPrivDryer(true)}>
+							<CgSmartHomeWashMachine />
+						</span>
+					</button>
+				</div>
 			);
 		}
 	};
@@ -155,19 +171,23 @@ const Filter: React.FC<Props> = () => {
 	const electricityBtn = () => {
 		if (electricity) {
 			return (
-				<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden rounded-full group bg-gradient-to-br from-pink-500 to-orange-400 hover:bg-gradient-to-bl focus:ring-2 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800'>
-					<span className='relative px-5 py-2.5 text-white rounded-full dark:bg-gray-900 group-hover:bg-opacity-0' data-te-toggle='tooltip' title='electricity bill' onClick={() => setElectricity(false)}>
-						<RxLightningBolt />
-					</span>
-				</button>
+				<div className='tooltip tooltip-accent' data-tip='Electricity Bill included'>
+					<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden rounded-full group bg-gradient-to-br from-pink-500 to-orange-400 hover:bg-gradient-to-bl focus:ring-2 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800'>
+						<span className='relative px-5 py-2.5 text-white rounded-full dark:bg-gray-900 group-hover:bg-opacity-0' title='electricity bill' onClick={() => setElectricity(false)}>
+							<RxLightningBolt />
+						</span>
+					</button>
+				</div>
 			);
 		} else {
 			return (
-				<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden text-gray-900 rounded-full group bg-gradient-to-br from-pink-500 to-orange-400 group-hover:from-pink-500 group-hover:to-orange-400 hover:text-white dark:text-white focus:ring-2 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800'>
-					<span className='relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-full group-hover:bg-opacity-0' data-te-toggle='tooltip' title='electricity bill' onClick={() => setElectricity(true)}>
-						<RxLightningBolt />
-					</span>
-				</button>
+				<div className='tooltip tooltip-accent' data-tip='Electricity Bill included'>
+					<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden text-gray-900 rounded-full group bg-gradient-to-br from-pink-500 to-orange-400 group-hover:from-pink-500 group-hover:to-orange-400 hover:text-white dark:text-white focus:ring-2 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800'>
+						<span className='relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-full group-hover:bg-opacity-0' title='electricity bill' onClick={() => setElectricity(true)}>
+							<RxLightningBolt />
+						</span>
+					</button>
+				</div>
 			);
 		}
 	};
@@ -175,19 +195,23 @@ const Filter: React.FC<Props> = () => {
 	const internetBtn = () => {
 		if (internet) {
 			return (
-				<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden rounded-full group bg-gradient-to-br from-pink-500 to-orange-400 hover:bg-gradient-to-bl focus:ring-2 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800'>
-					<span className='relative px-5 py-2.5 text-white rounded-full dark:bg-gray-900 group-hover:bg-opacity-0' data-te-toggle='tooltip' title='internet' onClick={() => setInternet(false)}>
-						<MdWifi />
-					</span>
-				</button>
+				<div className='tooltip tooltip-accent' data-tip='Internet included'>
+					<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden rounded-full group bg-gradient-to-br from-pink-500 to-orange-400 hover:bg-gradient-to-bl focus:ring-2 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800'>
+						<span className='relative px-5 py-2.5 text-white rounded-full dark:bg-gray-900 group-hover:bg-opacity-0' title='internet' onClick={() => setInternet(false)}>
+							<MdWifi />
+						</span>
+					</button>
+				</div>
 			);
 		} else {
 			return (
-				<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden text-gray-900 rounded-full group bg-gradient-to-br from-pink-500 to-orange-400 group-hover:from-pink-500 group-hover:to-orange-400 hover:text-white dark:text-white focus:ring-2 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800'>
-					<span className='relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-full group-hover:bg-opacity-0' data-te-toggle='tooltip' title='internet' onClick={() => setInternet(true)}>
-						<MdWifi />
-					</span>
-				</button>
+				<div className='tooltip tooltip-accent' data-tip='Internet included'>
+					<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden text-gray-900 rounded-full group bg-gradient-to-br from-pink-500 to-orange-400 group-hover:from-pink-500 group-hover:to-orange-400 hover:text-white dark:text-white focus:ring-2 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800'>
+						<span className='relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-full group-hover:bg-opacity-0' title='internet' onClick={() => setInternet(true)}>
+							<MdWifi />
+						</span>
+					</button>
+				</div>
 			);
 		}
 	};
@@ -195,19 +219,23 @@ const Filter: React.FC<Props> = () => {
 	const heaterBtn = () => {
 		if (heater) {
 			return (
-				<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden rounded-full group bg-gradient-to-br from-pink-500 to-orange-400 hover:bg-gradient-to-bl focus:ring-2 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800'>
-					<span className='relative px-5 py-2.5 text-white rounded-full dark:bg-gray-900 group-hover:bg-opacity-0' data-te-toggle='tooltip' title='water heater' onClick={() => setHeater(false)}>
-						<BiWater />
-					</span>
-				</button>
+				<div className='tooltip tooltip-accent' data-tip='Water Heater included'>
+					<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden rounded-full group bg-gradient-to-br from-pink-500 to-orange-400 hover:bg-gradient-to-bl focus:ring-2 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800'>
+						<span className='relative px-5 py-2.5 text-white rounded-full dark:bg-gray-900 group-hover:bg-opacity-0' title='water heater' onClick={() => setHeater(false)}>
+							<BiWater />
+						</span>
+					</button>
+				</div>
 			);
 		} else {
 			return (
-				<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden text-gray-900 rounded-full group bg-gradient-to-br from-pink-500 to-orange-400 group-hover:from-pink-500 group-hover:to-orange-400 hover:text-white dark:text-white focus:ring-2 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800'>
-					<span className='relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-full group-hover:bg-opacity-0' data-te-toggle='tooltip' title='water heater' onClick={() => setHeater(true)}>
-						<BiWater />
-					</span>
-				</button>
+				<div className='tooltip tooltip-accent' data-tip='Water Heater included'>
+					<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden text-gray-900 rounded-full group bg-gradient-to-br from-pink-500 to-orange-400 group-hover:from-pink-500 group-hover:to-orange-400 hover:text-white dark:text-white focus:ring-2 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800'>
+						<span className='relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-full group-hover:bg-opacity-0' title='water heater' onClick={() => setHeater(true)}>
+							<BiWater />
+						</span>
+					</button>
+				</div>
 			);
 		}
 	};
@@ -215,19 +243,23 @@ const Filter: React.FC<Props> = () => {
 	const parkingBtn = () => {
 		if (parking) {
 			return (
-				<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden rounded-full group bg-gradient-to-br from-purple-500 to-pink-500 hover:bg-gradient-to-bl focus:ring-2 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800'>
-					<span className='relative px-5 py-2.5 text-white rounded-full dark:bg-gray-900 group-hover:bg-opacity-0' data-te-toggle='tooltip' title='parking' onClick={() => setParking(false)}>
-						<TfiCar />
-					</span>
-				</button>
+				<div className='tooltip tooltip-accent' data-tip='Parking included'>
+					<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden rounded-full group bg-gradient-to-br from-purple-500 to-pink-500 hover:bg-gradient-to-bl focus:ring-2 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800'>
+						<span className='relative px-5 py-2.5 text-white rounded-full dark:bg-gray-900 group-hover:bg-opacity-0' title='parking' onClick={() => setParking(false)}>
+							<TfiCar />
+						</span>
+					</button>
+				</div>
 			);
 		} else {
 			return (
-				<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden text-gray-900 rounded-full group bg-gradient-to-br from-purple-500 to-pink-500 group-hover:from-purple-500 group-hover:to-pink-500 hover:text-white dark:text-white focus:ring-2 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800'>
-					<span className='relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-full group-hover:bg-opacity-0' data-te-toggle='tooltip' title='parking' onClick={() => setParking(true)}>
-						<TfiCar />
-					</span>
-				</button>
+				<div className='tooltip tooltip-accent' data-tip='Parking included'>
+					<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden text-gray-900 rounded-full group bg-gradient-to-br from-purple-500 to-pink-500 group-hover:from-purple-500 group-hover:to-pink-500 hover:text-white dark:text-white focus:ring-2 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800'>
+						<span className='relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-full group-hover:bg-opacity-0' title='parking' onClick={() => setParking(true)}>
+							<TfiCar />
+						</span>
+					</button>
+				</div>
 			);
 		}
 	};
@@ -235,19 +267,23 @@ const Filter: React.FC<Props> = () => {
 	const balconyBtn = () => {
 		if (balcony) {
 			return (
-				<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden rounded-full group bg-gradient-to-br from-purple-500 to-pink-500 hover:bg-gradient-to-bl focus:ring-2 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800'>
-					<span className='relative px-5 py-2.5 text-white rounded-full dark:bg-gray-900 group-hover:bg-opacity-0' data-te-toggle='tooltip' title='balcony' onClick={() => setBalcony(false)}>
-						<MdBalcony />
-					</span>
-				</button>
+				<div className='tooltip tooltip-accent' data-tip='Balcony'>
+					<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden rounded-full group bg-gradient-to-br from-purple-500 to-pink-500 hover:bg-gradient-to-bl focus:ring-2 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800'>
+						<span className='relative px-5 py-2.5 text-white rounded-full dark:bg-gray-900 group-hover:bg-opacity-0' title='balcony' onClick={() => setBalcony(false)}>
+							<MdBalcony />
+						</span>
+					</button>
+				</div>
 			);
 		} else {
 			return (
-				<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden text-gray-900 rounded-full group bg-gradient-to-br from-purple-500 to-pink-500 group-hover:from-purple-500 group-hover:to-pink-500 hover:text-white dark:text-white focus:ring-2 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800'>
-					<span className='relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-full group-hover:bg-opacity-0' data-te-toggle='tooltip' title='balcony' onClick={() => setBalcony(true)}>
-						<MdBalcony />
-					</span>
-				</button>
+				<div className='tooltip tooltip-accent' data-tip='Balcony'>
+					<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden text-gray-900 rounded-full group bg-gradient-to-br from-purple-500 to-pink-500 group-hover:from-purple-500 group-hover:to-pink-500 hover:text-white dark:text-white focus:ring-2 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800'>
+						<span className='relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-full group-hover:bg-opacity-0' title='balcony' onClick={() => setBalcony(true)}>
+							<MdBalcony />
+						</span>
+					</button>
+				</div>
 			);
 		}
 	};
@@ -255,19 +291,23 @@ const Filter: React.FC<Props> = () => {
 	const petsBtn = () => {
 		if (petsAllowed) {
 			return (
-				<button className='relative inline-flex items-center justify-center p-0.5 mr-2 overflow-hidden rounded-full group bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-2 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800'>
-					<span className='relative px-5 py-2.5 rounded-full text-white  dark:bg-gray-900 group-hover:bg-opacity-0 grid grid-cols-2' data-te-toggle='tooltip' title='pets allowed' onClick={() => setPetsAllowed(false)}>
-						<TbDog /> <TbCat />
-					</span>
-				</button>
+				<div className='tooltip tooltip-accent' data-tip='Pets Allowed'>
+					<button className='relative inline-flex items-center justify-center p-0.5 mr-2 overflow-hidden rounded-full group bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-2 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800'>
+						<span className='relative px-5 py-2.5 rounded-full text-white  dark:bg-gray-900 group-hover:bg-opacity-0 grid grid-cols-2' title='pets allowed' onClick={() => setPetsAllowed(false)}>
+							<TbDog /> <TbCat />
+						</span>
+					</button>
+				</div>
 			);
 		} else {
 			return (
-				<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden text-gray-900 rounded-full group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-2 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800'>
-					<span className='relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-full group-hover:bg-opacity-0 grid grid-cols-2' data-te-toggle='tooltip' title='pets allowed' onClick={() => setPetsAllowed(true)}>
-						<TbDog /> <TbCat />
-					</span>
-				</button>
+				<div className='tooltip tooltip-accent' data-tip='Pets Allowed'>
+					<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden text-gray-900 rounded-full group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-2 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800'>
+						<span className='relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-full group-hover:bg-opacity-0 grid grid-cols-2' title='pets allowed' onClick={() => setPetsAllowed(true)}>
+							<TbDog /> <TbCat />
+						</span>
+					</button>
+				</div>
 			);
 		}
 	};
@@ -275,19 +315,23 @@ const Filter: React.FC<Props> = () => {
 	const kitchenBtn = () => {
 		if (sharedKitchen) {
 			return (
-				<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden rounded-full group bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-2 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800'>
-					<span className='relative px-5 py-2.5 text-white rounded-full dark:bg-gray-900 group-hover:bg-opacity-0 grid grid-cols-2' data-te-toggle='tooltip' title='shared kitchen' onClick={() => setSharedKitchen(false)}>
-						<MdOutlineKitchen /> <TbToolsKitchen2 />
-					</span>
-				</button>
+				<div className='tooltip tooltip-accent' data-tip='Shared Kitchen'>
+					<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden rounded-full group bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-2 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800'>
+						<span className='relative px-5 py-2.5 text-white rounded-full dark:bg-gray-900 group-hover:bg-opacity-0 grid grid-cols-2' title='shared kitchen' onClick={() => setSharedKitchen(false)}>
+							<MdOutlineKitchen /> <TbToolsKitchen2 />
+						</span>
+					</button>
+				</div>
 			);
 		} else {
 			return (
-				<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden text-gray-900 rounded-full group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-2 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800'>
-					<span className='relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-full group-hover:bg-opacity-0 grid grid-cols-2' data-te-toggle='tooltip' title='shared kitchen' onClick={() => setSharedKitchen(true)}>
-						<MdOutlineKitchen /> <TbToolsKitchen2 />
-					</span>
-				</button>
+				<div className='tooltip tooltip-accent' data-tip='Shared Kitchen'>
+					<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden text-gray-900 rounded-full group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-2 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800'>
+						<span className='relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-full group-hover:bg-opacity-0 grid grid-cols-2' title='shared kitchen' onClick={() => setSharedKitchen(true)}>
+							<MdOutlineKitchen /> <TbToolsKitchen2 />
+						</span>
+					</button>
+				</div>
 			);
 		}
 	};
@@ -295,19 +339,23 @@ const Filter: React.FC<Props> = () => {
 	const laundryBtn = () => {
 		if (laundryFacilities) {
 			return (
-				<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden rounded-full group bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-2 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800'>
-					<span className='relative px-5 py-2.5 text-white rounded-full dark:bg-gray-900 group-hover:bg-opacity-0 grid grid-cols-2' data-te-toggle='tooltip' title='laundry facilities' onClick={() => setLaundryFacilities(false)}>
-						<TbWashMachine /> <CgSmartHomeWashMachine />
-					</span>
-				</button>
+				<div className='tooltip tooltip-accent' data-tip='Laundry Facilities'>
+					<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden rounded-full group bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-2 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800'>
+						<span className='relative px-5 py-2.5 text-white rounded-full dark:bg-gray-900 group-hover:bg-opacity-0 grid grid-cols-2' title='laundry facilities' onClick={() => setLaundryFacilities(false)}>
+							<TbWashMachine /> <CgSmartHomeWashMachine />
+						</span>
+					</button>
+				</div>
 			);
 		} else {
 			return (
-				<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden text-gray-900 rounded-full group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-2 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800'>
-					<span className='relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-full group-hover:bg-opacity-0 grid grid-cols-2' data-te-toggle='tooltip' title='laundry facilities' onClick={() => setLaundryFacilities(true)}>
-						<TbWashMachine /> <CgSmartHomeWashMachine />
-					</span>
-				</button>
+				<div className='tooltip tooltip-accent' data-tip='Laundry Facilities'>
+					<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden text-gray-900 rounded-full group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-2 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800'>
+						<span className='relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-full group-hover:bg-opacity-0 grid grid-cols-2' title='laundry facilities' onClick={() => setLaundryFacilities(true)}>
+							<TbWashMachine /> <CgSmartHomeWashMachine />
+						</span>
+					</button>
+				</div>
 			);
 		}
 	};
@@ -315,63 +363,71 @@ const Filter: React.FC<Props> = () => {
 	const sharedBathroomBtn = () => {
 		if (sharedBathroom) {
 			return (
-				<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden rounded-full group bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-2 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800'>
-					<span className='relative px-5 py-2.5 text-white rounded-full dark:bg-gray-900 group-hover:bg-opacity-0 grid grid-cols-2' data-te-toggle='tooltip' title='shared bathroom' onClick={() => setSharedBathroom(false)}>
-						<FaBath /> <FaToilet />
-					</span>
-				</button>
+				<div className='tooltip tooltip-accent' data-tip='Shared Bathroom'>
+					<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden rounded-full group bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-2 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800'>
+						<span className='relative px-5 py-2.5 text-white rounded-full dark:bg-gray-900 group-hover:bg-opacity-0 grid grid-cols-2' title='shared bathroom' onClick={() => setSharedBathroom(false)}>
+							<FaBath /> <FaToilet />
+						</span>
+					</button>
+				</div>
 			);
 		} else {
 			return (
-				<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden text-gray-900 rounded-full group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-2 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800'>
-					<span className='relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-full group-hover:bg-opacity-0 grid grid-cols-2' data-te-toggle='tooltip' title='shared bathroom' onClick={() => setSharedBathroom(true)}>
-						<FaBath /> <FaToilet />
-					</span>
-				</button>
+				<div className='tooltip tooltip-accent' data-tip='Shared Bathroom'>
+					<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden text-gray-900 rounded-full group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-2 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800'>
+						<span className='relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-full group-hover:bg-opacity-0 grid grid-cols-2' title='shared bathroom' onClick={() => setSharedBathroom(true)}>
+							<FaBath /> <FaToilet />
+						</span>
+					</button>
+				</div>
 			);
 		}
 	};
 
 	const bathroomBtn = () => {
 		return (
-			<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden rounded-full group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-2 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800'>
-				<span className='relative px-2.5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-full group-hover:bg-opacity-0 grid grid-cols-3 gap-2' data-te-toggle='tooltip' title='private bathrooms'>
-					<TiMinus
-						onClick={() => {
-							if (bathroom === 0) {
-								setBathroom(0);
-							} else {
-								setBathroom(bathroom - 1);
-							}
-						}}
-					/>{' '}
-					<FaToilet /> <TiPlus onClick={() => setBathroom(bathroom + 1)} />
-				</span>
-			</button>
+			<div className='tooltip tooltip-accent' data-tip='Private Bathrooms'>
+				<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden rounded-full group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-2 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800'>
+					<span className='relative px-2.5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-full group-hover:bg-opacity-0 grid grid-cols-3 gap-2' title='private bathrooms'>
+						<TiMinus
+							onClick={() => {
+								if (bathroom === 0) {
+									setBathroom(0);
+								} else {
+									setBathroom(bathroom - 1);
+								}
+							}}
+						/>{' '}
+						<FaToilet /> <TiPlus onClick={() => setBathroom(bathroom + 1)} />
+					</span>
+				</button>
+			</div>
 		);
 	};
 
 	const bedroomBtn = () => {
 		return (
-			<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden rounded-full group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-2 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800'>
-				<span className='relative px-2.5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-full group-hover:bg-opacity-0 grid grid-cols-3 gap-2' data-te-toggle='tooltip' title='bedrooms'>
-					<TiMinus
-						onClick={() => {
-							if (bedroom === 0) {
-								setBedroom(0);
-							} else {
-								setBedroom(bedroom - 1);
-							}
-						}}
-					/>{' '}
-					<FaBed /> <TiPlus onClick={() => setBedroom(bedroom + 1)} />
-				</span>
-			</button>
+			<div className='tooltip tooltip-accent' data-tip='Bedrooms'>
+				<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden rounded-full group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-2 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800'>
+					<span className='relative px-2.5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-full group-hover:bg-opacity-0 grid grid-cols-3 gap-2' title='bedrooms'>
+						<TiMinus
+							onClick={() => {
+								if (bedroom === 0) {
+									setBedroom(0);
+								} else {
+									setBedroom(bedroom - 1);
+								}
+							}}
+						/>{' '}
+						<FaBed /> <TiPlus onClick={() => setBedroom(bedroom + 1)} />
+					</span>
+				</button>
+			</div>
 		);
 	};
 
 	return (
-		<form onSubmit={handleFilter} className='grid grid-flow-row grid-flow-col grid-rows-3 gap-2'>
+		<form onSubmit={handleFilter} className='grid grid-flow-col grid-rows-3 gap-2'>
 			<div>
 				{waterBtn()}
 				{airBtn()}
@@ -388,11 +444,13 @@ const Filter: React.FC<Props> = () => {
 				{kitchenBtn()}
 				{laundryBtn()}
 				{sharedBathroomBtn()}
-				{bathroomBtn()}
-				{bedroomBtn()}
 			</div>
 			<div>
-				bathrooms: {bathroom} &nbsp;&nbsp; bedrooms: {bedroom}
+				{bedroomBtn()}
+				<span className='font-semibold'>Bedrooms:</span> <span className='font-semibold text-accent'>{bedroom}</span>
+				&nbsp;&nbsp;
+				{bathroomBtn()}
+				<span className='font-semibold'>Bathrooms:</span> <span className='font-semibold text-accent'>{bathroom}</span>
 			</div>
 		</form>
 	);
