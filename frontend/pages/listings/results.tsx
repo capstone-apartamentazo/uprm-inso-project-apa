@@ -20,7 +20,17 @@ const Listings = () => {
 	const [accmData, setAccmData] = useState<any>([]);
 
 	const router = useRouter();
-	const { search, filter, amenities } = router.query;
+	const { search, filterOptions, amenities } = router.query;
+	let amenitiesFilter = false;
+	let scoreFilter = false;
+	try {
+		let jsonParse = JSON.parse((filterOptions as string));
+		amenitiesFilter = jsonParse['amenitiesFilter'];
+		scoreFilter = jsonParse['scoreFilter'];
+	} catch(error) {
+		amenitiesFilter = false;
+		scoreFilter = false;
+	}
 
 	const [map, setMap] = useState<google.maps.Map>()
 	const { isLoaded } = useJsApiLoader({
@@ -31,7 +41,7 @@ const Listings = () => {
 
 
 	useEffect(() => {
-		if (search && filter === 'false') {
+		if (search && !amenitiesFilter && !scoreFilter) {
 			const endpoint = `${host}/api/search?input=${search}&offset=0`;
 
 			const options = {
@@ -69,13 +79,13 @@ const Listings = () => {
 					setLocation(search);
 				});
 		}
-		if (search && filter) {
+		if (search && amenitiesFilter && !scoreFilter) {
 			const endpoint = `${host}/api/filter/amenities?input=${search}&offset=0`;
 
 			const options = {
 				method: 'POST',
 				headers: new Headers({ 'content-type': 'application/json' }),
-				body: amenities as string,
+				body: (amenities as string)
 			};
 			fetch(endpoint, options)
 				.then((data) => {
@@ -107,7 +117,7 @@ const Listings = () => {
 					setLocation(search);
 				});
 		}
-	}, [search, filter, amenities,map]);
+	}, [search, filterOptions, amenities, map]);
 
 	// INFO: MAP
 	const mapOptions = {
@@ -150,13 +160,13 @@ const Listings = () => {
 					<div className='col-start-1 row-start-4 h-screen overflow-auto no-scrollbar'>
 						{listings}
 					</div>
-					<div className='col-start-1 row-start-3 flex justify-center'>
+					<div className='col-start-1 row-start-3'>
 						<Filter className='w-full' />
 					</div>
-					<div className='col-start-2 row-start-2 row-span-6'>
+					<div className='col-start-2 row-start-2 row-span-2'>
 						<ExtraFilters className='w-full' />
 					</div>
-					<div className='col-start-2 row-start-2 row-span-3 m-6 '>
+					<div className='col-start-2 row-start-3 row-span-3 m-6'>
 						{/* <LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}> */}
 						{isLoaded && <GoogleMap onLoad={(map) => { setMap(map) }} id='map' options={mapOptions} mapContainerStyle={containerStyle} center={center} zoom={14}>
 
