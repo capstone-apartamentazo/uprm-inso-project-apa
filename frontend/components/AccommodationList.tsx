@@ -30,8 +30,13 @@ const AccommodationList: React.FC<Props> = ({  }) => {
         try{
             const token = cookies.get('jwt_authorization')
 			const decoded = jwt<Token>(token)
-			setStorage({'token':token,'id':decoded['id'],'isLandlord':((decoded['rls']=="landlord")?true:false)})
-            setLogged(true) 
+            if(decoded['rls']==="landlord"){
+                setStorage({'token':token,'id':decoded['id'],'isLandlord':((decoded['rls']=="landlord")?true:false)})
+                setLogged(true) 
+            }else{
+                setLogged(false)
+            }
+			
         }catch(err){
             setLogged(false)
 

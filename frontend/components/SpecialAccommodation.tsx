@@ -180,7 +180,7 @@ const SpecialAccommodation: React.FC<Props> = ({ id, title, address, description
                         </svg>
 
                     </button>
-                    <h1 className='font-semibold grow ml-2'>UNITS</h1>
+                    <h1 className='font-semibold grow ml-2'>Available Units</h1>
                     <span className='grow'></span>
                 </div>
                 <div className='pt-10'>
@@ -189,10 +189,10 @@ const SpecialAccommodation: React.FC<Props> = ({ id, title, address, description
 
 
                         {unitList.map((unit: Unit) => (
-                            <Link className='' href={`/listings/${unit.unit_id}`}>
-                                <div className='flex h-10 items-center px-2  border-b-2 border-stone-200 hover:bg-stone-100 active:bg-primary active:text-white'>
+                            <Link className={unit.available?'':'hidden'} href={`/listings/${unit.unit_id}`}>
+                                <div className={unit.available?'flex h-10 items-center px-2  border-b-2  border-stone-200 hover:bg-stone-100 active:bg-primary active:text-white':'flex h-10 items-center px-2  border-b-2 bg-red-600 text-white  border-stone-200 hover:bg-stone-100 active:bg-primary active:text-white'}>
                                     <h1 className='text-left grow font-semibold'>{`Unit ${unit.unit_number}`}</h1>
-                                    <h1 className='font-medium'>${unit.price}</h1>
+                                    <h1 className='font-medium'>{unit.available?`$${unit.price}`:'Unavailable'}</h1>
                                 </div>
                             </Link>
 

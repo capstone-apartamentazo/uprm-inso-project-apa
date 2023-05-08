@@ -65,10 +65,10 @@ const Settings = () => {
             console.error(err)
         }
     }, [])
+    
 
 
-
-    const { data: user, error: userError, isLoading: isLoadingUser } = useSWR((storage.token != null) ? (storage.isLandlord ? `${host}/api/landlords/${storage.id}` : `${host}/api/tenants/${storage.id}`) : null, (url: any) => fetch(url, {
+    const { data: user, error: userError, isLoading: isLoadingUser } = useSWR( (storage.isLandlord ? `${host}/api/landlords/${storage.id}` : `${host}/api/tenants/${storage.id}`) , (url: any) => fetch(url, {
         headers: {
             Authorization: `Bearer ${storage?.token}`
         }

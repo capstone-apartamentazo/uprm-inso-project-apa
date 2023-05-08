@@ -19,12 +19,23 @@ export default function Navbar(path: any) {
 	const router = useRouter();
 	const [nav, setNav] = useState({ left: <></>, right: <></> });
 	const [classes, setClasses] = useState('');
+	const [logged,setLogged] = useState(true)
+
+	useEffect(()=>{
+
+		if(!logged){
+			router.replace('/');
+
+		}
+		
+	},[logged])
 
 	const logout = async () => {
 		cookies.remove('jwt_authorization');
+		setLogged(false)
 		//localStorage.removeItem('data');
-		setupNav(true, '/images/user.png');
-		router.replace('/');
+		setupNav(false, '/images/user.png');
+		//router.replace('/');
 		// router.reload();
 	};
 
