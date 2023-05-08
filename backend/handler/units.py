@@ -75,16 +75,15 @@ class UnitHandler:
   @praetorian.auth_required
   def updateUnit(self, json):
     try:
-      unit_number = json['unit_number']
-    except:
-      unit_number = None
-    try:
       valid, reason = self.checkUnit(json['unit_id'])
       if not valid:
         return jsonify(reason)
-      valid, reason = self.checkInput(unit_number, json['tenant_capacity'], json['price'], json['size'], json['contract_duration'], self.units.getById(json['unit_id'])['accm_id'])
-      if not unit_number:
+      valid, reason = self.checkInput(json['unit_number'], json['tenant_capacity'], json['price'], json['size'], json['contract_duration'], self.units.getById(json['unit_id'])['accm_id'])
+      #if unit number doesnt exist then fetch the old unit number
+      if not json['unit_number']:
         unit_number = self.units.getById(json['unit_id'])['unit_number']
+      else:
+        unit_number = json['unit_number']
       if not valid:
         return jsonify(reason)
       daoUnit = self.units.updateUnit(json['unit_id'], unit_number, json['available'], json['tenant_capacity'], json['price'], json['size'], json['date_available'], json['contract_duration'])
