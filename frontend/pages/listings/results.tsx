@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import SearchBar from '../../components/SearchBar';
 import Filter from '../../components/Filter';
+import ExtraFilters from '../../components/ExtraFilters';
 import getConfig from 'next/config';
 import { FaSearchengin } from 'react-icons/fa';
 
@@ -106,9 +107,14 @@ const Listings = () => {
 					</div>
 					{listings}
 					<div className='col-start-1 row-start-3 flex justify-center'>
-						<Filter className='w-full'></Filter>
+						<Filter className='w-full' />
 					</div>
-					<div className='col-start-2 row-start-4'>Map here</div>
+					<div className='col-start-2 row-start-2 row-span-6'>
+						<ExtraFilters className='w-full' />
+					</div>
+					<div className='col-start-2 row-start-4'>
+						Map here
+					</div>
 				</div>
 			</section>
 		</Layout>
