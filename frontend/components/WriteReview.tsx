@@ -30,7 +30,6 @@ const WriteReview: React.FC<Props> = ({ accmID, token }) => {
 				.catch((err) => {
 					console.log(err);
 					alert(err);
-					//router.replace()
 				});
 		}
 	};

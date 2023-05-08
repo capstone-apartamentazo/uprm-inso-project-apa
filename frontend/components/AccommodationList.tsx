@@ -1,9 +1,6 @@
-import React from 'react'
-import { useEffect, useState } from 'react'
-import useSWR, { mutate } from 'swr';
-import MsgComp from '@/components/Message';
-import Accommodation from '@/components/Accommodation';
-import Link from 'next/link';
+import React from 'react';
+import { useEffect, useState } from 'react';
+import useSWR from 'swr';
 import { Storage } from 'Storage';
 
 import jwt from 'jwt-decode';
@@ -16,93 +13,69 @@ import ProfileAccommodation from './ProfileAccommodation';
 const { publicRuntimeConfig } = getConfig();
 const { url: host } = publicRuntimeConfig.site;
 
-type Props = {
+type Props = {};
 
+const AccommodationList: React.FC<Props> = ({}) => {
+	const [storage, setStorage] = useState<Storage>({ token: null, isLandlord: false, id: null });
+	const [logged, setLogged] = useState(false);
+	const cookies = new Cookies();
+	useEffect(() => {
+		try {
+			const token = cookies.get('jwt_authorization');
+			const decoded = jwt<Token>(token);
+			if (decoded['rls'] === 'landlord') {
+				setStorage({ token: token, id: decoded['id'], isLandlord: decoded['rls'] == 'landlord' ? true : false });
+				setLogged(true);
+			} else {
+				setLogged(false);
+			}
+		} catch (err) {
+			setLogged(false);
+		}
+	}, []);
 
-}
+	const {
+		data: accms,
+		error: accmsError,
+		isLoading: isLoadingAccms,
+	} = useSWR(storage?.token != null ? `${host}/api/accommodations/landlord/${storage.id}` : null, (url: string) =>
+		fetch(url, {
+			headers: {
+				Authorization: `Bearer ${storage?.token}`,
+			},
+		}).then((res) => res.json())
+	);
 
+	if (!logged || storage?.token == null) {
+		return <h1>User logged out</h1>;
+	}
 
-const AccommodationList: React.FC<Props> = ({  }) => {
-    const [storage, setStorage] = useState<Storage>({ token: null, isLandlord: false, id: null })
-    const [logged, setLogged] = useState(false)
-    const cookies = new Cookies()
-    useEffect(() => {
-        try{
-            const token = cookies.get('jwt_authorization')
-			const decoded = jwt<Token>(token)
-            if(decoded['rls']==="landlord"){
-                setStorage({'token':token,'id':decoded['id'],'isLandlord':((decoded['rls']=="landlord")?true:false)})
-                setLogged(true) 
-            }else{
-                setLogged(false)
-            }
-			
-        }catch(err){
-            setLogged(false)
+	if (accmsError) {
+		return <h1>Error</h1>;
+	}
+	if (isLoadingAccms)
+		return (
+			<div>
+				<h1>Loading...</h1>
+			</div>
+		);
+	if (!accms || accms == 'Accommodations Not Found') {
+		return (
+			<div className='mt-3'>
+				<h1 className='font-normal text-xl text-black'>No properties listed.</h1>
+			</div>
+		);
+	}
+	if (storage.isLandlord == null) {
+		console.log('nulled');
+	}
 
-        }
-    }, [])
-
-    
-
-    const { data: accms, error: accmsError, isLoading: isLoadingAccms } = useSWR((storage?.token != null) ? `${host}/api/accommodations/landlord/${storage.id}` : null, (url: string) => fetch(url, {
-        headers: {
-            Authorization: `Bearer ${storage?.token}`
-        }
-    }).then(res => 
-        // mutate('http://127.0.0.1:5000/api/messages');
-
-        res.json()
-    ));
-
-    if(!logged || storage?.token == null){
-        return <h1>User logged out</h1>
-    }
-
-    if (accmsError) {
-        return <h1>Error</h1>
-    }
-    if (isLoadingAccms) return (
-        <div>
-            <h1>Loading...</h1>
-
-        </div>
-    )
-    if (!accms || accms == 'Accommodations Not Found') {
-        return (
-            <div className='mt-3'>
-
-                <h1 className='font-normal text-xl text-black'>No properties listed.</h1>
-            </div>
-        )
-    }
-    if(storage.isLandlord == null){
-        console.log('nulled')
-    }
-
-
-    return (
-        <div className='flex justify-center flex-wrap gap-4 mr-2 mt-20 p-4 mb-6 overflow-auto'>
-            {accms.map((accm: Accm ) => (
-                
-				<ProfileAccommodation key={accm.accm_id} title={accm.accm_title} address={accm.accm_street+', '+accm.accm_city+', '+accm.accm_zipcode} id={accm.accm_id}/>
-
-            ))}
-            {/* <Link href='/' className=' flex flex-col bg-white justify-center  w-40 rounded-md  shadow-md ring-1 ring-stone-200 transition ease-in-out delay-50 hover:-translate-y-1 hover:scale-10 duration-200 cursor-pointer'>
-								<div className='text-center '>
-									<h1 className='font-semibold text-xl text-black'>Add Accommodation</h1>
-
-
-								</div>
-								<div className='flex flex-col items-center'>
-									<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" className="w-6 h-6 stroke-black">
-										<path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
-									</svg>
-								</div>
-
-							</Link> */}
-        </div>
-
-    )
-}
+	return (
+		<div className='flex justify-center flex-wrap gap-4 mr-2 mt-20 p-4 mb-6 overflow-auto'>
+			{accms.map((accm: Accm) => (
+				<ProfileAccommodation key={accm.accm_id} title={accm.accm_title} address={accm.accm_street + ', ' + accm.accm_city + ', ' + accm.accm_zipcode} id={accm.accm_id} />
+			))}
+		</div>
+	);
+};
 export default AccommodationList;

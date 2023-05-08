@@ -1,11 +1,5 @@
 import Image from 'next/image';
 
-interface Props {
-	title: string;
-	position: string;
-	description: string;
-}
-
 export default function Card(props: any) {
 	var position;
 	if (props.position) {

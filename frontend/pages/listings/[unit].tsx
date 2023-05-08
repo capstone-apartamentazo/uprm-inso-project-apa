@@ -2,7 +2,7 @@ import Layout from '@/components/Layout';
 import { useListings } from 'useListings';
 import ReviewList from '@/components/ReviewList';
 import { useRouter } from 'next/router';
-import { GoogleMap, LoadScript, Marker, useJsApiLoader } from '@react-google-maps/api';
+import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
 import jwt from 'jwt-decode';
 import Cookies from 'universal-cookie';
 import { Storage } from 'Storage';
@@ -12,19 +12,20 @@ import WriteReview from '@/components/WriteReview';
 import Tour from '@/components/Tour';
 import Contact from '@/components/Contact';
 import Apply from '@/components/Apply';
+import { Loading } from '@/components/Loading';
 
 const Unit = () => {
 	const router = useRouter();
 	const { unit } = router.query;
 	const [storage, setStorage] = useState<Storage>({ token: null, id: null, isLandlord: null });
-	const [map, setMap] = useState<google.maps.Map>()
+	const [map, setMap] = useState<google.maps.Map>();
 
 	const cookies = new Cookies();
 	const { isLoaded } = useJsApiLoader({
 		id: 'google-map-script',
 		googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,
 		libraries: ['geometry', 'drawing'],
-	  });
+	});
 
 	useEffect(() => {
 		try {
@@ -53,7 +54,7 @@ const Unit = () => {
 	// TODO: Add loading cards, default error cards
 	// TODO: actual loading screen
 	if (accmPicsError || unitError || accmError || unitAmenitiesError || accmAmenitiesError || landlordError || landlordPicError || unitPicsError) return <div>Failed to load</div>;
-	if (!accmPics || accmPics === undefined || (!unitData && !accmData) || unitData === undefined || accmData === undefined || unitAmenities === undefined || accmAmenities === undefined || landlord === undefined || landlordPic === undefined || unitPics === undefined) return <div>Loading...</div>;
+	if (!accmPics || accmPics === undefined || (!unitData && !accmData) || unitData === undefined || accmData === undefined || unitAmenities === undefined || accmAmenities === undefined || landlord === undefined || landlordPic === undefined || unitPics === undefined)	return <Loading size={100} />;
 
 	let tempAmenities = {
 		'Air Conditioner': unitAmenities['air_conditioner'],
@@ -192,7 +193,6 @@ const Unit = () => {
 		lat: accmData.latitude,
 		lng: accmData.longitude,
 	};
-
 	return (
 		<Layout>
 			<section className='pt-32 pl-20 pr-20 bg-gray-50'>
@@ -260,10 +260,19 @@ const Unit = () => {
 						</div>
 					</div>
 					<div className='row-start-5 col-start-3 bg-gray-50 col-span-2 text-center mt-10 ring-2 ring-accent rounded-md p-1'>
-						{isLoaded && <GoogleMap onLoad={(map) => { setMap(map) }} id='map' options={mapOptions} mapContainerStyle={containerStyle} center={center} zoom={17}>
-
+						{isLoaded && (
+							<GoogleMap
+								onLoad={(map) => {
+									setMap(map);
+								}}
+								id='map'
+								options={mapOptions}
+								mapContainerStyle={containerStyle}
+								center={center}
+								zoom={17}>
 								<Marker position={center} />
-							</GoogleMap>}
+							</GoogleMap>
+						)}
 					</div>
 					<div className='row-start-6 col-span-4 mt-10'>
 						<h3 className='text-2xl'>Amenities</h3>

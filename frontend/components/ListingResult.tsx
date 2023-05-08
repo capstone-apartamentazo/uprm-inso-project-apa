@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import AccommodationUnits from './AccommodationUnits';
 import { useListings } from 'useListings';
-import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
-
+import { FaBullseye } from 'react-icons/fa';
 
 type Props = {
 	title: string;
@@ -12,14 +11,11 @@ type Props = {
 	unitAmount: number;
 	accmUnits: any;
 	map: google.maps.Map | null;
-	coords: {lat:number,lng:number}
+	coords: { lat: number; lng: number };
 };
 
 function getAvailableAmenities(amenities: any, id: string) {
 	let toReturn: any[] = [];
-	var topAmenities = ['pets_allowed', 'shared_dryer', 'shared_washer', 'shared_kitchen'];
-	var includedAmenities = Object.keys(amenities).filter((item) => (item != 'deleted_flag' ? amenities[item] === false : null));
-	const filteredAmenities = includedAmenities.filter((value) => topAmenities.includes(value));
 
 	var included = (
 		<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' className='bi bi-check-circle text-primary' viewBox='0 0 16 16'>
@@ -34,25 +30,29 @@ function getAvailableAmenities(amenities: any, id: string) {
 		</svg>
 	);
 
-	const allAmenities: any = {
-		pets_allowed: <p className='ml-1'>Pets</p>,
-		shared_dryer: <p className='ml-1'>Dryer</p>,
-		shared_washer: <p className='ml-1'>Washer</p>,
-		shared_kitchen: <p className='ml-1'>Shared Kitchen</p>,
-	};
-
-	filteredAmenities.forEach((amenity) =>
-		toReturn.push(
-			<span key={id + '_' + amenity} className='badge badge-ghost badge-md'>
-				{allAmenities[amenity] ? included : notIncluded}
-				{allAmenities[amenity]}
-			</span>
-		)
+	toReturn.push(
+		<span key={id + '_shared_dryer'} className='badge badge-ghost badge-md'>
+			{amenities['shared_dryer'] === true ? included : notIncluded}
+			<p className='ml-1'>Dryer</p>
+		</span>
 	);
+	toReturn.push(
+		<span key={id + '_shared_washer'} className='badge badge-ghost badge-md'>
+			{amenities['shared_washer'] === true ? included : notIncluded}
+			<p className='ml-1'>Washer</p>
+		</span>
+	);
+	toReturn.push(
+		<span key={id + '_pets_allowed'} className='badge badge-ghost badge-md'>
+			{amenities['pets_allowed'] === true ? included : notIncluded}
+			<p className='ml-1'>Pets</p>
+		</span>
+	);
+
 	return toReturn;
 }
 
-const ListingResult: React.FC<Props> = ({ title, address, description, unitAmount, id, accmUnits,map,coords }) => {
+const ListingResult: React.FC<Props> = ({ title, address, description, unitAmount, id, accmUnits, map, coords }) => {
 	const [active, setActive] = useState(false);
 	const [units, setUnits] = useState([]);
 	var picLink = '';
@@ -71,14 +71,13 @@ const ListingResult: React.FC<Props> = ({ title, address, description, unitAmoun
 	function handleClick(id: string, setActive: any, setUnits: any) {
 		active ? setActive(false) : setActive(true);
 		var element = document.getElementById(id + '_units');
-		try{
-			map!.setCenter(coords)
-			map!.setZoom(17);
 
-		}catch(err){
-			console.log(err)
+		try {
+			map!.setCenter(coords);
+			map!.setZoom(17);
+		} catch (err) {
+			console.log(err);
 		}
-		
 
 		if (!element) setUnits(<AccommodationUnits key={'accmUnitsID_' + id} accmId={id} accmUnits={accmUnits} />);
 		else {
@@ -92,12 +91,13 @@ const ListingResult: React.FC<Props> = ({ title, address, description, unitAmoun
 
 	return (
 		<div key={'accmID_' + id}>
-			<div id={id} onClick={() => handleClick(id, setActive, setUnits)} className={`card lg:h-60 lg:card-side shadow-xl ring-1 ring-stone-200 transition ease-in-out hover:-translate-y-1 hover:scale-10 duration-150 cursor-pointer ${active ? 'border-[1px] border-accent' : ''}`}>
+			<div id={id} onClick={() => handleClick(id, setActive, setUnits)} className={`card lg:h-[17rem] lg:card-side shadow-lg ring-1 ring-stone-200 transition ease-in-out hover:-translate-y-1 hover:scale-10 duration-150 cursor-pointer ${active ? 'border-[1px] border-accent' : ''}`}>
 				<figure className='p-4 rounded-2xl lg:w-4/12'>
 					<img src={picLink} className='rounded-xl lg:object-cover lg:h-full' alt='' />
 				</figure>
 				<div className='card-body lg:w-8/12'>
-					<h2 className='card-title'>{title}</h2>
+					<span className='card-actions justify-end right-10 absolute font-semibold text-accent text-lg'>8.7</span>
+					<h2 className='card-title lg:w-[95%]'>{title}</h2>
 					<p className='text-neutral-500'>{address}</p>
 					<div className='space-x-1'>{amenities}</div>
 					<div className={`${description.length > 90 ? 'tooltip text-left tooltip-accent' : ''}`} data-tip={description}>

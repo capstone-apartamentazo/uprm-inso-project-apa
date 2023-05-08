@@ -12,15 +12,39 @@ interface Props {
 const SearchBar: React.FC<Props> = ({ className, width }) => {
 	const router = useRouter();
 
+	const { filterOptions, amenities } = router.query;
+	let filter: any = {};
+	let jsonAmenities: any = '';
+
+	try {
+		let jsonParseFilter = JSON.parse(filterOptions as string);
+		let amenitiesFilter = jsonParseFilter['amenitiesFilter'];
+		let scoreFilter = jsonParseFilter['scoreFilter'];
+		let jsonParseAmn = JSON.parse(amenities as string);
+		filter = {
+			amenitiesFilter: amenitiesFilter,
+			scoreFilter: scoreFilter,
+		};
+		jsonAmenities = JSON.stringify(jsonParseAmn);
+	} catch (error) {
+		filter = {
+			amenitiesFilter: false,
+			scoreFilter: false,
+		};
+	}
+
+	let jsonFilter = JSON.stringify(filter);
+
 	const handleSearch = (event: any) => {
 		event.preventDefault();
 
 		router.push({
 			pathname: '/listings/results',
-			query: { 
+			query: {
 				search: event.target.search.value,
-				filter: false
-		},
+				filterOptions: jsonFilter,
+				amenities: jsonAmenities,
+			},
 		});
 	};
 
