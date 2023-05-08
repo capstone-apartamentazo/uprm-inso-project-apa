@@ -11,6 +11,7 @@ import Cookies from 'universal-cookie';
 import { Storage } from 'Storage';
 import { Token } from 'Token';
 import getConfig from 'next/config';
+import { handleModal } from 'helpers/handleModal';
 const { publicRuntimeConfig } = getConfig();
 const { url: host } = publicRuntimeConfig.site;
 
@@ -142,12 +143,12 @@ export default function Navbar(path: any) {
 			) : (
 				<ul className='menu menu-horizontal px-1 gap-4'>
 					<li>
-						<a href='#signup-modal' className='btn btn-accent btn-outline normal-case bg-white w-28'>
+						<a onClick={() => handleModal('signup-modal')} className='btn btn-accent btn-outline normal-case bg-white w-28'>
 							Sign up
 						</a>
 					</li>
 					<li>
-						<a href='#login-modal' className='btn btn-accent btn-outline normal-case bg-white w-28'>
+						<a onClick={() => handleModal('login-modal')} className='btn btn-accent btn-outline normal-case bg-white w-28'>
 							Log in
 						</a>
 					</li>

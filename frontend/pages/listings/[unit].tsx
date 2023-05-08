@@ -9,6 +9,9 @@ import { Storage } from 'Storage';
 import { Token } from 'Token';
 import { useEffect, useState } from 'react';
 import WriteReview from '@/components/WriteReview';
+import Tour from '@/components/Tour';
+import Contact from '@/components/Contact';
+import Apply from '@/components/Apply';
 
 const Unit = () => {
 	const router = useRouter();
@@ -216,8 +219,12 @@ const Unit = () => {
 						<p className=''>Available {unitData.date_available}</p>
 					</div>
 					<div className='row-start-4 col-start-4 text-end'>
-						<button className='btn btn-primary mr-4 text-white'>Request Tour</button>
-						<button className='btn btn-secondary bg-transparent text-secondary hover:bg-primary-200 hover:text-white'>Apply</button>
+						<button className='mr-4 text-white'>
+							<Tour unitID={unitData.unit_id} token={storage.token} />
+						</button>
+						<button className=''>
+							<Apply unitID={unitData.unit_id} token={storage.token} />
+						</button>
 					</div>
 					<div className='row-start-5 col-start-1 col-span-2 mt-10'>
 						<h3 className='text-2xl'>About</h3>
@@ -239,7 +246,9 @@ const Unit = () => {
 										{typeof accmReviews === 'string' ? 0 : accmReviews.length} {typeof accmReviews === 'string' ? 'reviews' : accmReviews.length > 1 ? 'reviews' : 'review'}
 									</a>
 								</div>
-								<button className='btn btn-primary btn-sm leading-5 mt-2'>Contact</button>
+								<button className='leading-5 mt-2'>
+									<Contact unitID={unitData.unit_id} token={storage.token} landlordID={landlord.landlord_id} />
+								</button>
 							</div>
 						</div>
 					</div>
