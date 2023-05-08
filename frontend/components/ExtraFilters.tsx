@@ -96,21 +96,21 @@ const ExtraFilters: React.FC<Props> = () => {
             Ranking <TbChevronUp className='ml-2' />
           </button>
           {/* ml-2 mr-2 mt-0.5 mb-1 */}
-          <div className='m-1 bg-white rounded-lg overflow-hidden shadow dark:bg-gray-700'>
-            <ol className='rounded-lg divide-y divide-gray-200 shadow mx-2'>
-              <li id={rankingList[0]} className='hover:bg-gray-200 cursor-move' draggable='true' onDragStart={() => setDragStart(rankingList[0])} onDragOver={() => setDragOver(rankingList[0])} onDragEnd={endDrag}>
+          <div className='rounded-lg overflow-hidden shadow-2xl dark:bg-gray-700 m-0.5'>
+            <ol className='rounded-lg divide-y divide-gray-200'>
+              <li id={rankingList[0]} className='hover:bg-gray-200 pl-2 rounded-lg cursor-move' draggable='true' onDragStart={() => setDragStart(rankingList[0])} onDragOver={() => setDragOver(rankingList[0])} onDragEnd={endDrag}>
                 <a>{rankingList[0]}</a>
               </li>
-              <li id={rankingList[1]} className='hover:bg-gray-200 cursor-move' draggable='true' onDragStart={() => setDragStart(rankingList[1])} onDragOver={() => setDragOver(rankingList[1])} onDragEnd={endDrag}>
+              <li id={rankingList[1]} className='hover:bg-gray-200 pl-2 rounded-lg cursor-move' draggable='true' onDragStart={() => setDragStart(rankingList[1])} onDragOver={() => setDragOver(rankingList[1])} onDragEnd={endDrag}>
                 <a>{rankingList[1]}</a>
               </li>
-              <li id={rankingList[2]} className='hover:bg-gray-200 cursor-move' draggable='true' onDragStart={() => setDragStart(rankingList[2])} onDragOver={() => setDragOver(rankingList[2])} onDragEnd={endDrag}>
+              <li id={rankingList[2]} className='hover:bg-gray-200 pl-2 rounded-lg cursor-move' draggable='true' onDragStart={() => setDragStart(rankingList[2])} onDragOver={() => setDragOver(rankingList[2])} onDragEnd={endDrag}>
                 <a>{rankingList[2]}</a>
               </li>
-              <li id={rankingList[3]} className='hover:bg-gray-200 cursor-move' draggable='true' onDragStart={() => setDragStart(rankingList[3])} onDragOver={() => setDragOver(rankingList[3])} onDragEnd={endDrag}>
+              <li id={rankingList[3]} className='hover:bg-gray-200 pl-2 rounded-lg cursor-move' draggable='true' onDragStart={() => setDragStart(rankingList[3])} onDragOver={() => setDragOver(rankingList[3])} onDragEnd={endDrag}>
                 <a>{rankingList[3]}</a>
               </li>
-              <li id={rankingList[4]} className='hover:bg-gray-200 cursor-move' draggable='true' onDragStart={() => setDragStart(rankingList[4])} onDragOver={() => setDragOver(rankingList[4])} onDragEnd={endDrag}>
+              <li id={rankingList[4]} className='hover:bg-gray-200 pl-2 rounded-lg cursor-move' draggable='true' onDragStart={() => setDragStart(rankingList[4])} onDragOver={() => setDragOver(rankingList[4])} onDragEnd={endDrag}>
                 <a>{rankingList[4]}</a>
               </li>
             </ol>
