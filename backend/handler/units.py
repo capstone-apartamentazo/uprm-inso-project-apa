@@ -79,9 +79,14 @@ class UnitHandler:
       if not valid:
         return jsonify(reason)
       valid, reason = self.checkInput(json['unit_number'], json['tenant_capacity'], json['price'], json['size'], json['contract_duration'], self.units.getById(json['unit_id'])['accm_id'])
+      #if unit number doesnt exist then fetch the old unit number
+      if not json['unit_number']:
+        unit_number = self.units.getById(json['unit_id'])['unit_number']
+      else:
+        unit_number = json['unit_number']
       if not valid:
         return jsonify(reason)
-      daoUnit = self.units.updateUnit(json['unit_id'], json['unit_number'], json['available'], json['tenant_capacity'], json['price'], json['size'], json['date_available'], json['contract_duration'])
+      daoUnit = self.units.updateUnit(json['unit_id'], unit_number, json['available'], json['tenant_capacity'], json['price'], json['size'], json['date_available'], json['contract_duration'])
       if daoUnit:
         db.commit()
         return jsonify(daoUnit)
@@ -191,7 +196,7 @@ class UnitHandler:
   def checkInput(self, unit_number, tenant_capacity, price, size, contract_duration, accm_num):
     if isinstance(unit_number, bool):
       return False, 'unit_number can\'t be bool'
-    if self.units.getByUnitNumber(accm_num, unit_number):
+    if unit_number != None and self.units.getByUnitNumber(accm_num, unit_number):
       return False, 'Unit number taken'
     if self.unitNumValid(unit_number):
       return False, 'Unit number can only contain numbers, leters and hyphen and max 10 characters. (Hyphen are optional but cannot start or end with a hyphen -)'
