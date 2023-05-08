@@ -71,8 +71,14 @@ const ListingResult: React.FC<Props> = ({ title, address, description, unitAmoun
 	function handleClick(id: string, setActive: any, setUnits: any) {
 		active ? setActive(false) : setActive(true);
 		var element = document.getElementById(id + '_units');
-		map!.setCenter(coords)
-		map!.setZoom(17);
+		try{
+			map!.setCenter(coords)
+			map!.setZoom(17);
+
+		}catch(err){
+			console.log(err)
+		}
+		
 
 		if (!element) setUnits(<AccommodationUnits key={'accmUnitsID_' + id} accmId={id} accmUnits={accmUnits} />);
 		else {
