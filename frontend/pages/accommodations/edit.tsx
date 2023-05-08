@@ -43,6 +43,7 @@ const Edit = () => {
     const [selectedImage2, setSelectedImage2] = useState<string|any>(null);
     const [selectedImage3, setSelectedImage3] = useState<string|any>(null);
     const [selectedImage4, setSelectedImage4] = useState<string|any>(null);
+	const [map, setMap] = useState<google.maps.Map>()
 
     const [accmId,setAccmId] = useState<any>(null)
     const [storage, setStorage] = useState<Storage>({ token: null, isLandlord: null, id: null })
@@ -221,9 +222,10 @@ const Edit = () => {
         //setSelectedImage4(URL.createObjectURL(event.target.files![0]))
 
     }
+    
     const [center, setCenter] = useState<google.maps.LatLng | google.maps.LatLngLiteral>({
-        lat: 18.4338426,
-        lng: -66.6138349
+        lat: 18.210889901221826,
+        lng: -67.14088360700836
     })
     const [currPos,setCurrPos] = useState<google.maps.LatLng>()
 
@@ -540,8 +542,9 @@ const Edit = () => {
                         <label className='text-accent'>Drag the pin to accommodation's precise location to get latitude and longitude.</label>
 
                     </div>
-                    
-                    <GoogleMap 
+                    {isLoaded && <GoogleMap   onLoad={(map) => { setMap(map) }} id='map' options={mapOptions} mapContainerStyle={{ height: '400px' }} center={center} zoom={16}>
+
+                    {/* <GoogleMap 
                         options={mapOptions}
                         zoom={16}
                         center={center}
@@ -550,7 +553,7 @@ const Edit = () => {
                         mapContainerClassName="m-4"
                     //onCenterChanged={onCenterChanged}
 
-                    >
+                    > */}
                         <Marker
                             position={center}
                             draggable={true}
@@ -558,7 +561,7 @@ const Edit = () => {
                             onDragEnd={onDragEnd}
 
                         />
-                    </GoogleMap>
+                    </GoogleMap>}
                     <input type="submit" className={currPos?'btn mx-4 my-2 ring-1 ring-accent text-accent hover:bg-accent hover:ring-white hover:text-white':'hidden'} value={'Save Changes'}></input>
 
                 </div>

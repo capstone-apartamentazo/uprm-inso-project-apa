@@ -25,6 +25,9 @@ const New = () => {
     const [selectedImage2, setSelectedImage2] = useState<string|any>(null);
     const [selectedImage3, setSelectedImage3] = useState<string|any>(null);
     const [selectedImage4, setSelectedImage4] = useState<string|any>(null);
+	const [map, setMap] = useState<google.maps.Map>()
+    const [marker, setMarker] = useState<google.maps.Marker>()
+
 
     const [accId,setAccId] = useState<number|null>(null)
     const [storage, setStorage] = useState<Storage>({ token: null, isLandlord: null, id: null })
@@ -130,9 +133,11 @@ const New = () => {
         }
     }
     const [center, setCenter] = useState<google.maps.LatLng | google.maps.LatLngLiteral>({
-        lat: 18.4338426,
-        lng: -66.6138349
+        lat: 18.210889901221826,
+        lng: -67.14088360700836
     })
+
+    
     const [currPos,setCurrPos] = useState<google.maps.LatLng>()
 
     const uploadImage = async (image:string,accId:number,order:number) => {
@@ -328,13 +333,14 @@ const New = () => {
         googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,
         libraries: libraries as any,
     });
+    
 
     const onDragEnd = useCallback(function callback(marker) {
         setCenter(marker.latLng)
         setCurrPos(marker.latLng.toJSON())
         console.log(JSON.stringify(marker.latLng.toJSON()))
     }, [])
-
+    
 
     if (!isLoaded) {
         return <p>Loading...</p>;
@@ -465,8 +471,18 @@ const New = () => {
                         <label className='text-accent'>Drag the pin to accommodation's precise location to get latitude and longitude.</label>
 
                     </div>
+                    {isLoaded && <GoogleMap   onLoad={(map) => { setMap(map) }} id='map' options={mapOptions} mapContainerStyle={{ height: '400px' }} center={center} zoom={16}>
+
+                    <Marker
+                            position={center}
+                            draggable={true}
+                            //onLoad={onMarkerLoad}
+                            onDragEnd={onDragEnd}
+                            onLoad={(marker)=>{setMarker(marker)}}
+                        />
+							</GoogleMap>}
                     
-                    <GoogleMap 
+                    {/* <GoogleMap 
                         options={mapOptions}
                         zoom={16}
                         center={center}
@@ -483,7 +499,7 @@ const New = () => {
                             onDragEnd={onDragEnd}
 
                         />
-                    </GoogleMap>
+                    </GoogleMap> */}
                     <input type="submit" className={currPos?'btn mx-4 my-2 ring-1 ring-accent text-accent hover:bg-accent hover:ring-white hover:text-white':'hidden'} value={'Create'}></input>
 
                 </div>

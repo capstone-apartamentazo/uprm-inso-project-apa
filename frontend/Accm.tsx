@@ -12,4 +12,5 @@ export interface Accm{
     "landlord_id"?: number
     "latitude"?: number,
     "longitude"?: number,
+    "accm_units"?: []
 }

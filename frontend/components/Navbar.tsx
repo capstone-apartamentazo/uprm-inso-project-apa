@@ -11,6 +11,7 @@ import Cookies from 'universal-cookie';
 import { Storage } from 'Storage';
 import { Token } from 'Token';
 import getConfig from 'next/config';
+import { handleModal } from 'helpers/handleModal';
 const { publicRuntimeConfig } = getConfig();
 const { url: host } = publicRuntimeConfig.site;
 
@@ -18,12 +19,24 @@ export default function Navbar(path: any) {
 	const router = useRouter();
 	const [nav, setNav] = useState({ left: <></>, right: <></> });
 	const [classes, setClasses] = useState('');
+	const [logged,setLogged] = useState(true)
+
+	useEffect(()=>{
+
+		if(!logged){
+			router.replace('/');
+
+		}
+		
+	},[logged])
 
 	const logout = async () => {
 		cookies.remove('jwt_authorization');
+		setLogged(false)
 		//localStorage.removeItem('data');
-		router.replace('/');
-		router.reload();
+		setupNav(false, '/images/user.png');
+		//router.replace('/');
+		// router.reload();
 	};
 
 	function setupNav(signedIn: boolean, pic: string) {
@@ -141,12 +154,12 @@ export default function Navbar(path: any) {
 			) : (
 				<ul className='menu menu-horizontal px-1 gap-4'>
 					<li>
-						<a href='#signup-modal' className='btn btn-accent btn-outline normal-case bg-white w-28'>
+						<a onClick={() => handleModal('signup-modal')} className='btn btn-accent btn-outline normal-case bg-white w-28'>
 							Sign up
 						</a>
 					</li>
 					<li>
-						<a href='#login-modal' className='btn btn-accent btn-outline normal-case bg-white w-28'>
+						<a onClick={() => handleModal('login-modal')} className='btn btn-accent btn-outline normal-case bg-white w-28'>
 							Log in
 						</a>
 					</li>
@@ -164,7 +177,7 @@ export default function Navbar(path: any) {
 			const decoded = jwt<Token>(token);
 			setStorage({ token: token, id: decoded['id'], isLandlord: decoded['rls'] == 'landlord' ? true : false });
 
-			const endpoint = `${host}/api/images/${storage.isLandlord ? 'landlord' : 'tenant'}/${decoded['id']}`;
+			const endpoint = `${host}/api/images/${decoded['rls'] == 'landlord' ? 'landlord' : 'tenant' }/${decoded['id']}`;
 
 			const options = {
 				method: 'GET',

@@ -13,6 +13,7 @@ import Cookies from 'universal-cookie';
 import { Token } from 'Token';
 import { Storage } from 'Storage';
 import getConfig from 'next/config';
+import LeaseList from '@/components/LeaseList';
 
 const { publicRuntimeConfig } = getConfig();
 const { url: host } = publicRuntimeConfig.site;
@@ -68,7 +69,7 @@ const Profile = () => {
 
 				.catch(err => {
 					//localStorage.removeItem('data');
-					console.log('in')
+					//console.log('in')
 					console.error(err);
 				})
 
@@ -164,7 +165,7 @@ const Profile = () => {
 	// }
 
 
-	const { data: user, error: userError, isLoading: isLoadingUser } = useSWR((storage.token != null) ? (storage.isLandlord ? `${host}/api/landlords/${storage.id}` : `${host}/api/tenants/${storage.id}`) : null, (url: any) => fetch(url, {
+	const { data: user, error: userError, isLoading: isLoadingUser } = useSWR((storage.isLandlord ? `${host}/api/landlords/${storage.id}` : `${host}/api/tenants/${storage.id}`), (url: any) => fetch(url, {
 		headers: {
 			Authorization: `Bearer ${storage?.token}`
 		}
@@ -180,7 +181,7 @@ const Profile = () => {
 	if (isLoadingUser) {
 		return (<h1>Loading...</h1>)
 	}
-	if (storage.id == null) {
+	if (storage.id == null||storage.token == null||storage.isLandlord == null) {
 		return (
 			<div>
 				<h1>Error found</h1>
@@ -188,7 +189,10 @@ const Profile = () => {
 			</div>
 		)
 	}
-	if (!(storage.isLandlord)) {
+	if(storage.isLandlord){
+		console.log('here')
+	}
+	if ((!(storage.isLandlord))) {
 		return (
 			<Layout>
 				<main className='flex flex-col lg:flex-row  flex-nowrap py-24'>
@@ -243,13 +247,13 @@ const Profile = () => {
 
 						<div className='flex flex-wrap text-3xl font-bold text-left pt-6 pb-2 px-6 rounded-md absolute  bg-white top-0 left-0 right-0 items-center'>
 							<h1 className=' text-3xl font-bold text-left  grow'>
-								Active Contracts
+								Active Leases
 
 							</h1>
 
 						</div>
-					// <AccommodationList></AccommodationList>
-
+					
+						<LeaseList></LeaseList>
 
 
 

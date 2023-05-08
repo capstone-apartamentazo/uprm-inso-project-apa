@@ -7,7 +7,6 @@ import axios from 'axios';
 import { useState, useEffect,useRef } from 'react';
 import useSWR, { mutate } from 'swr';
 import MessageList from '@/components/MessageList';
-import ConversationList from '@/components/ConversationList';
 import { useRouter } from 'next/router'
 
 import jwt from 'jwt-decode';
@@ -267,7 +266,7 @@ const Messages: React.FC<Props> = ({ }) => {
                                 </h1>
                             </div>
                         </div>
-                        <div className='overflow-auto mx-4 mt-16 overscroll-contain row-span-4'>
+                        <div className='overflow-auto  mt-16 overscroll-contain row-span-4'>
 
                             {
 
@@ -290,13 +289,17 @@ const Messages: React.FC<Props> = ({ }) => {
                             <div className='flex flex-row flex-nowrap h-16 bg-white   drop-shadow-md items-center '>
 
                                 <div className="avatar p-4 hidden">
-                                    <div className=" w-10 rounded-full ring-1 ring-accent ring-offset-base-100 ring-offset-2 hover:shadow-lg hover:ring-2">
+                                    <div className=" w-10 rounded-full  ring-offset-base-100 ring-offset-2 hover:shadow-lg hover:ring-2">
                                         <a href='' className=''><img className='aspect-square' src='/images/person.png' /></a>
                                     </div>
                                 </div>
 
+                                <div className='flex flex-col mx-4'>
+                                <h1 className=' font-semibold text-xl'>{currentConvoName} </h1>
+                                <h2 className={selected?'text-xs font-medium':'hidden'}>ID: {storage? selected:''}</h2>
 
-                                <h1 className='font-semibold text-xl'>{currentConvoName}</h1>
+                                </div>
+                                
                             </div>
                         </div>
 

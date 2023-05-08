@@ -2,20 +2,30 @@ import Layout from '@/components/Layout';
 import { useListings } from 'useListings';
 import ReviewList from '@/components/ReviewList';
 import { useRouter } from 'next/router';
-import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
+import { GoogleMap, LoadScript, Marker, useJsApiLoader } from '@react-google-maps/api';
 import jwt from 'jwt-decode';
 import Cookies from 'universal-cookie';
 import { Storage } from 'Storage';
 import { Token } from 'Token';
 import { useEffect, useState } from 'react';
 import WriteReview from '@/components/WriteReview';
+import Tour from '@/components/Tour';
+import Contact from '@/components/Contact';
+import Apply from '@/components/Apply';
 
 const Unit = () => {
 	const router = useRouter();
 	const { unit } = router.query;
 	const [storage, setStorage] = useState<Storage>({ token: null, id: null, isLandlord: null });
+	const [map, setMap] = useState<google.maps.Map>()
 
 	const cookies = new Cookies();
+	const { isLoaded } = useJsApiLoader({
+		id: 'google-map-script',
+		googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,
+		libraries: ['geometry', 'drawing'],
+	  });
+
 	useEffect(() => {
 		try {
 			const token = cookies.get('jwt_authorization');
@@ -216,8 +226,12 @@ const Unit = () => {
 						<p className=''>Available {unitData.date_available}</p>
 					</div>
 					<div className='row-start-4 col-start-4 text-end'>
-						<button className='btn btn-primary mr-4 text-white'>Request Tour</button>
-						<button className='btn btn-secondary bg-transparent text-secondary hover:bg-primary-200 hover:text-white'>Apply</button>
+						<button className='mr-4 text-white'>
+							<Tour unitID={unitData.unit_id} token={storage.token} />
+						</button>
+						<button className=''>
+							<Apply unitID={unitData.unit_id} token={storage.token} />
+						</button>
 					</div>
 					<div className='row-start-5 col-start-1 col-span-2 mt-10'>
 						<h3 className='text-2xl'>About</h3>
@@ -239,16 +253,17 @@ const Unit = () => {
 										{typeof accmReviews === 'string' ? 0 : accmReviews.length} {typeof accmReviews === 'string' ? 'reviews' : accmReviews.length > 1 ? 'reviews' : 'review'}
 									</a>
 								</div>
-								<button className='btn btn-primary btn-sm leading-5 mt-2'>Contact</button>
+								<button className='leading-5 mt-2'>
+									<Contact unitID={unitData.unit_id} token={storage.token} landlordID={landlord.landlord_id} />
+								</button>
 							</div>
 						</div>
 					</div>
 					<div className='row-start-5 col-start-3 bg-gray-50 col-span-2 text-center mt-10 ring-2 ring-accent rounded-md p-1'>
-						<LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}>
-							<GoogleMap options={mapOptions} mapContainerStyle={containerStyle} center={center} zoom={17}>
+						{isLoaded && <GoogleMap onLoad={(map) => { setMap(map) }} id='map' options={mapOptions} mapContainerStyle={containerStyle} center={center} zoom={17}>
+
 								<Marker position={center} />
-							</GoogleMap>
-						</LoadScript>
+							</GoogleMap>}
 					</div>
 					<div className='row-start-6 col-span-4 mt-10'>
 						<h3 className='text-2xl'>Amenities</h3>
