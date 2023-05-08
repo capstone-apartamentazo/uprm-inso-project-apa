@@ -21,13 +21,12 @@ const Listings = () => {
 	const router = useRouter();
 	const { search, filter, amenities } = router.query;
 
-	const [map, setMap] = useState<google.maps.Map>()
+	const [map, setMap] = useState<google.maps.Map>();
 	const { isLoaded } = useJsApiLoader({
 		id: 'google-map-script',
 		googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,
 		libraries: ['geometry', 'drawing'],
-	  });
-
+	});
 
 	useEffect(() => {
 		if (search && filter === 'false') {
@@ -47,7 +46,17 @@ const Listings = () => {
 					data.map((accm: any, i: any) => {
 						allListings.push(
 							<div key={i} className='col-start-1 row-span-2 p-2'>
-								<ListingResult key={i} title={accm.accm_title} address={accm.accm_street + ', ' + accm.accm_city} description={accm.accm_description} unitAmount={accm.accm_units.length} id={accm.accm_id} accmUnits={accm.accm_units} map={map ? map : null} coords={{ lat: accm.latitude, lng: accm.longitude }} />
+								<ListingResult
+									key={i}
+									title={accm.accm_title}
+									address={accm.accm_street + ', ' + accm.accm_city}
+									description={accm.accm_description}
+									unitAmount={accm.accm_units.length}
+									id={accm.accm_id}
+									accmUnits={accm.accm_units}
+									map={map ? map : null}
+									coords={{ lat: accm.latitude, lng: accm.longitude }}
+								/>
 							</div>
 						);
 					});
@@ -85,14 +94,24 @@ const Listings = () => {
 					data.map((accm: any, i: any) => {
 						allListings.push(
 							<div key={i} className='col-start-1 row-span-2 p-2'>
-								<ListingResult key={i} title={accm.accm_title} address={accm.accm_street + ', ' + accm.accm_city} description={accm.accm_description} unitAmount={accm.accm_units.length} id={accm.accm_id} accmUnits={accm.accm_units} map={map ? map : null} coords={{ lat: accm.latitude, lng: accm.longitude }} />
+								<ListingResult
+									key={i}
+									title={accm.accm_title}
+									address={accm.accm_street + ', ' + accm.accm_city}
+									description={accm.accm_description}
+									unitAmount={accm.accm_units.length}
+									id={accm.accm_id}
+									accmUnits={accm.accm_units}
+									map={map ? map : null}
+									coords={{ lat: accm.latitude, lng: accm.longitude }}
+								/>
 							</div>
 						);
 					});
 					setListings(allListings);
 					setAmount(allListings.length > 1 ? allListings.length + ' results' : allListings.length + ' result');
 					setLocation(search);
-					setAccmData(data)
+					setAccmData(data);
 				})
 				.catch((err) => {
 					var noListings: any = [];
@@ -106,7 +125,7 @@ const Listings = () => {
 					setLocation(search);
 				});
 		}
-	}, [search, filter, amenities,map]);
+	}, [search, filter, amenities, map]);
 
 	// INFO: MAP
 	const mapOptions = {
@@ -124,15 +143,11 @@ const Listings = () => {
 	const [center, setCenter] = useState({
 		lat: 18.210889901221826,
 		lng: -67.14088360700836,
-	})
-	const colegio={
+	});
+	const colegio = {
 		lat: 18.210889901221826,
 		lng: -67.14088360700836,
-
-	}
-	
-
-	//const center = ;
+	};
 
 	return (
 		<Layout>
@@ -146,35 +161,41 @@ const Listings = () => {
 					<div className='col-start-1 row-start-2 col-end-2'>
 						<SearchBar className='w-full' width='' />
 					</div>
-					<div className='col-start-1 row-start-4 h-screen overflow-auto no-scrollbar'>
-						{listings}
-					</div>
+					<div className='col-start-1 row-start-4 h-screen overflow-auto no-scrollbar'>{listings}</div>
 
 					<div className='col-start-1 row-start-3 flex justify-center'>
-
 						<Filter className='w-full'></Filter>
-
-
 					</div>
 					<div className='col-start-2 row-start-2 row-span-3 m-6 '>
-						{/* <LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}> */}
-						{isLoaded && <GoogleMap onLoad={(map) => { setMap(map) }} id='map' options={mapOptions} mapContainerStyle={containerStyle} center={center} zoom={14}>
-
+						{isLoaded && (
+							<GoogleMap
+								onLoad={(map) => {
+									setMap(map);
+								}}
+								id='map'
+								options={mapOptions}
+								mapContainerStyle={containerStyle}
+								center={center}
+								zoom={14}>
 								<Marker position={colegio} icon={'/images/colegio-pin.png'} />
 								<MarkerClusterer>
 									{(clusterer) =>
-									accmData.map((accm: Accm, index: number) => (
-
-										<Marker key={accm.accm_id} clusterer={clusterer} onClick={() => { setCenter({ lat: accm.latitude!, lng: accm.longitude! }); map!.setZoom(17); }} label={String(index + 1)} position={{ lat: accm.latitude!, lng: accm.longitude! }} />
-
-									))
-										
+										accmData.map((accm: Accm, index: number) => (
+											<Marker
+												key={accm.accm_id}
+												clusterer={clusterer}
+												onClick={() => {
+													setCenter({ lat: accm.latitude!, lng: accm.longitude! });
+													map!.setZoom(17);
+												}}
+												label={String(index + 1)}
+												position={{ lat: accm.latitude!, lng: accm.longitude! }}
+											/>
+										))
 									}
-
 								</MarkerClusterer>
-							</GoogleMap>}
-
-						{/* </LoadScript> */}
+							</GoogleMap>
+						)}
 					</div>
 				</div>
 			</section>

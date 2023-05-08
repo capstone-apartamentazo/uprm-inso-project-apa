@@ -19,20 +19,17 @@ export default function Navbar(path: any) {
 	const router = useRouter();
 	const [nav, setNav] = useState({ left: <></>, right: <></> });
 	const [classes, setClasses] = useState('');
-	const [logged,setLogged] = useState(true)
+	const [logged, setLogged] = useState(true);
 
-	useEffect(()=>{
-
-		if(!logged){
+	useEffect(() => {
+		if (!logged) {
 			router.replace('/');
-
 		}
-		
-	},[logged])
+	}, [logged]);
 
 	const logout = async () => {
 		cookies.remove('jwt_authorization');
-		setLogged(false)
+		setLogged(false);
 		//localStorage.removeItem('data');
 		setupNav(false, '/images/user.png');
 		//router.replace('/');
@@ -177,7 +174,7 @@ export default function Navbar(path: any) {
 			const decoded = jwt<Token>(token);
 			setStorage({ token: token, id: decoded['id'], isLandlord: decoded['rls'] == 'landlord' ? true : false });
 
-			const endpoint = `${host}/api/images/${decoded['rls'] == 'landlord' ? 'landlord' : 'tenant' }/${decoded['id']}`;
+			const endpoint = `${host}/api/images/${decoded['rls'] == 'landlord' ? 'landlord' : 'tenant'}/${decoded['id']}`;
 
 			const options = {
 				method: 'GET',

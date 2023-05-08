@@ -1,4 +1,3 @@
-import Listing from './Accommodation';
 import { useListings } from '../useListings';
 import Link from 'next/link';
 import SpecialAccommodation from './SpecialAccommodation';

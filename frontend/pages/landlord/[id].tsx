@@ -2,7 +2,7 @@ import Layout from '@/components/Layout';
 import { useRouter } from 'next/router';
 import getConfig from 'next/config';
 import useSWR, { mutate } from 'swr';
-import {  useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Accm } from 'Accm';
 import Accommodation from '@/components/Accommodation';
@@ -11,89 +11,67 @@ import SpecialAccommodation from '@/components/SpecialAccommodation';
 const { publicRuntimeConfig } = getConfig();
 const { url: host } = publicRuntimeConfig.site;
 
-
 const Landlord = () => {
 	const router = useRouter();
 	const { id } = router.query;
-	//const [landlordId, setLandlordId] = useState<any>(null)
-	const [landlord, setLandlord] = useState({ deleted_flag: false, landlord_email: "", landlord_id: 0, landlord_name: "", landlord_password: "", landlord_phone: "", landlord_rating: "0.0" })
-	const [landlordImg, setLandlordImg] = useState('/images/default.jpeg')
+	const [landlord, setLandlord] = useState({ deleted_flag: false, landlord_email: '', landlord_id: 0, landlord_name: '', landlord_password: '', landlord_phone: '', landlord_rating: '0.0' });
+	const [landlordImg, setLandlordImg] = useState('/images/default.jpeg');
 	useEffect(() => {
 		if (id != null) {
-			
+			axios
+				.get(`${host}/api/landlords/${id}`)
+				.then((res) => {
+					return res.data;
+				})
+				.then((result) => {
+					console.log(result);
+					setLandlord(result);
+				})
+				.catch((err) => {
+					console.error(err);
+				});
 
-
-				axios.get(`${host}/api/landlords/${id}`)
-					.then(res => {
-						return res.data
-					})
-					.then(result => {
-						console.log(result)
-						setLandlord(result)
-					}).catch(err=>{
-						console.error(err)
-					})
-
-				axios.get(`${host}/api/images/landlord/${id}`)
-					.then(res =>{
-						return res.data
-					})
-					.then(result =>{
-						//console.log(result['resources'][0])
-						return result['resources'][0]
-					})
-					.then(result =>{
-						setLandlordImg(result['secure_url'])
-					}).catch(err=>console.error(err))
-
-			
+			axios
+				.get(`${host}/api/images/landlord/${id}`)
+				.then((res) => {
+					return res.data;
+				})
+				.then((result) => {
+					return result['resources'][0];
+				})
+				.then((result) => {
+					setLandlordImg(result['secure_url']);
+				})
+				.catch((err) => console.error(err));
 		}
-	}, [id])
+	}, [id]);
 
-	var accmsList:[] = []
+	var accmsList: [] = [];
 
-	const { data: accms, error: accmsError, isLoading: isLoadingAccms } = useSWR(`${host}/api/accommodations/landlord/${id}`, (url: string) => fetch(url).then(res => res.json()));
-
-
+	const { data: accms, error: accmsError, isLoading: isLoadingAccms } = useSWR(`${host}/api/accommodations/landlord/${id}`, (url: string) => fetch(url).then((res) => res.json()));
 
 	if (accmsError) {
-		return <h1>Error</h1>
+		return <h1>Error</h1>;
 	}
-	if (isLoadingAccms) return (
-		<div>
-			<h1>Loading...</h1>
-
-		</div>
-	)
+	if (isLoadingAccms)
+		return (
+			<div>
+				<h1>Loading...</h1>
+			</div>
+		);
 	if (!accms || accms == 'Accommodations Not Found') {
-		accmsList = []
-		// return (
-		// 	<div className='mt-3'>
-
-		// 		<h1 className='font-normal text-xl text-black'>No properties listed.</h1>
-		// 	</div>
-		// )
-	}else{
-		accmsList = accms
+		accmsList = [];
+	} else {
+		accmsList = accms;
 	}
 
-
-
-
-	const prepareAddress = (road:string,city:string,state:string|null,country:string,zipcode:string) =>{
-
-		var address = road+', '+city+', '+country+', '+zipcode
-		if(state){
-			address = road+', '+city+', '+state+', '+country+', '+zipcode
+	const prepareAddress = (road: string, city: string, state: string | null, country: string, zipcode: string) => {
+		var address = road + ', ' + city + ', ' + country + ', ' + zipcode;
+		if (state) {
+			address = road + ', ' + city + ', ' + state + ', ' + country + ', ' + zipcode;
 		}
-		return address
-
-
-	}
-
-
-
-
+		return address;
+	};
 
 	return (
 		<Layout>
@@ -103,13 +81,15 @@ const Landlord = () => {
 						<div className=''>
 							<div className='avatar my-4 mx-10'>
 								<div className=' w-40 rounded-full ring ring-accent ring-offset-base-100 ring-offset-2 hover:ring-4 hover:shadow-lg'>
-									<a href='/'><img className='aspect-square' src={landlordImg} /></a>
+									<a href='/'>
+										<img className='aspect-square' src={landlordImg} />
+									</a>
 								</div>
 							</div>
 						</div>
 						<div className=' '>
 							<h5 className='mb-2 text-2xl pt-2 font-bold leading-tight text-neutral-800 dark:text-neutral-50'>{landlord.landlord_name}</h5>
-							<p className=' font-semibold pb-6 text-neutral-600 dark:text-neutral-200 '>Rating: { landlord.landlord_rating}/5</p>
+							<p className=' font-semibold pb-6 text-neutral-600 dark:text-neutral-200 '>Rating: {landlord.landlord_rating}/5</p>
 						</div>
 					</div>
 					<div className='flex justify-center pt-4'>
@@ -118,29 +98,18 @@ const Landlord = () => {
 								<h5 className='mb-2 text-xl font-medium leading-tight text-neutral-800 dark:text-neutral-50'>Details:</h5>
 								<ul>
 									<li className=' text-neutral-600 dark:text-neutral-200 '>Phone: {landlord.landlord_phone}</li>
-									
 								</ul>
 							</div>
 						</div>
 					</div>
 				</div>
 				<div className='flex flex-col flex-initial relative basis-5/6 mt-10 pl-6 pr-6 max-h-semi min-w-min  m-6 ring-1 ring-stone-200 rounded-md bg-white shadow-lg overflow-hidden'>
-					<div className='text-3xl font-bold text-left pt-6 px-6 rounded-md absolute bg-white top-0 left-0 right-0 '>
-						
-								Accommodations
-						
-
-					</div>
+					<div className='text-3xl font-bold text-left pt-6 px-6 rounded-md absolute bg-white top-0 left-0 right-0 '>Accommodations</div>
 					<div className='flex flex-wrap justify-center  gap-4 mr-2 mt-20 p-4 mb-6 overflow-auto'>
 						{accmsList.map((accm: Accm) => (
-							<SpecialAccommodation id={accm.accm_id} title={accm.accm_title} address={prepareAddress(accm.accm_street,accm.accm_city,accm.accm_state,accm.accm_country,accm.accm_zipcode)} description={accm.accm_description} host={host}   />
-
+							<SpecialAccommodation id={accm.accm_id} title={accm.accm_title} address={prepareAddress(accm.accm_street, accm.accm_city, accm.accm_state, accm.accm_country, accm.accm_zipcode)} description={accm.accm_description} host={host} />
 						))}
-
 					</div>
-
-
-
 				</div>
 			</main>
 		</Layout>

@@ -1,6 +1,4 @@
-import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { useListings } from 'useListings';
 import { useRouter } from 'next/router';
 import getConfig from 'next/config';
 
@@ -18,16 +16,6 @@ type Unit = {
 	unit_id: number;
 	unit_number: string;
 	size: number;
-};
-type Amenities = {
-	air_conditioner: boolean;
-	balcony: boolean;
-	bed: boolean;
-	electricity: boolean;
-	internet: boolean;
-	microwave: boolean;
-	parking: boolean;
-	water: boolean;
 };
 
 type Props = {
