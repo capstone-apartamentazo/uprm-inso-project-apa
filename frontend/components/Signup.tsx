@@ -1,17 +1,21 @@
+import AlertContext, { AlertContextType } from 'context/alertContext';
+import { handleModal } from 'helpers/handleModal';
 import getConfig from 'next/config';
 
 const { publicRuntimeConfig } = getConfig();
 const { url: host } = publicRuntimeConfig.site;
-import { useRouter } from 'next/router'
-
+import { useRouter } from 'next/router';
+import React, { useContext } from 'react';
 
 const Signup = () => {
-	const router = useRouter()
+	const alertCtx = useContext(AlertContext) as AlertContextType;
+	const { success, error } = React.useContext(AlertContext) as AlertContextType;
+	const router = useRouter();
 
 	const handleSubmit = async (event: any) => {
 		event.preventDefault();
 		if (event.target.password.value == event.target.cpassword.value) {
-			var data = {}
+			var data = {};
 			data = {
 				tenant_name: event.target.first.value + ' ' + event.target.last.value,
 				tenant_email: event.target.email.value,
@@ -19,8 +23,6 @@ const Signup = () => {
 				tenant_phone: event.target.phone.value,
 			};
 
-			
-			
 			var endpoint = `${host}/api/tenants/new`;
 			if (event.target.inlineRadio2.checked) {
 				endpoint = `${host}/api/landlords/new`;
@@ -29,7 +31,7 @@ const Signup = () => {
 					landlord_email: event.target.email.value,
 					landlord_password: event.target.password.value,
 					landlord_phone: event.target.phone.value,
-				}
+				};
 			}
 			const JSONdata = JSON.stringify(data);
 			const options = {
@@ -45,13 +47,15 @@ const Signup = () => {
 					console.log(response);
 					if (!response.ok) {
 						console.log(response);
-						//alert("first error")
+						error('Something went wrong while creating your account!');
 						throw new Error('Signup unsuccessful');
 					} else {
 						return response.json();
 					}
-					
-				}).then((res)=>{
+				})
+				.then((res) => {
+					success('Successfully signed up!');
+					handleModal('signup-modal');
 					router.replace('/#login-modal');
 					router.reload();
 				})
@@ -60,7 +64,7 @@ const Signup = () => {
 					alert(error);
 				});
 		} else {
-			alert('Passwords dont match!');
+			alert("Passwords don't match!");
 		}
 	};
 	return (
@@ -72,7 +76,7 @@ const Signup = () => {
 					</div>
 
 					<div className='flex-col flex-auto'>
-						<a href='#' className='btn btn-sm btn-circle absolute right-2 top-2'>
+						<a onClick={() => handleModal('signup-modal')} className='btn btn-sm btn-circle absolute right-2 top-2'>
 							✕
 						</a>
 

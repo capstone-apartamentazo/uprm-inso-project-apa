@@ -1,15 +1,21 @@
 import getConfig from 'next/config';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 
 import jwt from 'jwt-decode';
 import Cookies from 'universal-cookie';
 import { Token } from 'Token';
+import AlertContext, { AlertContextType } from 'context/alertContext';
+import React from 'react';
+import { handleModal } from 'helpers/handleModal';
 
 const { publicRuntimeConfig } = getConfig();
 const { url: host } = publicRuntimeConfig.site;
 
 const Login = () => {
+	const alertCtx = useContext(AlertContext) as AlertContextType;
+	const { success, error } = React.useContext(AlertContext) as AlertContextType;
+
 	const router = useRouter();
 	const cookies = new Cookies();
 	const [logError, setLogError] = useState(false);
@@ -58,6 +64,8 @@ const Login = () => {
 				cookies.set('jwt_authorization', result['access_token'], {
 					expires: new Date(decoded.exp * 1000),
 				});
+				success('Successfully signed in!');
+				handleModal('login-modal');
 				router.replace('/#');
 				router.reload();
 			})
@@ -75,7 +83,7 @@ const Login = () => {
 					</div>
 
 					<div className='flex-col flex-auto'>
-						<a href='#' className='btn btn-sm btn-circle absolute right-2 top-2'>
+						<a href='#' onClick={() => handleModal('login-modal')} className='btn btn-sm btn-circle absolute right-2 top-2'>
 							✕
 						</a>
 
