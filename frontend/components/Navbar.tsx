@@ -30,20 +30,17 @@ export default function Navbar(path: any) {
 	const logout = async () => {
 		cookies.remove('jwt_authorization');
 		setLogged(false);
-		//localStorage.removeItem('data');
 		setupNav(false, '/images/user.png');
-		//router.replace('/');
-		// router.reload();
 	};
 
 	function setupNav(signedIn: boolean, pic: string) {
 		console.log(path.path);
-		path.path === '/about' || path.path === '/' || path.path === '/#' ? setClasses('navbar text-primary-content fixed md:px-16 md:py-5 z-10') : setClasses('navbar text-primary-content fixed md:px-16 md:py-5 z-10 bg-white');
+		path.path === '/about' || path.path === '/' || path.path === '/#' ? setClasses('navbar text-primary-content fixed md:px-16 md:py-5 z-50') : setClasses('navbar text-primary-content fixed md:px-16 md:py-5 z-50 bg-white');
 		setNav({
 			left:
 				path.path === '/' ? (
 					<div className='flex-1 gap-4'>
-						<div className='dropdown'>
+						<div className='dropdown md:hidden'>
 							<label tabIndex={0} className='btn btn-ghost md:hidden text-white'>
 								<svg xmlns='http://www.w3.org/2000/svg' className='h-5 w-5' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
 									<path strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M4 6h16M4 12h8m-8 6h16' />
@@ -51,13 +48,12 @@ export default function Navbar(path: any) {
 							</label>
 							<ul tabIndex={0} className='menu menu-compact dropdown-content mt-3 shadow-md bg-base-100 rounded-box w-52'>
 								<li>
-									<a>Home</a>
+									<Link href={'../'}>Home</Link>
 								</li>
 								<li>
-									<a className='justify-between'>About Us</a>
-								</li>
-								<li>
-									<a>Messages</a>
+									<Link className='justify-between' href={'/about'}>
+										About
+									</Link>
 								</li>
 							</ul>
 						</div>
@@ -76,15 +72,14 @@ export default function Navbar(path: any) {
 									<path strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M4 6h16M4 12h8m-8 6h16' />
 								</svg>
 							</label>
-							<ul tabIndex={0} className='menu menu-compact dropdown-content mt-3 shadow-md bg-base-100 rounded-box w-52'>
+							<ul tabIndex={0} className='menu menu-compact dropdown-content mt-3 shadow-md bg-base-100 rounded-box w-52 '>
 								<li>
-									<a>Home</a>
+									<Link href={'../'}>Home</Link>
 								</li>
 								<li>
-									<a className='justify-between'>About Us</a>
-								</li>
-								<li>
-									<a>Messages</a>
+									<Link className='justify-between' href={'/about'}>
+										About Us
+									</Link>
 								</li>
 							</ul>
 						</div>
@@ -96,10 +91,10 @@ export default function Navbar(path: any) {
 					</div>
 				),
 			right: signedIn ? (
-				<div className='menu menu-horizontal px-1 gap-4'>
+				<div className='md:menu md:menu-horizontal md:px-1 md:gap-4'>
 					{path.path != '/' ? (
-						<li>
-							<Link href={'/'} className='text-accent normal-case font-semibold'>
+						<li className='invisible md:visible'>
+							<Link href={'/'} className='text-accent normal-case font-semibold md:invisible'>
 								<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' strokeWidth={1.5} stroke='currentColor' className='w-5 h-5 -mr-1'>
 									<path
 										strokeLinecap='round'
@@ -114,7 +109,7 @@ export default function Navbar(path: any) {
 						<></>
 					)}
 					<li className={path.path === '/' ? `text-white` : ``}>
-						<Link href={'/messages'} className='normal-case font-semibold'>
+						<Link href={'/messages'} className='normal-case font-semibold invisible md:visible'>
 							<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' strokeWidth={1.5} stroke='currentColor' className='w-5 h-5 -mr-1'>
 								<path
 									strokeLinecap='round'
@@ -125,13 +120,13 @@ export default function Navbar(path: any) {
 							Messages
 						</Link>
 					</li>
-					<div className='dropdown dropdown-end'>
+					<div className='dropdown dropdown-end absolute md:sticky right-10 top-4 md:right-auto md:top-auto'>
 						<label tabIndex={0} className='btn btn-ghost btn-circle avatar'>
 							<div className='w-10 rounded-full'>
 								<img src={pic} className='object-cover' />
 							</div>
 						</label>
-						<ul tabIndex={0} className='mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-auto items-center'>
+						<ul tabIndex={0} className='mt-3 p-2 shadow menu menu-compact dropdown-content right-10 bg-base-100 rounded-box w-auto items-center'>
 							<li>
 								<Link href='/profile' className='justify-between'>
 									Profile
@@ -149,13 +144,30 @@ export default function Navbar(path: any) {
 					</div>
 				</div>
 			) : (
-				<ul className='menu menu-horizontal px-1 gap-4'>
-					<li>
+				<ul className='menu menu-horizontal px-1 gap-4 items-end'>
+					<div className='dropdown md:hidden right-6 absolute dropdown-end'>
+						<label tabIndex={0} className='btn btn-ghost btn-sm hover:bg-accent bg-white text-accent md:hidden hover:text-white'>
+							Profile
+						</label>
+						<ul tabIndex={0} className='menu menu-compact dropdown-content mt-3 shadow-md bg-base-100 rounded-box w-52'>
+							<li>
+								<a onClick={() => handleModal('login-modal')} className='w-full'>
+									Log in
+								</a>
+							</li>
+							<li>
+								<a onClick={() => handleModal('signup-modal')} className='w-full'>
+									Sign up
+								</a>
+							</li>
+						</ul>
+					</div>
+					<li className='invisible md:visible'>
 						<a onClick={() => handleModal('signup-modal')} className='btn btn-accent btn-outline normal-case bg-white w-28'>
 							Sign up
 						</a>
 					</li>
-					<li>
+					<li className='invisible md:visible'>
 						<a onClick={() => handleModal('login-modal')} className='btn btn-accent btn-outline normal-case bg-white w-28'>
 							Log in
 						</a>
