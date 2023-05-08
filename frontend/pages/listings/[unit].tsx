@@ -3,10 +3,28 @@ import { useListings } from 'useListings';
 import Review from '@/components/Review';
 import ReviewList from '@/components/ReviewList';
 import { useRouter } from 'next/router';
+import { useLoadScript, GoogleMap, LoadScript, MarkerF, Marker } from '@react-google-maps/api';
+import { useEffect, useState, useMemo, useCallback } from 'react';
+import { Loader } from "@googlemaps/js-api-loader"
+
 
 const Unit = () => {
 	const router = useRouter();
 	const { unit } = router.query;
+
+	const mapOptions = {
+		disableDefaultUI: true,
+		zoomControl: true,
+		clickableIcons: true,
+		scrollwheel: true,
+		rotateControl: true,
+	}
+
+
+
+
+
+
 
 	// TODO: actual loading screen
 	if (!unit) return <div>LOADING UNIT</div>;
@@ -21,6 +39,11 @@ const Unit = () => {
 	const { data: accmAmenities, error: accmAmenitiesError } = useListings(unitData ? 'accommodations/amenities/' + unitData.accm_id : null);
 	const { data: accmReviews, error: accmReviewsError } = useListings(unitData ? 'accommodations/reviews/' + unitData.accm_id : null);
 
+
+
+
+
+
 	// TODO start loading landlord data
 	// if (!accmData) return <div>Loading Accm Data</div>;
 	const { data: landlord, error: landlordError } = useListings(accmData ? 'landlords/' + accmData.landlord_id : null);
@@ -29,6 +52,11 @@ const Unit = () => {
 	// TODO: Add loading cards, default error cards
 	if (unitError || accmError || unitAmenitiesError || accmAmenitiesError || landlordError || landlordPicError || unitPicsError) return <div>Failed to load</div>;
 	if ((!unitData && !accmData) || unitData === undefined || accmData === undefined || unitAmenities === undefined || accmAmenities === undefined || landlord === undefined || landlordPic === undefined || unitPics === undefined) return <div>Loading...</div>;
+
+
+
+
+
 
 	let tempAmenities = {
 		'Air Conditioner': unitAmenities['air_conditioner'],
@@ -132,6 +160,21 @@ const Unit = () => {
 		console.log('No unit pics');
 	}
 
+
+
+	const containerStyle = {
+		width: '100%',
+		height: '100%'
+	};
+
+	const center = {
+		lat: accmData.latitude,
+		lng: accmData.longitude
+	};
+
+
+
+
 	return (
 		<Layout>
 			<section className='pt-32 pl-20 pr-20 bg-gray-50'>
@@ -193,7 +236,24 @@ const Unit = () => {
 							</div>
 						</div>
 					</div>
-					<div className='row-start-5 col-start-3 bg-gray-200 col-span-2 text-center mt-10'>Map</div>
+					<div className='row-start-5 col-start-3 bg-gray-50 col-span-2 text-center mt-10 ring-2 ring-accent rounded-md p-1'>
+						<LoadScript
+							googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}
+						>
+							<GoogleMap
+								options={mapOptions}
+								mapContainerStyle={containerStyle}
+								center={center}
+								zoom={17}
+							>
+								<Marker
+									position={center}
+
+								/>
+								<></>
+							</GoogleMap>
+						</LoadScript>
+					</div>
 					<div className='row-start-6 col-span-4 mt-10'>
 						<h3 className='text-2xl'>Amenities</h3>
 						<ul className='space-y-1 text-gray-500 list-inside mt-4 max-h-32 w-full flex flex-wrap flex-col'>{amenities}</ul>{' '}
