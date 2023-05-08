@@ -430,58 +430,62 @@ const Filter: React.FC<Props> = () => {
 
 	const bedroomBtn = () => {
 		return (
-			<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden rounded-full group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-2 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800'>
-				<span className='relative px-2.5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-full group-hover:bg-opacity-0 grid grid-cols-3 gap-2' data-te-toggle='tooltip' title='bedrooms'>
-					<TiMinus
-						onClick={() => {
-							if (bedrooms === 0) {
-								setBedrooms(0);
-							} else {
-								setBedrooms(bedrooms - 1);
-							}
-						}}
-					/>{' '}
-					<FaBed />{' '}
-					<TiPlus
-						onClick={() => {
-							if (bedrooms < 20) {
-								setBedrooms(bedrooms + 1);
-							}
-						}}
-					/>
-				</span>
-			</button>
+			<div className='tooltip tooltip-accent' data-tip='Bedrooms'>
+				<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden rounded-full group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-2 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800'>
+					<span className='relative px-2.5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-full group-hover:bg-opacity-0 grid grid-cols-3 gap-2' title='bedrooms'>
+						<TiMinus
+							onClick={() => {
+								if (bedrooms === 0) {
+									setBedrooms(0);
+								} else {
+									setBedrooms(bedrooms - 1);
+								}
+							}}
+						/>{' '}
+						<FaBed />{' '}
+						<TiPlus
+							onClick={() => {
+								if (bedrooms < 20) {
+									setBedrooms(bedrooms + 1);
+								}
+							}}
+						/>
+					</span>
+				</button>
+			</div>
 		);
 	};
 
 	const tenantBtn = () => {
 		return (
-			<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden rounded-full group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-2 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800'>
-				<span className='relative px-2.5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-full group-hover:bg-opacity-0 grid grid-cols-3 gap-2' data-te-toggle='tooltip' title='number of tenants'>
-					<TiMinus
-						onClick={() => {
-							if (tenants === 0) {
-								setTenants(0);
-							} else {
-								setTenants(tenants - 1);
-							}
-						}}
-					/>{' '}
-					<IoPersonSharp />{' '}
-					<TiPlus
-						onClick={() => {
-							if (tenants < 20) {
-								setTenants(tenants + 1);
-							}
-						}}
-					/>
-				</span>
-			</button>
+			<div className='tooltip tooltip-accent' data-tip='Number of Tenants'>
+				<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden rounded-full group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-2 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800'>
+					<span className='relative px-2.5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-full group-hover:bg-opacity-0 grid grid-cols-3 gap-2' title='number of tenants'>
+						<TiMinus
+							onClick={() => {
+								if (tenants === 0) {
+									setTenants(0);
+								} else {
+									setTenants(tenants - 1);
+								}
+							}}
+						/>{' '}
+						<IoPersonSharp />{' '}
+						<TiPlus
+							onClick={() => {
+								if (tenants < 20) {
+									setTenants(tenants + 1);
+								}
+							}}
+						/>
+					</span>
+				</button>
+			</div>
 		);
 	};
 
 	return (
-		<form onSubmit={handleFilter} className='grid grid-flow-row grid-flow-col grid-rows-3 gap-2'>
+		<form onSubmit={handleFilter} className='grid grid-flow-col grid-rows-3 gap-2'>
 			<div className='grid grid-flow-col justify-center'>
 				{waterBtn()}
 				{airBtn()}
@@ -502,8 +506,8 @@ const Filter: React.FC<Props> = () => {
 				{bedroomBtn()}
 				{tenantBtn()}
 			</div>
-			<div className='grid grid-flow-col justify-center'>
-				bathrooms: {bathrooms} &nbsp;&nbsp; bedrooms: {bedrooms} &nbsp;&nbsp; tenants: {tenants}
+			<div className='grid grid-flow-col justify-center font-semibold '>
+				Bathrooms: <span className='text-accent'>&nbsp;{bathrooms} </span> &nbsp;&nbsp; Bedrooms: <span className='text-accent'>&nbsp;{bedrooms} </span> &nbsp;&nbsp; Tenants: <span className='text-accent'>&nbsp;{tenants} </span>
 			</div>
 		</form>
 	);

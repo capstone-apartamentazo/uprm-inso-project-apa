@@ -72,7 +72,7 @@ const Listings = () => {
 						);
 					});
 					setListings(allListings);
-					setAmount(allListings.length > 1 ? allListings.length + ' results' : allListings.length + ' result');
+					setAmount(allListings.length > 1 ? allListings.length + ' accommodations' : allListings.length + ' accommodation');
 					setLocation(search);
 					setAccmData(data);
 				})
