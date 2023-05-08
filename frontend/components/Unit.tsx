@@ -10,6 +10,7 @@ import { useRouter } from 'next/router'
 
 import { Token } from 'Token';
 import { Storage } from 'Storage';
+import { LeaseType } from 'Lease';
 const { publicRuntimeConfig } = getConfig();
 const { url: host } = publicRuntimeConfig.site;
 type Props = {
@@ -37,7 +38,7 @@ const Unit: React.FC<Props> = ({ num, status, a_id, id }) => {
     //const [tenantId, setTenant] = useState(null)
     const [available, setAvailable] = useState(true)
     const [tenant, setTenant] = useState<Tenant>()
-    const [leaseId,setLeaseId] = useState()
+    const [lease, setLease] = useState<LeaseType>()
 
 
     useEffect(() => {
@@ -63,9 +64,10 @@ const Unit: React.FC<Props> = ({ num, status, a_id, id }) => {
                 if (result['is_current_tenant']) {
                     //console.log(result['tenant_id'])
                     setAvailable(false)
-                    setLeaseId(result['lease_id'])
+                    setLease(result)
                 }
-                axios.get(`${host}/api/tenants/${result['tenant_id']}`)
+                if(result['tenant_id']>0){
+                    axios.get(`${host}/api/tenants/${result['tenant_id']}`)
                     .then(res => {
                         return res.data
                     })
@@ -75,10 +77,15 @@ const Unit: React.FC<Props> = ({ num, status, a_id, id }) => {
                         //return result
                     })
                     .catch(err => console.error(err))
+                }
+                if(result==="Leases from Units Not Found"){
+                    console.log(`Unit [${id}] has no leases`)
+                }
+                
             }).catch(err => console.error(err))
     }, [])
 
-    
+
 
 
     const deleteUnit = async (event: any) => {
@@ -97,14 +104,30 @@ const Unit: React.FC<Props> = ({ num, status, a_id, id }) => {
             })
 
     }
-    
-    const removeTenant = async (event: any)=>{
+
+    const removeTenant = async (event: any) => {
         event.preventDefault()
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = (now.getMonth() + 1).toString().padStart(2, '0');
+        const day = now.getDate().toString().padStart(2, '0');
+        const formattedDate = `${year}-${month}-${day}`;
 
         const config = {
             headers: { Authorization: `Bearer ${storage.token}` }
         };
-        axios.delete(`${host}/api/leases/${leaseId}`, config)
+        console.log(lease)
+        console.log(formattedDate)
+        const data = {
+            "lease_id": lease?.lease_id,
+            "unit_id": lease?.unit_id,
+            "tenant_id": lease?.tenant_id,
+            "price": lease?.price,
+            "is_current_tenant": false,
+            "init_date": new Date(lease?.init_date!).toISOString().split('T')[0],
+            "end_date": formattedDate
+        }
+        axios.put(`${host}/api/leases`, data, config)
             .then(res => {
                 alert(res.data)
                 //mutate(`/api/accommodations/units/${a_id}`)
@@ -143,15 +166,15 @@ const Unit: React.FC<Props> = ({ num, status, a_id, id }) => {
             <div className='p-4 flex menu-vertical align-middle'>
                 <h1 className='text-left mb-2 text-xl font-semibold  dark:text-neutral-50'>Unit {`${num}`}</h1>
                 <h1>Status: {available ? ' Available' : ' Occupied'}</h1>
-                <h1 className={!available ? '' : ''}>Tenant: {tenant?tenant.tenant_name:'N/A' }</h1>
-                <h1>Tenant email: {tenant?tenant.tenant_email:'N/A'}</h1>
+                <h1 className={!available ? '' : ''}>Tenant: {tenant ? tenant.tenant_name : 'N/A'}</h1>
+                <h1>Tenant email: {tenant ? tenant.tenant_email : 'N/A'}</h1>
 
                 <div className='flex items-center gap-2  mt-2'>
                     <Link href={{
                         pathname: '/units/addTenant',
                         query: { unitId: id } // the data
-                    }} className={available?'btn  text-white bg-accent hover:bg-accent-focus grow':'hidden'}>Add Tenant</Link>
-                    <button onClick={removeTenant} className={available?'hidden':'btn  text-white bg-error hover:bg-red-800  grow'}>
+                    }} className={available ? 'btn  text-white bg-accent hover:bg-accent-focus grow' : 'hidden'}>Add Tenant</Link>
+                    <button onClick={removeTenant} className={available ? 'hidden' : 'btn  text-white bg-error hover:bg-red-800  grow'}>
                         Remove Tenant
                     </button>
                     <Link href={{

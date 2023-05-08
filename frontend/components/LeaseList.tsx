@@ -83,7 +83,7 @@ const LeaseList: React.FC<Props> = ({  }) => {
 
 
     return (
-        <div className='flex  flex-wrap gap-4 mr-2  p-4 mb-6 overflow-auto'>
+        <div className='flex  flex-wrap gap-4 mr-2 mt-20 p-4 mb-6 overflow-auto'>
             {leases.map((lease: LeaseType ) => (
                 
 				<Lease key={lease.lease_id} unit_id={lease.unit_id}  start_date={lease.init_date} end_date={lease.end_date} price={lease.price}/>
