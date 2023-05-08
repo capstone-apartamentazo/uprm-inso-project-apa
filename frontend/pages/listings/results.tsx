@@ -40,8 +40,8 @@ const Listings = () => {
 	});
 
 	useEffect(() => {
-		setAccmData([])
-		map?.setZoom(14)
+		setAccmData([]);
+		map?.setZoom(14);
 		if (search && !amenitiesFilter && !scoreFilter) {
 			const endpoint = `${host}/api/search?input=${search}&offset=0`;
 
@@ -56,6 +56,7 @@ const Listings = () => {
 				})
 				.then((data) => {
 					allListings = [];
+
 					data.map((accm: any, i: any) => {
 						allListings.push(
 							<div key={i} className='col-start-1 row-span-2 p-2'>
@@ -165,6 +166,7 @@ const Listings = () => {
 									accmUnits={accm.accm_units}
 									map={map ? map : null}
 									coords={{ lat: accm.latitude, lng: accm.longitude }}
+									score={accm.avg_score}
 								/>
 							</div>
 						);
