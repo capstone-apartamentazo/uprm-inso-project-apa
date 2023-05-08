@@ -25,7 +25,6 @@ const ExtraFilters: React.FC<Props> = () => {
 
 	const handleFilter = (event: any) => {
 		event.preventDefault();
-		console.log(scoreToggle);
 
 		let jsonAmenities: any = '';
 
@@ -314,7 +313,7 @@ const ExtraFilters: React.FC<Props> = () => {
 
 	const scoreCheckbox = () => {
 		return (
-			<div className='grid grid-flow-col items-center'>
+			<div className='grid grid-flow-col items-center tooltip tooltip-accent' data-tip='Activate the score function. This will use the ranking dropdown to order elements by preference from top to bottom.'>
 				<span className='grid grid-flow-col items-center my-3 mr-2 text-lg h-8 font-medium text-gray-900 dark:text-gray-300'>Score</span>
 				<input
 					id='score'
@@ -322,17 +321,19 @@ const ExtraFilters: React.FC<Props> = () => {
 					value='false'
 					type='checkbox'
 					className='cursor-pointer border-1 border-accent text-accent'
-					data-te-toggle='tooltip'
 					title='activate score function and use the ranking dropdown to order elements by preference from top to bottom'
-					onClick={(event: any) => setScoreToggle(event.target.checked)}
+					onChange={(event: any) => {
+						setScoreToggle(event.target.checked);
+						document.getElementById('scoreButton')?.click();
+					}}
 				/>
-				<button type='submit' className='sr-only' />
+				<button id='scoreButton' type='submit' className='sr-only' />
 			</div>
 		);
 	};
 
 	return (
-		<form onSubmit={handleFilter} className='relative z-10 grid grid-flow-row grid-flow-col justify-evenly'>
+		<form onSubmit={handleFilter} className='relative z-10 grid grid-flow-col justify-evenly'>
 			<div>{priceFilter()}</div>
 			<div>{sizeFilter()}</div>
 			<div>{scoreCheckbox()}</div>
