@@ -288,6 +288,10 @@ def addLease():
 def updateCurrentTenants():
     return LeaseHandler().updateCurrentTenants()
 
+@app.route('/api/leases', methods=['PUT'])
+def updateLease():
+    return LeaseHandler().updateLease(request.json)
+
 @app.route('/api/leases/extend/<int:lease_id>', methods=['POST'])
 def extendLease(lease_id):
     return LeaseHandler().extendLease(request.json, lease_id)

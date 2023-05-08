@@ -82,6 +82,26 @@ class LeaseHandler:
       db.rollback()
       logger.exception(e)
       return jsonify('Error Occured'), 400
+    
+  def updateLease(self, json):
+    try:
+      lease_id = json['lease_id']
+      unit_id = json['unit_id']
+      tenant_id = json['tenant_id']
+      price = json['price']
+      is_current_tenant = json['is_current_tenant']
+      init_date = json['init_date']
+      end_date = json['end_date']
+      daoLeases = self.leases.updateLease(lease_id, unit_id, tenant_id, price, is_current_tenant, init_date, end_date)
+      if daoLeases:
+        db.commit()
+        return jsonify(daoLeases)
+      else:
+        return jsonify('Error updating Lease'), 400
+    except (Exception, pgerror) as e:
+      db.rollback()
+      logger.exception(e)
+      return jsonify('Error Occured'), 400
 
   def updateCurrentTenants(self):
     try:

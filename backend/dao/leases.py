@@ -61,6 +61,17 @@ class Leases:
     cursor.close()
     return res
 
+  def updateLease(self, identifier, unit_id, tenant_id, price, isCurrentTenant, init_date, end_date):
+    query = 'UPDATE leases \
+            SET unit_id = %s, tenant_id = %s, price = %s, is_current_tenant = %s, init_date = %s, end_date = %s \
+            WHERE lease_id = %s \
+            RETURNING *'
+    cursor = db.cursor(cursor_factory=RealDictCursor)
+    cursor.execute(query, (unit_id, tenant_id, price, isCurrentTenant, init_date, end_date, identifier))
+    res = cursor.fetchone()
+    cursor.close()
+    return res
+
   def updateCurrentTenants(self):
     query = 'UPDATE leases SET is_current_tenant = ( \
               CASE \
