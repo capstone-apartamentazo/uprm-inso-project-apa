@@ -124,12 +124,15 @@ const Index = () => {
                             pathname: '/',
                             query: { accmid: accmId } // the data
                         }} className=' bg-primary  font-medium text-white p-2 rounded-md shadow-md hover:bg-secondary ' >Send notice to Tenants</Link> */}
-
+                        <div className="flex flex-col h-full items-center">
                         <Link href={{
                             pathname: '/units/new',
                             query: { accmid: accmId } // the data
-                        }} className=' bg-accent  font-medium text-white p-2 rounded-md shadow-md hover:bg-accent-focus text-center' >Add New Unit</Link>
+                        }} className='btn bg-accent  font-semibold text-white p-2 border-accent  rounded-md shadow-md hover:bg-accent-focus text-center' >Add New Unit</Link>
                         
+
+                        </div>
+                       
 
                     </div>
                     <h1 className="font-semibold text-3xl mx-6 py-4">Units</h1>

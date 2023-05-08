@@ -86,7 +86,7 @@ const LeaseList: React.FC<Props> = ({  }) => {
         <div className='flex  flex-wrap gap-4 mr-2 mt-20 p-4 mb-6 overflow-auto'>
             {leases.map((lease: LeaseType ) => (
                 
-				<Lease key={lease.lease_id} unit_id={lease.unit_id}  start_date={lease.init_date} end_date={lease.end_date} price={lease.price}/>
+				<Lease key={lease.lease_id} unit_id={lease.unit_id}  start_date={lease.init_date} end_date={lease.end_date} price={lease.price} active={lease.is_current_tenant}/>
 
             ))}
             {/* <Link href='/' className=' flex flex-col bg-white justify-center  w-40 rounded-md  shadow-md ring-1 ring-stone-200 transition ease-in-out delay-50 hover:-translate-y-1 hover:scale-10 duration-200 cursor-pointer'>

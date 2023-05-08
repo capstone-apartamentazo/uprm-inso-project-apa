@@ -112,7 +112,7 @@ const Notice: React.FC<Props> = ({ accmId }) => {
 
         <div>
             <div className=''>
-                <label htmlFor="noticeModal" className="btn bg-primary text-white hover:bg-secondary">Send notice to Tenants</label>
+                <label htmlFor="noticeModal" className="btn bg-primary  text-white hover:bg-secondary">Send notice to Tenants</label>
 
 
             </div>

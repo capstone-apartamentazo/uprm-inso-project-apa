@@ -94,7 +94,7 @@ const AddTenant = () => {
     const createLease = async (data:any) => {
         await axios({ method: 'post', url: `${host}/api/leases/add`, headers: { Authorization: `Bearer ${storage.token}` },data })
         .then(res=>{
-            //alert(res.data)
+            alert(res.data)
             router.back()
             return res.data
         })

@@ -247,7 +247,7 @@ const Profile = () => {
 
 						<div className='flex flex-wrap text-3xl font-bold text-left pt-6 pb-2 px-6 rounded-md absolute  bg-white top-0 left-0 right-0 items-center'>
 							<h1 className=' text-3xl font-bold text-left  grow'>
-								Active Leases
+								Leases
 
 							</h1>
 

@@ -58,31 +58,70 @@ const Unit: React.FC<Props> = ({ num, status, a_id, id }) => {
             })
             .then(result => {
                 //console.log(result[0])
-                return result[0]
-            })
-            .then(result => {
-                if (result['is_current_tenant']) {
-                    //console.log(result['tenant_id'])
-                    setAvailable(false)
-                    setLease(result)
-                }
-                if(result['tenant_id']>0){
-                    axios.get(`${host}/api/tenants/${result['tenant_id']}`)
-                    .then(res => {
-                        return res.data
-                    })
-                    .then(result => {
-                        setTenant(result)
-                        //setTenantName(result['tenant_name'])
-                        //return result
-                    })
-                    .catch(err => console.error(err))
-                }
-                if(result==="Leases from Units Not Found"){
+                if (result === "Leases from Units Not Found") {
                     console.log(`Unit [${id}] has no leases`)
+                    setAvailable(true)
+                } else {
+
+                    result.map((lease: LeaseType) => {
+
+                        if (lease.is_current_tenant&&available) {
+
+                            setAvailable(false)
+                            setLease(lease)
+
+                            if (lease['tenant_id'] > 0) {
+                                axios.get(`${host}/api/tenants/${lease['tenant_id']}`)
+                                    .then(res => {
+                                        return res.data
+                                    })
+                                    .then(result => {
+
+                                        setTenant(result)
+                                        //setTenantName(result['tenant_name'])
+                                        //return result
+                                    })
+                                    .catch(err => console.error(err))
+                            }
+                            
+                        }
+                    })
+
                 }
-                
-            }).catch(err => console.error(err))
+
+
+            })
+            // .then(lease => {
+            //     console.log('now')
+            //     console.log(lease)
+            //     if(lease){
+
+
+            //             //console.log(result['tenant_id'])
+            //             setAvailable(false)
+            //             setLease(lease)
+
+            //         if(lease['tenant_id']>0){
+            //             axios.get(`${host}/api/tenants/${lease['tenant_id']}`)
+            //             .then(res => {
+            //                 return res.data
+            //             })
+            //             .then(result => {
+
+            //                 setTenant(result)
+            //                 //setTenantName(result['tenant_name'])
+            //                 //return result
+            //             })
+            //             .catch(err => console.error(err))
+            //         }
+
+            //     }
+
+
+
+
+            // })
+            .catch(err => console.error(err))
     }, [])
 
 

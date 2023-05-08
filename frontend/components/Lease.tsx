@@ -19,12 +19,13 @@ type Props = {
     start_date: string,
     end_date: string,
     price: number,
-    unit_id: number
+    unit_id: number,
+    active:boolean
 
 };
 
 
-const Lease: React.FC<Props> = ({ start_date, end_date, price ,unit_id }) => {
+const Lease: React.FC<Props> = ({ start_date, end_date, price ,unit_id , active}) => {
     const router = useRouter()
     const [accmId,setAccmId]= useState()
     const [unit,setUnit] = useState<Unit>()
@@ -122,7 +123,7 @@ const Lease: React.FC<Props> = ({ start_date, end_date, price ,unit_id }) => {
 
         <div className='block max-w-full rounded-lg bg-white shadow-lg ring-1 ring-stone-200 dark:bg-neutral-700'>
             <div className='p-4 flex menu-vertical align-middle'>
-                <h1 className='text-left mb-2 text-xl font-semibold  dark:text-neutral-50'>Unit {}</h1>
+                <h1 className={active?'text-success text-left mb-2 text-xl font-semibold  dark:text-neutral-50':'text-error text-left mb-2 text-xl font-semibold  dark:text-neutral-50'}>{active?'Active':'Inactive'} Unit</h1>
                 <h1 className='font-medium'>Start Date: {startdate}</h1>
                 <h1 className='font-medium'>End Date: {enddate }</h1>
                 <h1 className='font-semibold'>Price: ${price}</h1>
