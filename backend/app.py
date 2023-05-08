@@ -369,5 +369,3 @@ def deleteImageForAccommodation(accm_id, img_id):
 @app.route('/api/images/unit/<int:unit_id>/<int:img_id>', methods=['DELETE'])
 def deleteImageForUnit(unit_id, img_id):
   return UnitHandler().deleteImage(unit_id, img_id)
-
-app.run()
