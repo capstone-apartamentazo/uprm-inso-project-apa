@@ -22,7 +22,7 @@ export default function Navbar(path: any) {
 	const logout = async () => {
 		cookies.remove('jwt_authorization');
 		//localStorage.removeItem('data');
-		setupNav(false, '/images/user.png');
+		setupNav(true, '/images/user.png');
 		router.replace('/');
 		// router.reload();
 	};
@@ -165,7 +165,7 @@ export default function Navbar(path: any) {
 			const decoded = jwt<Token>(token);
 			setStorage({ token: token, id: decoded['id'], isLandlord: decoded['rls'] == 'landlord' ? true : false });
 
-			const endpoint = `${host}/api/images/${storage.isLandlord ? 'landlord' : 'tenant'}/${decoded['id']}`;
+			const endpoint = `${host}/api/images/${decoded['rls'] == 'landlord' ? 'landlord' : 'tenant' }/${decoded['id']}`;
 
 			const options = {
 				method: 'GET',

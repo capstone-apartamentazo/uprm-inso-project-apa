@@ -86,7 +86,7 @@ const ListingResult: React.FC<Props> = ({ title, address, description, unitAmoun
 
 	return (
 		<div key={'accmID_' + id}>
-			<div id={id} onClick={() => handleClick(id, setActive, setUnits)} className={`card lg:h-60 lg:card-side shadow-xl transition ease-in-out hover:-translate-y-1 hover:scale-10 duration-150 cursor-pointer ${active ? 'border-[1px] border-accent' : ''}`}>
+			<div id={id} onClick={() => handleClick(id, setActive, setUnits)} className={`card lg:h-60 lg:card-side shadow-xl ring-1 ring-stone-200 transition ease-in-out hover:-translate-y-1 hover:scale-10 duration-150 cursor-pointer ${active ? 'border-[1px] border-accent' : ''}`}>
 				<figure className='p-4 rounded-2xl lg:w-4/12'>
 					<img src={picLink} className='rounded-xl lg:object-cover lg:h-full' alt='' />
 				</figure>

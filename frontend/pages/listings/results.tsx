@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import SearchBar from '../../components/SearchBar';
 import Filter from '../../components/Filter';
 import getConfig from 'next/config';
-import { GoogleMap, LoadScript, Marker, MarkerClusterer } from '@react-google-maps/api';
+import { GoogleMap, LoadScript, Marker, MarkerClusterer, useJsApiLoader } from '@react-google-maps/api';
 import { Accm } from 'Accm';
 
 const { publicRuntimeConfig } = getConfig();
@@ -22,7 +22,11 @@ const Listings = () => {
 	const { search, filter, amenities } = router.query;
 
 	const [map, setMap] = useState<google.maps.Map>()
-
+	const { isLoaded } = useJsApiLoader({
+		id: 'google-map-script',
+		googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,
+		libraries: ['geometry', 'drawing'],
+	  });
 
 
 	useEffect(() => {
@@ -126,6 +130,7 @@ const Listings = () => {
 		lng: -67.14088360700836,
 
 	}
+	
 
 	//const center = ;
 
@@ -141,7 +146,7 @@ const Listings = () => {
 					<div className='col-start-1 row-start-2 col-end-2'>
 						<SearchBar className='w-full' width='' />
 					</div>
-					<div className='col-start-1 row-start-4 h-128 overflow-auto'>
+					<div className='col-start-1 row-start-4 h-128 overflow-auto no-scrollbar'>
 						{listings}
 					</div>
 
@@ -152,8 +157,8 @@ const Listings = () => {
 
 					</div>
 					<div className='col-start-2 row-start-2 row-span-3 m-6 '>
-						<LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}>
-							<GoogleMap onLoad={(map) => { setMap(map) }} id='map' options={mapOptions} mapContainerStyle={containerStyle} center={center} zoom={14}>
+						{/* <LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}> */}
+						{isLoaded && <GoogleMap onLoad={(map) => { setMap(map) }} id='map' options={mapOptions} mapContainerStyle={containerStyle} center={center} zoom={14}>
 
 								<Marker position={colegio} icon={'/images/colegio-pin.png'} />
 								<MarkerClusterer>
@@ -167,9 +172,9 @@ const Listings = () => {
 									}
 
 								</MarkerClusterer>
-							</GoogleMap>
+							</GoogleMap>}
 
-						</LoadScript>
+						{/* </LoadScript> */}
 					</div>
 				</div>
 			</section>
