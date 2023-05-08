@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import SearchBar from '../../components/SearchBar';
 import Filter from '../../components/Filter';
+import ExtraFilters from '../../components/ExtraFilters';
 import getConfig from 'next/config';
 import { GoogleMap, LoadScript, Marker, MarkerClusterer, useJsApiLoader } from '@react-google-maps/api';
 import { Accm } from 'Accm';
@@ -162,9 +163,11 @@ const Listings = () => {
 						<SearchBar className='w-full' width='' />
 					</div>
 					<div className='col-start-1 row-start-4 h-screen overflow-auto no-scrollbar'>{listings}</div>
-
 					<div className='col-start-1 row-start-3 flex justify-center'>
-						<Filter className='w-full'></Filter>
+						<Filter className='w-full' />
+					</div>
+					<div className='col-start-2 row-start-2 row-span-6'>
+						<ExtraFilters className='w-full' />
 					</div>
 					<div className='col-start-2 row-start-2 row-span-3 m-6 '>
 						{isLoaded && (
