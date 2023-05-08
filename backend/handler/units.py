@@ -83,9 +83,11 @@ class UnitHandler:
       if not valid:
         return jsonify(reason)
       valid, reason = self.checkInput(unit_number, json['tenant_capacity'], json['price'], json['size'], json['contract_duration'], self.units.getById(json['unit_id'])['accm_id'])
+      if not unit_number:
+        unit_number = self.units.getById(json['unit_id'])['unit_number']
       if not valid:
         return jsonify(reason)
-      daoUnit = self.units.updateUnit(json['unit_id'], json['unit_number'], json['available'], json['tenant_capacity'], json['price'], json['size'], json['date_available'], json['contract_duration'])
+      daoUnit = self.units.updateUnit(json['unit_id'], unit_number, json['available'], json['tenant_capacity'], json['price'], json['size'], json['date_available'], json['contract_duration'])
       if daoUnit:
         db.commit()
         return jsonify(daoUnit)
