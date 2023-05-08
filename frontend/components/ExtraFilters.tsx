@@ -12,62 +12,104 @@ interface Props {
 }
 
 const ExtraFilters: React.FC<Props> = () => {
-	const [distanceRank, setDistanceRank] = useState(0);
-	const [priceRank, setPriceRank] = useState(1);
-	const [sizeRank, setSizeRank] = useState(2);
-	const [amenitiesRank, setAmenitiesRank] = useState(3);
-	const [ratingRank, setRatingRank] = useState(4);
 	const [openDropdown, setOpenDropdown] = useState(false);
 	const [scoreToggle, setScoreToggle] = useState(false);
+	const [minPrice, setMinPrice] = useState(0);
+	const [maxPrice, setMaxPrice] = useState(10000);
+	const [minSize, setMinSize] = useState(0);
+	const [maxSize, setMaxSize] = useState(10000);
 	const [rankingList, setRankingList] = useState(['distance', 'price', 'size', 'amenities', 'rating']);
 
 	const router = useRouter();
-	const { search, filter, amenities } = router.query;
+	const { search, amenities } = router.query;
 
-	const handleScore = (event: any) => {
+	const handleFilter = (event: any) => {
 		event.preventDefault();
+		console.log(scoreToggle);
 
-		const ranking: any = {
-			distance: distanceRank,
-			price: priceRank,
-			size: sizeRank,
-			amenities: amenitiesRank,
-			rating: ratingRank,
+		let jsonAmenities: any = '';
+
+		try {
+			let jsonParseAmn = JSON.parse(amenities as string);
+
+			const amenitiesData: any = {
+				water: jsonParseAmn['water'],
+				air_conditioner: jsonParseAmn['air_conditioner'],
+				private_washer: jsonParseAmn['private_washer'],
+				private_dryer: jsonParseAmn['private_dryer'],
+				electricity: jsonParseAmn['electricity'],
+				internet: jsonParseAmn['internet'],
+				heater: jsonParseAmn['heater'],
+				parking: jsonParseAmn['parking'],
+				balcony: jsonParseAmn['balcony'],
+				pets_allowed: jsonParseAmn['pets_allowed'],
+				shared_kitchen: jsonParseAmn['shared_kitchen'],
+				shared_dryer: jsonParseAmn['shared_dryer'],
+				shared_washer: jsonParseAmn['shared_washer'],
+				shared_bathroom: jsonParseAmn['shared_bathroom'],
+				bathrooms: jsonParseAmn['bathrooms'],
+				bedrooms: jsonParseAmn['bedrooms'],
+				tenant_capacity: jsonParseAmn['tenant_capacity'],
+				distance: rankingList.indexOf('distance') + 1,
+				price: rankingList.indexOf('price') + 1,
+				size: rankingList.indexOf('size') + 1,
+				amenities: rankingList.indexOf('amenities') + 1,
+				rating: rankingList.indexOf('rating') + 1,
+				min_price: minPrice,
+				max_price: maxPrice,
+				min_size: minSize,
+				max_size: maxSize,
+			};
+
+			jsonAmenities = JSON.stringify(amenitiesData);
+		} catch (error) {
+			const amenitiesData: any = {
+				water: false,
+				air_conditioner: false,
+				private_washer: false,
+				private_dryer: false,
+				electricity: false,
+				internet: false,
+				heater: false,
+				parking: false,
+				balcony: false,
+				pets_allowed: false,
+				shared_kitchen: false,
+				shared_dryer: false,
+				shared_washer: false,
+				shared_bathroom: false,
+				bathrooms: 0,
+				bedrooms: 0,
+				tenant_capacity: 1,
+				min_price: minPrice,
+				max_price: maxPrice,
+				min_size: minSize,
+				max_size: maxSize,
+				distance: rankingList.indexOf('distance') + 1,
+				price: rankingList.indexOf('price') + 1,
+				size: rankingList.indexOf('size') + 1,
+				amenities: rankingList.indexOf('amenities') + 1,
+				rating: rankingList.indexOf('rating') + 1,
+			};
+
+			jsonAmenities = JSON.stringify(amenitiesData);
+		}
+
+		const filterOptions: any = {
+			amenitiesFilter: true,
+			scoreFilter: scoreToggle,
 		};
 
-		let jsonAmenities = JSON.stringify(amenities);
-		let jsonRanking = JSON.stringify(ranking);
+		let jsonFilter = JSON.stringify(filterOptions);
 
 		router.push({
 			pathname: '/listings/results',
 			query: {
 				search: search,
-				filter: filter,
-				score: true,
+				filterOptions: jsonFilter,
 				amenities: jsonAmenities,
-				ranking: jsonRanking,
 			},
 		});
-	};
-
-	const scoreBtn = () => {
-		if (scoreToggle) {
-			return (
-				<button className='relative inline-flex items-center justify-center p-0.5 ml-2 mr-2 mt-0.5 mb-1 overflow-hidden rounded-full group bg-gradient-to-br from-orange-500 to-cyan-500 hover:bg-gradient-to-bl focus:ring-2 focus:outline-none focus:ring-orange-200 dark:focus:ring-orange-800 z-10'>
-					<span className='relative px-5 py-2.5 rounded-full text-white rounded-full group-hover:bg-opacity-0' data-te-toggle='tooltip' title='activate score function' onClick={() => setScoreToggle(false)}>
-						Score
-					</span>
-				</button>
-			);
-		} else {
-			return (
-				<button className='relative inline-flex items-center justify-center p-0.5 ml-2 mr-2 mt-0.5 mb-1 overflow-hidden rounded-full group bg-gradient-to-br from-orange-500 to-cyan-500 group-hover:from-orange-500 group-hover:to-cyan-500 hover:text-white dark:text-white focus:ring-2 focus:outline-none focus:ring-orange-300 dark:focus:ring-blue-orange z-10'>
-					<span className='relative px-5 py-2.5 transition-all ease-in duration-75 bg-white rounded-full group-hover:bg-opacity-0' data-te-toggle='tooltip' title='activate score function' onClick={() => setScoreToggle(true)}>
-						Score
-					</span>
-				</button>
-			);
-		}
 	};
 
 	const [dragStart, setDragStart] = useState<string>('');
@@ -90,28 +132,73 @@ const ExtraFilters: React.FC<Props> = () => {
 	const scoreDropdown = () => {
 		if (openDropdown) {
 			return (
-				<div className='grid grid-flow-row items-center m-2 z-10'>
+				<div className='grid grid-flow-row items-center my-3'>
 					<button
-						className='grid grid-flow-col justify-center items-center py-2 w-28 overflow-hidden rounded-lg text-white group bg-gradient-to-br from-orange-500 to-cyan-500 hover:bg-gradient-to-bl focus:ring-2 focus:outline-none focus:ring-orange-200 dark:focus:ring-orange-800'
-						onClick={() => setOpenDropdown(false)}>
-						Ranking <TbChevronUp className='ml-2' />
+						className='grid grid-flow-col justify-center items-center w-28 h-8 overflow-hidden rounded-lg text-white group bg-gradient-to-br from-orange-500 to-cyan-500 hover:bg-gradient-to-bl focus:ring-2 focus:outline-none focus:ring-orange-200 dark:focus:ring-orange-800'
+						onClick={() => setOpenDropdown(false)}
+						type='button'>
+						<a className='ml-2'>Ranking</a> <TbChevronUp className='ml-2' />
 					</button>
-					{/* ml-2 mr-2 mt-0.5 mb-1 */}
-					<div className='rounded-lg overflow-hidden shadow-2xl dark:bg-gray-700 m-0.5 z-10 bg-white'>
+					<div className='bg-gray-100 rounded-lg overflow-hidden shadow-2xl dark:bg-gray-700 m-0.5'>
 						<ol className='rounded-lg divide-y divide-gray-200'>
-							<li id={rankingList[0]} className='hover:bg-gray-200 pl-2 rounded-lg cursor-move' draggable='true' onDragStart={() => setDragStart(rankingList[0])} onDragOver={() => setDragOver(rankingList[0])} onDragEnd={endDrag}>
+							<li
+								id={rankingList[0]}
+								className='hover:bg-gray-200 pl-2 rounded-lg cursor-move'
+								draggable='true'
+								onDragStart={() => setDragStart(rankingList[0])}
+								onDragOver={(event: any) => {
+									event.preventDefault();
+									setDragOver(rankingList[0]);
+								}}
+								onDragEnd={endDrag}>
 								<a>{rankingList[0]}</a>
 							</li>
-							<li id={rankingList[1]} className='hover:bg-gray-200 pl-2 rounded-lg cursor-move' draggable='true' onDragStart={() => setDragStart(rankingList[1])} onDragOver={() => setDragOver(rankingList[1])} onDragEnd={endDrag}>
+							<li
+								id={rankingList[1]}
+								className='hover:bg-gray-200 pl-2 rounded-lg cursor-move'
+								draggable='true'
+								onDragStart={() => setDragStart(rankingList[1])}
+								onDragOver={(event: any) => {
+									event.preventDefault();
+									setDragOver(rankingList[1]);
+								}}
+								onDragEnd={endDrag}>
 								<a>{rankingList[1]}</a>
 							</li>
-							<li id={rankingList[2]} className='hover:bg-gray-200 pl-2 rounded-lg cursor-move' draggable='true' onDragStart={() => setDragStart(rankingList[2])} onDragOver={() => setDragOver(rankingList[2])} onDragEnd={endDrag}>
+							<li
+								id={rankingList[2]}
+								className='hover:bg-gray-200 pl-2 rounded-lg cursor-move'
+								draggable='true'
+								onDragStart={() => setDragStart(rankingList[2])}
+								onDragOver={(event: any) => {
+									event.preventDefault();
+									setDragOver(rankingList[2]);
+								}}
+								onDragEnd={endDrag}>
 								<a>{rankingList[2]}</a>
 							</li>
-							<li id={rankingList[3]} className='hover:bg-gray-200 pl-2 rounded-lg cursor-move' draggable='true' onDragStart={() => setDragStart(rankingList[3])} onDragOver={() => setDragOver(rankingList[3])} onDragEnd={endDrag}>
+							<li
+								id={rankingList[3]}
+								className='hover:bg-gray-200 pl-2 rounded-lg cursor-move'
+								draggable='true'
+								onDragStart={() => setDragStart(rankingList[3])}
+								onDragOver={(event: any) => {
+									event.preventDefault();
+									setDragOver(rankingList[3]);
+								}}
+								onDragEnd={endDrag}>
 								<a>{rankingList[3]}</a>
 							</li>
-							<li id={rankingList[4]} className='hover:bg-gray-200 pl-2 rounded-lg cursor-move' draggable='true' onDragStart={() => setDragStart(rankingList[4])} onDragOver={() => setDragOver(rankingList[4])} onDragEnd={endDrag}>
+							<li
+								id={rankingList[4]}
+								className='hover:bg-gray-200 pl-2 rounded-lg cursor-move'
+								draggable='true'
+								onDragStart={() => setDragStart(rankingList[4])}
+								onDragOver={(event: any) => {
+									event.preventDefault();
+									setDragOver(rankingList[4]);
+								}}
+								onDragEnd={endDrag}>
 								<a>{rankingList[4]}</a>
 							</li>
 						</ol>
@@ -120,12 +207,11 @@ const ExtraFilters: React.FC<Props> = () => {
 			);
 		} else {
 			return (
-				// px-10 py-2 ml-2 mr-2 mt-0.5 mb-1
-				<div className='grid grid-flow-row items-center m-2 z-10'>
+				<div className='grid grid-flow-row items-center my-3'>
 					<button
-						className='grid grid-flow-col justify-center items-center py-2 w-28 overflow-hidden rounded-lg text-white group bg-gradient-to-br from-orange-500 to-cyan-500 hover:bg-gradient-to-bl focus:ring-2 focus:outline-none focus:ring-orange-200 dark:focus:ring-orange-800'
+						className='grid grid-flow-col justify-center items-center w-28 h-8 overflow-hidden rounded-lg text-white group bg-gradient-to-br from-orange-500 to-cyan-500 hover:bg-gradient-to-bl focus:ring-2 focus:outline-none focus:ring-orange-200 dark:focus:ring-orange-800'
 						onClick={() => setOpenDropdown(true)}>
-						Ranking <TbChevronDown className='ml-2' />
+						<a className='ml-2'>Ranking</a> <TbChevronDown className='ml-2' />
 					</button>
 				</div>
 			);
@@ -134,21 +220,124 @@ const ExtraFilters: React.FC<Props> = () => {
 
 	const priceFilter = () => {
 		return (
-			<div className='grid grid-flow-col justify-start items-center m-2 z-10'>
-				<label className='font-medium mr-2 text-gray-900 dark:text-white'>Price:</label>
-				<input className='bg-white w-20 border border-accent text-gray-900 text-sm rounded-lg focus:ring-accent focus:border-accent' type='text' inputMode='numeric' pattern='^\d{1,5}$' placeholder='$0' min={0} max={10000} />
+			<div className='grid grid-flow-col items-center my-3'>
+				<span className='font-medium mr-2 text-gray-900 dark:text-white text-lg'>Price:</span>
+				<input
+					id='min_price'
+					name='min_price'
+					className='bg-white w-20 border-2 border-accent text-gray-900 text-sm h-8 rounded-lg focus:ring-accent focus:border-accent'
+					type='text'
+					inputMode='numeric'
+					pattern='^\d{1,5}$'
+					placeholder='$0'
+					min={0}
+					max={10000}
+					onChange={(event: any) => {
+						if (!event.target.value) {
+							setMinPrice(0);
+						} else {
+							setMinPrice(event.target.value);
+						}
+					}}
+				/>
+				<button type='submit' className='sr-only' />
 				<GoDash />
-				<input className='bg-white w-20 border border-accent text-gray-900 text-sm rounded-lg focus:ring-accent focus:border-accent' type='text' inputMode='numeric' pattern='^\d{1,5}$' placeholder='$0' min={0} max={10000} />
+				<input
+					id='max_price'
+					name='max_price'
+					className='bg-white w-20 border-2 border-accent text-gray-900 text-sm h-8 rounded-lg focus:ring-accent focus:border-accent'
+					type='text'
+					inputMode='numeric'
+					pattern='^\d{1,5}$'
+					placeholder='$0'
+					min={0}
+					max={10000}
+					onChange={(event: any) => {
+						if (!event.target.value) {
+							setMaxPrice(10000);
+						} else {
+							setMaxPrice(event.target.value);
+						}
+					}}
+				/>
+				<button type='submit' className='sr-only' />
+			</div>
+		);
+	};
+
+	const sizeFilter = () => {
+		return (
+			<div className='grid grid-flow-col items-center my-3'>
+				<span className='font-medium mr-2 text-gray-900 dark:text-white text-lg'>Size:</span>
+				<input
+					id='min_size'
+					name='min_size'
+					className='bg-white w-20 border-2 border-accent text-gray-900 text-sm h-8 rounded-lg focus:ring-accent focus:border-accent'
+					type='text'
+					inputMode='numeric'
+					pattern='^\d{1,5}$'
+					placeholder='sq ft'
+					min={0}
+					max={10000}
+					onChange={(event: any) => {
+						if (!event.target.value) {
+							setMinSize(0);
+						} else {
+							setMinSize(event.target.value);
+						}
+					}}
+				/>
+				<button type='submit' className='sr-only' />
+				<GoDash />
+				<input
+					id='max_size'
+					name='max_size'
+					className='bg-white w-20 border-2 border-accent text-gray-900 text-sm h-8 rounded-lg focus:ring-accent focus:border-accent'
+					type='text'
+					inputMode='numeric'
+					pattern='^\d{1,5}$'
+					placeholder='sq ft'
+					min={0}
+					max={10000}
+					onChange={(event: any) => {
+						if (!event.target.value) {
+							setMaxSize(10000);
+						} else {
+							setMaxSize(event.target.value);
+						}
+					}}
+				/>
+				<button type='submit' className='sr-only' />
+			</div>
+		);
+	};
+
+	const scoreCheckbox = () => {
+		return (
+			<div className='grid grid-flow-col items-center'>
+				<span className='grid grid-flow-col items-center my-3 mr-2 text-lg h-8 font-medium text-gray-900 dark:text-gray-300'>Score</span>
+				<input
+					id='score'
+					name='score'
+					value='false'
+					type='checkbox'
+					className='cursor-pointer border-1 border-accent text-accent'
+					data-te-toggle='tooltip'
+					title='activate score function and use the ranking dropdown to order elements by preference from top to bottom'
+					onClick={(event: any) => setScoreToggle(event.target.checked)}
+				/>
+				<button type='submit' className='sr-only' />
 			</div>
 		);
 	};
 
 	return (
-		<div className='grid grid-flow-row grid-flow-col justify-start gap-2 z-10'>
+		<form onSubmit={handleFilter} className='relative z-10 grid grid-flow-row grid-flow-col justify-evenly'>
 			<div>{priceFilter()}</div>
-			<div>{scoreBtn()}</div>
+			<div>{sizeFilter()}</div>
+			<div>{scoreCheckbox()}</div>
 			<div>{scoreDropdown()}</div>
-		</div>
+		</form>
 	);
 };
 

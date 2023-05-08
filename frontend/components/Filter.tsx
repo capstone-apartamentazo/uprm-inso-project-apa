@@ -1,7 +1,7 @@
 import getConfig from 'next/config';
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
-import { IoWaterOutline } from 'react-icons/io5';
+import { IoWaterOutline, IoPersonSharp } from 'react-icons/io5';
 import { RxLightningBolt } from 'react-icons/rx';
 import { MdWifi, MdBalcony, MdOutlineKitchen } from 'react-icons/md';
 import { TbDog, TbCat, TbWashMachine, TbAirConditioningDisabled, TbToolsKitchen2 } from 'react-icons/tb';
@@ -32,8 +32,13 @@ const Filter: React.FC<Props> = () => {
 	const [sharedKitchen, setSharedKitchen] = useState(false);
 	const [laundryFacilities, setLaundryFacilities] = useState(false);
 	const [sharedBathroom, setSharedBathroom] = useState(false);
-	const [bathroom, setBathroom] = useState(1);
-	const [bedroom, setBedroom] = useState(1);
+	const [bathrooms, setBathrooms] = useState(0);
+	const [bedrooms, setBedrooms] = useState(0);
+	const [minPrice, setMinPrice] = useState(0);
+	const [maxPrice, setMaxPrice] = useState(10000);
+	const [minSize, setMinSize] = useState(0);
+	const [maxSize, setMaxSize] = useState(10000);
+	const [tenants, setTenants] = useState(1);
 
 	const router = useRouter();
 	const { search } = router.query;
@@ -56,17 +61,28 @@ const Filter: React.FC<Props> = () => {
 			shared_dryer: laundryFacilities,
 			shared_washer: laundryFacilities,
 			shared_bathroom: sharedBathroom,
-			bathrooms: bathroom,
-			bedrooms: bedroom,
+			bathrooms: bathrooms,
+			bedrooms: bedrooms,
+			min_price: minPrice,
+			max_price: maxPrice,
+			min_size: minSize,
+			max_size: maxSize,
+			tenant_capacity: tenants,
 		};
 
+		const filterOptions: any = {
+			amenitiesFilter: true,
+			scoreFilter: false,
+		};
+
+		let jsonFilter = JSON.stringify(filterOptions);
 		let jsonAmenities = JSON.stringify(amenities);
 
 		router.push({
 			pathname: '/listings/results',
 			query: {
 				search: search,
-				filter: true,
+				filterOptions: jsonFilter,
 				amenities: jsonAmenities,
 			},
 		});
@@ -292,7 +308,7 @@ const Filter: React.FC<Props> = () => {
 		if (petsAllowed) {
 			return (
 				<div className='tooltip tooltip-accent' data-tip='Pets Allowed'>
-					<button className='relative inline-flex items-center justify-center p-0.5 mr-2 overflow-hidden rounded-full group bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-2 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800'>
+					<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden rounded-full group bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-2 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800'>
 						<span className='relative px-5 py-2.5 rounded-full text-white  dark:bg-gray-900 group-hover:bg-opacity-0 grid grid-cols-2' title='pets allowed' onClick={() => setPetsAllowed(false)}>
 							<TbDog /> <TbCat />
 						</span>
@@ -391,14 +407,21 @@ const Filter: React.FC<Props> = () => {
 					<span className='relative px-2.5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-full group-hover:bg-opacity-0 grid grid-cols-3 gap-2' title='private bathrooms'>
 						<TiMinus
 							onClick={() => {
-								if (bathroom === 0) {
-									setBathroom(0);
+								if (bathrooms === 0) {
+									setBathrooms(0);
 								} else {
-									setBathroom(bathroom - 1);
+									setBathrooms(bathrooms - 1);
 								}
 							}}
 						/>{' '}
-						<FaToilet /> <TiPlus onClick={() => setBathroom(bathroom + 1)} />
+						<FaToilet />{' '}
+						<TiPlus
+							onClick={() => {
+								if (bathrooms < 20) {
+									setBathrooms(bathrooms + 1);
+								}
+							}}
+						/>
 					</span>
 				</button>
 			</div>
@@ -407,28 +430,59 @@ const Filter: React.FC<Props> = () => {
 
 	const bedroomBtn = () => {
 		return (
-			<div className='tooltip tooltip-accent' data-tip='Bedrooms'>
-				<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden rounded-full group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-2 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800'>
-					<span className='relative px-2.5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-full group-hover:bg-opacity-0 grid grid-cols-3 gap-2' title='bedrooms'>
-						<TiMinus
-							onClick={() => {
-								if (bedroom === 0) {
-									setBedroom(0);
-								} else {
-									setBedroom(bedroom - 1);
-								}
-							}}
-						/>{' '}
-						<FaBed /> <TiPlus onClick={() => setBedroom(bedroom + 1)} />
-					</span>
-				</button>
-			</div>
+			<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden rounded-full group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-2 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800'>
+				<span className='relative px-2.5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-full group-hover:bg-opacity-0 grid grid-cols-3 gap-2' data-te-toggle='tooltip' title='bedrooms'>
+					<TiMinus
+						onClick={() => {
+							if (bedrooms === 0) {
+								setBedrooms(0);
+							} else {
+								setBedrooms(bedrooms - 1);
+							}
+						}}
+					/>{' '}
+					<FaBed />{' '}
+					<TiPlus
+						onClick={() => {
+							if (bedrooms < 20) {
+								setBedrooms(bedrooms + 1);
+							}
+						}}
+					/>
+				</span>
+			</button>
+		);
+	};
+
+	const tenantBtn = () => {
+		return (
+			<button className='relative inline-flex items-center justify-center p-0.5 mr-2 mb-1 overflow-hidden rounded-full group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-2 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800'>
+				<span className='relative px-2.5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-full group-hover:bg-opacity-0 grid grid-cols-3 gap-2' data-te-toggle='tooltip' title='number of tenants'>
+					<TiMinus
+						onClick={() => {
+							if (tenants === 0) {
+								setTenants(0);
+							} else {
+								setTenants(tenants - 1);
+							}
+						}}
+					/>{' '}
+					<IoPersonSharp />{' '}
+					<TiPlus
+						onClick={() => {
+							if (tenants < 20) {
+								setTenants(tenants + 1);
+							}
+						}}
+					/>
+				</span>
+			</button>
 		);
 	};
 
 	return (
-		<form onSubmit={handleFilter} className='grid grid-flow-col grid-rows-3 gap-2'>
-			<div>
+		<form onSubmit={handleFilter} className='grid grid-flow-row grid-flow-col grid-rows-3 gap-2'>
+			<div className='grid grid-flow-col justify-center'>
 				{waterBtn()}
 				{airBtn()}
 				{privWasherBtn()}
@@ -439,18 +493,17 @@ const Filter: React.FC<Props> = () => {
 				{parkingBtn()}
 				{balconyBtn()}
 			</div>
-			<div>
+			<div className='grid grid-flow-col justify-center'>
 				{petsBtn()}
 				{kitchenBtn()}
 				{laundryBtn()}
 				{sharedBathroomBtn()}
-			</div>
-			<div>
-				{bedroomBtn()}
-				<span className='font-semibold'>Bedrooms:</span> <span className='font-semibold text-accent'>{bedroom}</span>
-				&nbsp;&nbsp;
 				{bathroomBtn()}
-				<span className='font-semibold'>Bathrooms:</span> <span className='font-semibold text-accent'>{bathroom}</span>
+				{bedroomBtn()}
+				{tenantBtn()}
+			</div>
+			<div className='grid grid-flow-col justify-center'>
+				bathrooms: {bathrooms} &nbsp;&nbsp; bedrooms: {bedrooms} &nbsp;&nbsp; tenants: {tenants}
 			</div>
 		</form>
 	);

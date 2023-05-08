@@ -20,7 +20,17 @@ const Listings = () => {
 	const [accmData, setAccmData] = useState<any>([]);
 
 	const router = useRouter();
-	const { search, filter, amenities } = router.query;
+	const { search, filterOptions, amenities } = router.query;
+	let amenitiesFilter = false;
+	let scoreFilter = false;
+	try {
+		let jsonParse = JSON.parse(filterOptions as string);
+		amenitiesFilter = jsonParse['amenitiesFilter'];
+		scoreFilter = jsonParse['scoreFilter'];
+	} catch (error) {
+		amenitiesFilter = false;
+		scoreFilter = false;
+	}
 
 	const [map, setMap] = useState<google.maps.Map>();
 	const { isLoaded } = useJsApiLoader({
@@ -30,7 +40,7 @@ const Listings = () => {
 	});
 
 	useEffect(() => {
-		if (search && filter === 'false') {
+		if (search && !amenitiesFilter && !scoreFilter) {
 			const endpoint = `${host}/api/search?input=${search}&offset=0`;
 
 			const options = {
@@ -78,7 +88,7 @@ const Listings = () => {
 					setLocation(search);
 				});
 		}
-		if (search && filter) {
+		if (search && amenitiesFilter && !scoreFilter) {
 			const endpoint = `${host}/api/filter/amenities?input=${search}&offset=0`;
 
 			const options = {
@@ -126,7 +136,55 @@ const Listings = () => {
 					setLocation(search);
 				});
 		}
-	}, [search, filter, amenities, map]);
+		if (search && amenitiesFilter && scoreFilter) {
+			const endpoint = `${host}/api/score?input=${search}&offset=0`;
+
+			const options = {
+				method: 'POST',
+				headers: new Headers({ 'content-type': 'application/json' }),
+				body: amenities as string,
+			};
+			fetch(endpoint, options)
+				.then((data) => {
+					return data.json();
+				})
+				.then((data) => {
+					allListings = [];
+					data.map((accm: any, i: any) => {
+						allListings.push(
+							<div key={i} className='col-start-1 row-span-2 p-2'>
+								<ListingResult
+									key={i}
+									title={accm.accm_title}
+									address={accm.accm_street + ', ' + accm.accm_city}
+									description={accm.accm_description}
+									unitAmount={accm.accm_units.length}
+									id={accm.accm_id}
+									accmUnits={accm.accm_units}
+									map={map ? map : null}
+									coords={{ lat: accm.latitude, lng: accm.longitude }}
+								/>
+							</div>
+						);
+					});
+					setListings(allListings);
+					setAmount(allListings.length > 1 ? allListings.length + ' results' : allListings.length + ' result');
+					setLocation(search);
+					setAccmData(data);
+				})
+				.catch((err) => {
+					var noListings: any = [];
+					noListings.push(
+						<div key={0} className='col-start-1 row-span-2 p-2'>
+							No results found
+						</div>
+					);
+					setListings(noListings);
+					setAmount('No results');
+					setLocation(search);
+				});
+		}
+	}, [search, filterOptions, amenities, map]);
 
 	// INFO: MAP
 	const mapOptions = {
@@ -150,26 +208,29 @@ const Listings = () => {
 		lng: -67.14088360700836,
 	};
 
+	//const center = ;
+
 	return (
 		<Layout>
 			<section className='pt-32 pl-20 bg-gray-50 min-h-screen'>
 				<div className='grid grid-cols-2 grid-flow-row gap-4'>
 					<div className='row-span-1'>
 						<p className='font-bold text-2xl'>
-							{amount} accommodations for <span className='text-accent'>'{location}'</span>
+							{amount} for <span className='text-accent'>'{location}'</span>
 						</p>
 					</div>
 					<div className='col-start-1 row-start-2 col-end-2'>
 						<SearchBar className='w-full' width='' />
 					</div>
-					<div className='col-start-1 row-start-4 h-screen overflow-auto no-scrollbar -ml-2'>{listings}</div>
-					<div className='col-start-1 row-start-3 flex justify-start'>
+					<div className='col-start-1 row-start-4 h-screen overflow-auto no-scrollbar'>{listings}</div>
+					<div className='col-start-1 row-start-3'>
 						<Filter className='w-full' />
 					</div>
-					<div className='col-start-2 row-start-2 row-span-6'>
+					<div className='col-start-2 row-start-2 row-span-2'>
 						<ExtraFilters className='w-full' />
 					</div>
-					<div className='col-start-2 row-start-2 row-span-3 m-6 mt-16'>
+					<div className='col-start-2 row-start-3 row-span-3 m-6'>
+						{/* <LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}> */}
 						{isLoaded && (
 							<GoogleMap
 								onLoad={(map) => {
@@ -199,6 +260,8 @@ const Listings = () => {
 								</MarkerClusterer>
 							</GoogleMap>
 						)}
+
+						{/* </LoadScript> */}
 					</div>
 				</div>
 			</section>

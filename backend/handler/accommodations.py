@@ -66,7 +66,7 @@ class AccommodationHandler:
       logger.exception(e)
       return jsonify('Error Occured'), 400
 
-  def filter(self, json, search, offset):
+  def filter(self, json, data, offset):
     try:
       amenities = 'bedrooms >= {} and bathrooms >= {}'.format(json['bedrooms'], json['bathrooms'])
       include = ' and '
@@ -100,7 +100,7 @@ class AccommodationHandler:
         amenities = include.join([amenities, 'balcony = true'])
       if not len(amenities.strip()):
         return jsonify('No Amenities to Filter')
-      daoAmenities = self.accommodations.filter(amenities, search, offset)
+      daoAmenities = self.accommodations.filter(amenities, data, json['min_price'], json['max_price'], json['min_size'], json['max_size'], json['tenant_capacity'], offset)
       if daoAmenities:
         return jsonify([row for row in daoAmenities])
       else:
@@ -148,9 +148,9 @@ class AccommodationHandler:
       price_weight = weights[json['price']]
       size_weight = weights[json['size']]
       amenities_weight = weights[json['amenities']]
-      rating_weight = weights[json['ranking']]
+      rating_weight = weights[json['rating']]
 
-      daoAccommodations = self.accommodations.calculateScore(amenities, data, distance_weight, price_weight, size_weight, amenities_weight, rating_weight, offset)
+      daoAccommodations = self.accommodations.calculateScore(amenities, data, distance_weight, price_weight, size_weight, amenities_weight, rating_weight, json['min_price'], json['max_price'], json['min_size'], json['max_size'], json['tenant_capacity'], offset)
       if daoAccommodations:
         return jsonify(daoAccommodations)
       else:
