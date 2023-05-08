@@ -7,7 +7,6 @@ import axios from 'axios';
 import { useState, useEffect,useRef } from 'react';
 import useSWR, { mutate } from 'swr';
 import MessageList from '@/components/MessageList';
-import ConversationList from '@/components/ConversationList';
 import { useRouter } from 'next/router'
 
 import jwt from 'jwt-decode';
