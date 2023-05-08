@@ -370,3 +370,4 @@ def deleteImageForAccommodation(accm_id, img_id):
 def deleteImageForUnit(unit_id, img_id):
   return UnitHandler().deleteImage(unit_id, img_id)
 
+app.run()

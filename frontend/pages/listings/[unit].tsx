@@ -246,7 +246,7 @@ const Unit = () => {
 										{typeof accmReviews === 'string' ? 0 : accmReviews.length} {typeof accmReviews === 'string' ? 'reviews' : accmReviews.length > 1 ? 'reviews' : 'review'}
 									</a>
 								</div>
-								<button className='btn btn-primary btn-sm leading-5 mt-2'>
+								<button className='leading-5 mt-2'>
 									<Contact unitID={unitData.unit_id} token={storage.token} landlordID={landlord.landlord_id} />
 								</button>
 							</div>
