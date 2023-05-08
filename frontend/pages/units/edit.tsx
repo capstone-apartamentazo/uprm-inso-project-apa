@@ -264,7 +264,7 @@ const Edit = () => {
         }
 
     }
-    const createUnit = async (data: any, amenities: any) => {
+    const editUnit = async (data: any, amenities: any) => {
 
         if (data) {
             console.log(data)
@@ -289,7 +289,7 @@ const Edit = () => {
                     updateUnitAmenities(result['priv_amenities_id'], amenities)
 
                 }).then(() => {
-                    alert('Creation successful')
+                    alert('Update successful')
                     router.replace({
                         pathname: '/units',
                         query: { accmid: accmId } // the data
@@ -297,7 +297,7 @@ const Edit = () => {
                 })
                 .catch(err => {
                     console.log(err)
-                    alert('Creation errors')
+                    alert('Update errors')
                     //router.replace()
                 })
         }
@@ -369,12 +369,12 @@ const Edit = () => {
         event.preventDefault();
         let amenities = { 'bedrooms': event.target.bedrooms.value, 'bathrooms': event.target.bathrooms.value, 'electricity': event.target.electricity.checked, 'water': event.target.water.checked, 'internet': event.target.internet.checked, 'heater': event.target.heater.checked, 'private_washer': event.target.washer.checked, 'private_dryer': event.target.dryer.checked, 'air_conditioner': event.target.ac.checked, 'parking': event.target.parking.checked, 'balcony': event.target.balcony.checked }
         let details = {
-            'unit_number': event.target.number.value, 'price': parseInt(event.target.price.value,10), 'date_available': event.target.date.value, 'contract_duration': parseInt(event.target.contract.value,10), 'unit_id': unitId, 'tenant_capacity': parseInt(event.target.capacity.value,10), 'size': parseInt(event.target.size.value,10),'available':unit?.available
+            'unit_number': unit?.unit_number==event.target.number.value?null:event.target.number.value, 'price': parseInt(event.target.price.value,10), 'date_available': event.target.date.value, 'contract_duration': parseInt(event.target.contract.value,10), 'unit_id': unitId, 'tenant_capacity': parseInt(event.target.capacity.value,10), 'size': parseInt(event.target.size.value,10),'available':unit?.available
         }
         try {
 
 
-            createUnit(details, amenities)
+            editUnit(details, amenities)
 
             // uploadImage(selectedImage1!,6,1)
 
@@ -565,7 +565,7 @@ const Edit = () => {
                                 </div>
                                 <div className="flex items-center mt-auto">
                                     <label className="m-4">You are required to add at least one image and a maximum of four images.</label>
-                                    <button className="btn  text-white w-40 shadow-md bg-accent  hover:bg-blend-multiply hover:bg-accent ">Create</button>
+                                    <button className="btn  text-white w-40 shadow-md bg-accent  hover:bg-blend-multiply hover:bg-accent ">Update</button>
                                 </div>
 
                             </div>
