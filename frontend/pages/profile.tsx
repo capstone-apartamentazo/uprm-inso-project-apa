@@ -13,6 +13,7 @@ import Cookies from 'universal-cookie';
 import { Token } from 'Token';
 import { Storage } from 'Storage';
 import getConfig from 'next/config';
+import LeaseList from '@/components/LeaseList';
 
 const { publicRuntimeConfig } = getConfig();
 const { url: host } = publicRuntimeConfig.site;
@@ -243,13 +244,13 @@ const Profile = () => {
 
 						<div className='flex flex-wrap text-3xl font-bold text-left pt-6 pb-2 px-6 rounded-md absolute  bg-white top-0 left-0 right-0 items-center'>
 							<h1 className=' text-3xl font-bold text-left  grow'>
-								Active Contracts
+								Active Leases
 
 							</h1>
 
 						</div>
 					// <AccommodationList></AccommodationList>
-
+						<LeaseList></LeaseList>
 
 
 

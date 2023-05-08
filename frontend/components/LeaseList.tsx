@@ -12,6 +12,9 @@ import { Token } from 'Token';
 import { Accm } from 'Accm';
 import getConfig from 'next/config';
 import ProfileAccommodation from './ProfileAccommodation';
+import { LeaseType } from 'Lease';
+
+import Lease from './Lease';
 
 const { publicRuntimeConfig } = getConfig();
 const { url: host } = publicRuntimeConfig.site;
@@ -22,7 +25,7 @@ type Props = {
 }
 
 
-const AccommodationList: React.FC<Props> = ({  }) => {
+const LeaseList: React.FC<Props> = ({  }) => {
     const [storage, setStorage] = useState<Storage>({ token: null, isLandlord: false, id: null })
     const [logged, setLogged] = useState(false)
     const cookies = new Cookies()
@@ -38,9 +41,9 @@ const AccommodationList: React.FC<Props> = ({  }) => {
         }
     }, [])
 
-    
+    var leases:[] = []
 
-    const { data: accms, error: accmsError, isLoading: isLoadingAccms } = useSWR((storage?.token != null) ? `${host}/api/accommodations/landlord/${storage.id}` : null, (url: string) => fetch(url, {
+    const { data: leasesFetch, error: leasesError, isLoading: isLoadingLeases } = useSWR((storage?.token != null) ? `${host}/api/tenants/leases/${storage.id}` : null, (url: string) => fetch(url, {
         headers: {
             Authorization: `Bearer ${storage?.token}`
         }
@@ -54,22 +57,25 @@ const AccommodationList: React.FC<Props> = ({  }) => {
         return <h1>User logged out</h1>
     }
 
-    if (accmsError) {
+    if (leasesError) {
         return <h1>Error</h1>
     }
-    if (isLoadingAccms) return (
+    if (isLoadingLeases) return (
         <div>
             <h1>Loading...</h1>
 
         </div>
     )
-    if (!accms || accms == 'Accommodations Not Found') {
-        return (
-            <div className='mt-3'>
+    if (!leasesFetch || leasesFetch == 'Leases from Tenant Not Found') {
+        leases = []
+        // return (
+        //     <div className='mt-3'>
 
-                <h1 className='font-normal text-xl text-black'>No properties listed.</h1>
-            </div>
-        )
+        //         <h1 className='font-normal text-xl text-black'>No active leases.</h1>
+        //     </div>
+        // )
+    }else{
+        leases = leasesFetch
     }
     if(storage.isLandlord == null){
         console.log('nulled')
@@ -77,10 +83,10 @@ const AccommodationList: React.FC<Props> = ({  }) => {
 
 
     return (
-        <div className='flex justify-center flex-wrap gap-4 mr-2 mt-20 p-4 mb-6 overflow-auto'>
-            {accms.map((accm: Accm ) => (
+        <div className='flex  flex-wrap gap-4 mr-2  p-4 mb-6 overflow-auto'>
+            {leases.map((lease: LeaseType ) => (
                 
-				<ProfileAccommodation key={accm.accm_id} title={accm.accm_title} address={accm.accm_street+', '+accm.accm_city+', '+accm.accm_zipcode} id={accm.accm_id}/>
+				<Lease key={lease.lease_id} unit_id={lease.unit_id}  start_date={lease.init_date} end_date={lease.end_date} price={lease.price}/>
 
             ))}
             {/* <Link href='/' className=' flex flex-col bg-white justify-center  w-40 rounded-md  shadow-md ring-1 ring-stone-200 transition ease-in-out delay-50 hover:-translate-y-1 hover:scale-10 duration-200 cursor-pointer'>
@@ -100,4 +106,4 @@ const AccommodationList: React.FC<Props> = ({  }) => {
 
     )
 }
-export default AccommodationList;
+export default LeaseList;
