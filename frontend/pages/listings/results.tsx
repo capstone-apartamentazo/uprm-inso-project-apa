@@ -40,6 +40,8 @@ const Listings = () => {
 	});
 
 	useEffect(() => {
+		setAccmData([])
+		map?.setZoom(14)
 		if (search && !amenitiesFilter && !scoreFilter) {
 			const endpoint = `${host}/api/search?input=${search}&offset=0`;
 
@@ -197,7 +199,7 @@ const Listings = () => {
 
 	const containerStyle = {
 		width: '100%',
-		height: '80%',
+		height: '50%',
 	};
 	const [center, setCenter] = useState({
 		lat: 18.210889901221826,
@@ -229,7 +231,7 @@ const Listings = () => {
 					<div className='col-start-2 row-start-2 row-span-2'>
 						<ExtraFilters className='w-full' />
 					</div>
-					<div className='col-start-2 row-start-3 row-span-3 m-6'>
+					<div className='col-start-2 row-start-3 row-span-2 m-6'>
 						{/* <LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}> */}
 						{isLoaded && (
 							<GoogleMap
@@ -241,7 +243,7 @@ const Listings = () => {
 								mapContainerStyle={containerStyle}
 								center={center}
 								zoom={14}>
-								<Marker position={colegio} icon={'/images/colegio-pin.png'} />
+								<Marker position={colegio} title='UPRM' icon={'/images/colegio-pin.png'} />
 								<MarkerClusterer>
 									{(clusterer) =>
 										accmData.map((accm: Accm, index: number) => (
