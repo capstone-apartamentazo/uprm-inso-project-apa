@@ -148,7 +148,7 @@ class AccommodationHandler:
       price_weight = weights[json['price']]
       size_weight = weights[json['size']]
       amenities_weight = weights[json['amenities']]
-      rating_weight = weights[json['ranking']]
+      rating_weight = weights[json['rating']]
 
       daoAccommodations = self.accommodations.calculateScore(amenities, data, distance_weight, price_weight, size_weight, amenities_weight, rating_weight, json['min_price'], json['max_price'], json['min_size'], json['max_size'], json['tenant_capacity'], offset)
       if daoAccommodations:

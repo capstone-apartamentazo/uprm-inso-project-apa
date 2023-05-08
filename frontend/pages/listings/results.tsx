@@ -117,6 +117,44 @@ const Listings = () => {
 					setLocation(search);
 				});
 		}
+		if (search && amenitiesFilter && scoreFilter) {
+			const endpoint = `${host}/api/score?input=${search}&offset=0`;
+
+			const options = {
+				method: 'POST',
+				headers: new Headers({ 'content-type': 'application/json' }),
+				body: (amenities as string)
+			};
+			fetch(endpoint, options)
+				.then((data) => {
+					return data.json();
+				})
+				.then((data) => {
+					allListings = [];
+					data.map((accm: any, i: any) => {
+						allListings.push(
+							<div key={i} className='col-start-1 row-span-2 p-2'>
+								<ListingResult key={i} title={accm.accm_title} address={accm.accm_street + ', ' + accm.accm_city} description={accm.accm_description} unitAmount={accm.accm_units.length} id={accm.accm_id} accmUnits={accm.accm_units} map={map ? map : null} coords={{ lat: accm.latitude, lng: accm.longitude }} />
+							</div>
+						);
+					});
+					setListings(allListings);
+					setAmount(allListings.length > 1 ? allListings.length + ' results' : allListings.length + ' result');
+					setLocation(search);
+					setAccmData(data)
+				})
+				.catch((err) => {
+					var noListings: any = [];
+					noListings.push(
+						<div key={0} className='col-start-1 row-span-2 p-2'>
+							No results found
+						</div>
+					);
+					setListings(noListings);
+					setAmount('No results');
+					setLocation(search);
+				});
+		}
 	}, [search, filterOptions, amenities, map]);
 
 	// INFO: MAP
