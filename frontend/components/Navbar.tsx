@@ -22,7 +22,7 @@ export default function Navbar(path: any) {
 	const logout = async () => {
 		cookies.remove('jwt_authorization');
 		//localStorage.removeItem('data');
-		setupNav(true, '/images/user.png');
+		setupNav(false, '/images/user.png');
 		router.replace('/');
 		// router.reload();
 	};
