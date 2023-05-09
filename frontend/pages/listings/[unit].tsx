@@ -210,9 +210,9 @@ const Unit = () => {
 					<div className={`row-span-1 row-start-2 col-start-4 align-middle text-end ${storage.isLandlord ? 'hidden' : storage.isLandlord === null ? 'hidden' : ''}`}>
 						<WriteReview accmID={accmData.accm_id} token={storage.token} />
 					</div>
-					<div className='row-start-3 col-span-4 h-[28rem] bg-gray-100 rounded-2xl shadow-inner md:mr-0 mr-4 p-4'>
-						<div className='grid grid-rows-2 grid-flow-col gap-4 h-[28rem] overflow-auto'>
-							<div className='carousel carousel-center p-4 space-x-4 bg-neutral rounded-box h-[26rem]'>{allUnitPics}</div>
+					<div className='row-start-3 col-span-4 h-[20rem] md:h-[28rem] bg-gray-100 rounded-2xl shadow-inner md:mr-0 mr-4 p-4'>
+						<div className='grid grid-rows-2 grid-flow-col gap-4 h-[20rem] md:h-[28rem] overflow-auto'>
+							<div className='carousel carousel-center p-4 space-x-4 bg-neutral h-[18rem] rounded-box md:h-[26rem]'>{allUnitPics}</div>
 						</div>
 					</div>
 					<div className='row-start-5 col-span-4 md:row-start-4 md:col-span-2 space-y-1'>
@@ -249,7 +249,7 @@ const Unit = () => {
 								<p className='text-lg text-primary tracking-wide leading-5'>Property Manager</p>
 								<div className='flex items-center mt-2'>
 									{ratingStars}
-									<p className='ml-2 text-sm font-medium text-gray-500 dark:text-gray-400'>{landlord.landlord_rating} out of 5</p>
+									<p className='ml-2 text-sm font-medium text-gray-500 dark:text-gray-400 hidden md:block'>{landlord.landlord_rating} out of 5</p>
 									<span className='w-1 h-1 mx-1.5 bg-gray-500 rounded-full dark:bg-gray-400'></span>
 									<a href='#' className='text-sm font-medium text-gray-900 underline hover:no-underline'>
 										{typeof accmReviews === 'string' ? 0 : accmReviews.length} {typeof accmReviews === 'string' ? 'reviews' : accmReviews.length > 1 ? 'reviews' : 'review'}
@@ -282,7 +282,7 @@ const Unit = () => {
 					</div>
 					<div className='row-start-8 md:row-start-7 col-span-4 mt-10'>
 						<h3 className='text-2xl'>Accommodation Reviews</h3>
-						<div className='mb-24'>
+						<div className='mb-24 pr-2 md:pr-0'>
 							<ReviewList route={`accommodations/reviews/${unitData.accm_id}`} />
 						</div>
 					</div>

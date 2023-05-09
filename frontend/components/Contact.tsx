@@ -26,7 +26,6 @@ const Contact: React.FC<Props> = ({ unitID, landlordID, token }) => {
 
 		event.preventDefault();
 		if (event) {
-			console.log(data);
 			await axios({ method: 'post', url: `${host}/api/tenant/sends/message`, headers: { Authorization: `Bearer ${token}` }, data })
 				.then((response) => {
 					handleModal('modal_container');

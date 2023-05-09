@@ -12,10 +12,13 @@ import { Storage } from 'Storage';
 import { Token } from 'Token';
 import getConfig from 'next/config';
 import { handleModal } from 'helpers/handleModal';
+import { useScrollPosition } from 'helpers/useScrollPosition';
+
 const { publicRuntimeConfig } = getConfig();
 const { url: host } = publicRuntimeConfig.site;
 
 export default function Navbar(path: any) {
+	const scrollPosition = useScrollPosition();
 	const router = useRouter();
 	const [nav, setNav] = useState({ left: <></>, right: <></> });
 	const [classes, setClasses] = useState('');
@@ -34,7 +37,6 @@ export default function Navbar(path: any) {
 	};
 
 	function setupNav(signedIn: boolean, pic: string) {
-		console.log(path.path);
 		path.path === '/about' || path.path === '/' || path.path === '/#' ? setClasses('navbar text-primary-content fixed md:px-16 md:py-5 z-40') : setClasses('navbar text-primary-content fixed md:px-16 md:py-5 z-40 bg-white');
 		setNav({
 			left:
@@ -210,7 +212,7 @@ export default function Navbar(path: any) {
 	}, []);
 
 	return (
-		<div className={classes}>
+		<div className={classes + (scrollPosition > 400 && (path.path === '/' || path.path === '/#' || path.path === '/about') ? ' hidden' : '')}>
 			{nav.left}
 			<div className='flex-none'>
 				{' '}
