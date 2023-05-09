@@ -59,21 +59,25 @@ const Unit = () => {
 	let tempAmenities = {
 		'Air Conditioner': unitAmenities['air_conditioner'],
 		Balcony: unitAmenities['balcony'],
-		Bed: unitAmenities['bed'],
 		Electricity: unitAmenities['electricity'],
 		Internet: unitAmenities['internet'],
-		Microwave: unitAmenities['microwave'],
 		Parking: unitAmenities['parking'],
 		Water: unitAmenities['water'],
+		'Private Washer': unitAmenities['private_washer'],
+		'Private Dryer': unitAmenities['private_dryer'],
+		'Water Heater': unitAmenities['heater'],
 	};
 
 	let tempSharedAmenities = {
-		Dryer: accmAmenities['dryer'],
+		Dryer: accmAmenities['shared_dryer'],
 		Internet: accmAmenities['internet'],
-		Kitchen: accmAmenities['kitchen'],
+		Kitchen: accmAmenities['shared_kitchen'],
 		Pets: accmAmenities['pets_allowed'],
-		Washer: accmAmenities['washer'],
+		Washer: accmAmenities['shared_washer'],
+		'Shared Bathroom': accmAmenities['shared_bathroom'],
 	};
+	console.log(accmAmenities);
+	console.log(unitAmenities);
 
 	let amenities = [];
 
