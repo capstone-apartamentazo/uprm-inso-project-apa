@@ -76,8 +76,6 @@ const Unit = () => {
 		Washer: accmAmenities['shared_washer'],
 		'Shared Bathroom': accmAmenities['shared_bathroom'],
 	};
-	console.log(accmAmenities);
-	console.log(unitAmenities);
 
 	let amenities = [];
 

@@ -35,7 +35,7 @@ export default function Navbar(path: any) {
 
 	function setupNav(signedIn: boolean, pic: string) {
 		console.log(path.path);
-		path.path === '/about' || path.path === '/' || path.path === '/#' ? setClasses('navbar text-primary-content fixed md:px-16 md:py-5 z-50') : setClasses('navbar text-primary-content fixed md:px-16 md:py-5 z-50 bg-white');
+		path.path === '/about' || path.path === '/' || path.path === '/#' ? setClasses('navbar text-primary-content fixed md:px-16 md:py-5 z-40') : setClasses('navbar text-primary-content fixed md:px-16 md:py-5 z-40 bg-white');
 		setNav({
 			left:
 				path.path === '/' ? (

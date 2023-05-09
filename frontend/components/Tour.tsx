@@ -1,6 +1,8 @@
 import React from 'react';
 import getConfig from 'next/config';
 import axios from 'axios';
+import AlertContext, { AlertContextType, IAlert } from 'context/alertContext';
+import { handleModal } from 'helpers/handleModal';
 const { publicRuntimeConfig } = getConfig();
 const { url: host } = publicRuntimeConfig.site;
 
@@ -10,6 +12,7 @@ type Props = {
 };
 
 const Tour: React.FC<Props> = ({ unitID, token }) => {
+	const { success, error } = React.useContext(AlertContext) as AlertContextType;
 	const requestTour = async (event: any) => {
 		let data = {
 			unit_id: unitID,
@@ -21,30 +24,30 @@ const Tour: React.FC<Props> = ({ unitID, token }) => {
 			console.log(data);
 			await axios({ method: 'post', url: `${host}/api/tenant/sends/request/tour`, headers: { Authorization: `Bearer ${token}` }, data })
 				.then((response) => {
-					console.log(response.data);
+					handleModal('modal_tour');
+					success('Sent your tour request to the landlord!');
 					return response.data;
 				})
 				.catch((err) => {
-					console.log(err);
-					alert(err);
+					handleModal('modal_tour');
+					error('You must be signed in to do this!');
 				});
 		}
 	};
 
 	return (
 		<div className='overflow-hidden'>
-			<label htmlFor='requestTour' className='btn btn-primary text-white'>
+			<label htmlFor='requestTour' onClick={() => handleModal('modal_tour')} className='btn btn-primary text-white'>
 				Request Tour
 			</label>
 			<form id={'tour'} onSubmit={requestTour}>
-				<input type='checkbox' id='requestTour' className='modal-toggle' />
-				<div className='modal'>
+				<div id={'modal_tour'} className='modal'>
 					<div className='modal-box relative flex'>
 						<div className='flex-col flex-none w-10 -my-8  bg-gradient-to-b pl-5 -ml-8 mr-5 from-primary to-accent'>
 							<br></br>
 						</div>
 						<div className='flex-col flex-auto'>
-							<label htmlFor='requestTour' className='btn btn-sm btn-circle absolute right-2 top-2'>
+							<label htmlFor='requestTour' onClick={() => handleModal('modal_tour')} className='btn btn-sm btn-circle absolute right-2 top-2'>
 								✕
 							</label>
 

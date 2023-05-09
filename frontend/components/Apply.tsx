@@ -1,6 +1,8 @@
 import React from 'react';
 import getConfig from 'next/config';
 import axios from 'axios';
+import AlertContext, { AlertContextType, IAlert } from 'context/alertContext';
+import { handleModal } from 'helpers/handleModal';
 const { publicRuntimeConfig } = getConfig();
 const { url: host } = publicRuntimeConfig.site;
 
@@ -10,6 +12,7 @@ type Props = {
 };
 
 const Apply: React.FC<Props> = ({ unitID, token }) => {
+	const { success, error } = React.useContext(AlertContext) as AlertContextType;
 	const sendApp = async (event: any) => {
 		let data = {
 			unit_id: unitID,
@@ -17,33 +20,32 @@ const Apply: React.FC<Props> = ({ unitID, token }) => {
 
 		event.preventDefault();
 		if (event) {
-			console.log(data);
 			await axios({ method: 'post', url: `${host}/api/tenant/sends/request`, headers: { Authorization: `Bearer ${token}` }, data })
 				.then((response) => {
-					console.log(response.data);
+					handleModal('modal_apply');
+					success('Sent your message to the landlord!');
 					return response.data;
 				})
 				.catch((err) => {
-					console.log(err);
-					alert(err);
+					handleModal('modal_apply');
+					error('You must be signed in to do this!');
 				});
 		}
 	};
 
 	return (
 		<div className='overflow-hidden'>
-			<label htmlFor='apply' className='btn btn-secondary text-secondary hover:bg-primary-200 hover:text-white bg-transparent'>
+			<label htmlFor='apply' onClick={() => handleModal('modal_apply')} className='btn btn-secondary text-secondary hover:bg-primary-200 hover:text-white bg-transparent'>
 				Apply
 			</label>
 			<form id='apply_unit' onSubmit={sendApp}>
-				<input type='checkbox' id='apply' className='modal-toggle' />
-				<div className='modal'>
+				<div id={'modal_apply'} className='modal'>
 					<div className='modal-box relative flex'>
 						<div className='flex-col flex-none w-10 -my-8  bg-gradient-to-b pl-5 -ml-8 mr-5 from-primary to-accent'>
 							<br></br>
 						</div>
 						<div className='flex-col flex-auto'>
-							<label htmlFor='apply' className='btn btn-sm btn-circle absolute right-2 top-2'>
+							<label htmlFor='apply' onClick={() => handleModal('modal_apply')} className='btn btn-sm btn-circle absolute right-2 top-2'>
 								✕
 							</label>
 
