@@ -10,13 +10,13 @@ const About = () => {
 	return (
 		<Layout>
 			<section>
-				<div className='py-40 bg-gradient-to-r from-secondary to-accent'>
+				<div className='py-24 md:py-40 bg-gradient-to-r from-secondary to-accent'>
 					<div className='prose prose-blue mx-auto text-center'>
 						<h1 className='text-white'>About Us</h1>
 					</div>
 				</div>
 				<div>
-					<section className='text-start m-10 mx-40 mt-20'>
+					<section className='text-start mt-14 m-10 md:mx-40 md:mt-20'>
 						<h1 className='font-semibold text-3xl my-4'>What we do</h1>
 						<div className='font-semibold text-gray-500 leading-10 space-y-4'>
 							<p>
@@ -35,13 +35,13 @@ const About = () => {
 					</section>
 				</div>
 				<div>
-					<section className='text-end m-10 mx-40'>
+					<section className='text-end m-10 md:mx-40'>
 						<h1 className='font-semibold text-3xl my-4'>Our Team</h1>
 						<p className='font-semibold text-gray-500 mt-4 leading-10'>
 							We are a team of passionate individuals who are committed to simplifying the college apartment searching process. Our diverse backgrounds and experiences help us bring a fresh perspective to the industry, enabling us to create innovative solutions that meet the needs of
 							both landlords and students.
 						</p>
-						<div className='items-center flex justify-center mt-10 mb-28 gap-5'>
+						<div className='items-center flex justify-center flex-wrap mt-10 mb-28 gap-5'>
 							<Card title='César Amaro' description='Software Engineer' position='Front-end' picture='' />
 							<Card title='Elliot Cardona' description='Software Engineer' position='Front-end' picture='' />
 							<Card title='Daniel Crespo' description='Software Engineer' position='Back-end' picture='' />

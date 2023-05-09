@@ -54,7 +54,7 @@ const Unit = () => {
 	// TODO: Add loading cards, default error cards
 	// TODO: actual loading screen
 	if (accmPicsError || unitError || accmError || unitAmenitiesError || accmAmenitiesError || landlordError || landlordPicError || unitPicsError) return <div>Failed to load</div>;
-	if (!accmPics || accmPics === undefined || (!unitData && !accmData) || unitData === undefined || accmData === undefined || unitAmenities === undefined || accmAmenities === undefined || landlord === undefined || landlordPic === undefined || unitPics === undefined)	return <Loading size={100} />;
+	if (!accmPics || accmPics === undefined || (!unitData && !accmData) || unitData === undefined || accmData === undefined || unitAmenities === undefined || accmAmenities === undefined || landlord === undefined || landlordPic === undefined || unitPics === undefined) return <Loading size={100} />;
 
 	let tempAmenities = {
 		'Air Conditioner': unitAmenities['air_conditioner'],
@@ -195,9 +195,9 @@ const Unit = () => {
 	};
 	return (
 		<Layout>
-			<section className='pt-32 pl-20 pr-20 bg-gray-50'>
+			<section className='pt-20 pl-4 md:pt-32 md:pl-20 md:pr-20 bg-gray-50'>
 				<div className='grid grid-flow-row gap-4'>
-					<div className='row-span-2 row-start-1 col-start-1 text-3xl align-middle'>
+					<div className=' row-span-2 row-start-1 col-start-1 col-end-5 text-3xl align-middle'>
 						<h1 className='font-semibold w-full'>
 							Unit {unitData.unit_number} <span className='text-accent'>|</span> {accmData.accm_title}
 						</h1>
@@ -208,12 +208,12 @@ const Unit = () => {
 					<div className={`row-span-1 row-start-2 col-start-4 align-middle text-end ${storage.isLandlord ? 'hidden' : storage.isLandlord === null ? 'hidden' : ''}`}>
 						<WriteReview accmID={accmData.accm_id} token={storage.token} />
 					</div>
-					<div className='row-start-3 col-span-4 h-[28rem] bg-gray-100 rounded-2xl shadow-inner p-4'>
+					<div className='row-start-3 col-span-4 h-[28rem] bg-gray-100 rounded-2xl shadow-inner md:mr-0 mr-4 p-4'>
 						<div className='grid grid-rows-2 grid-flow-col gap-4 h-[28rem] overflow-auto'>
 							<div className='carousel carousel-center p-4 space-x-4 bg-neutral rounded-box h-[26rem]'>{allUnitPics}</div>
 						</div>
 					</div>
-					<div className='row-start-4 col-span-2 space-y-1'>
+					<div className='row-start-5 col-span-4 md:row-start-4 md:col-span-2 space-y-1'>
 						<p className='font-semibold text-xl'>
 							{unitAmenities['bedrooms']} <span className='font-normal'>beds</span> <span className='text-accent'>|</span> {unitAmenities['bathrooms']} <span className='font-normal'>baths</span>
 						</p>
@@ -225,7 +225,7 @@ const Unit = () => {
 						</p>
 						<p className=''>Available {unitData.date_available}</p>
 					</div>
-					<div className='row-start-4 col-start-4 text-end'>
+					<div className='row-start-4 col-start-1 md:row-start-4 md:col-start-4 text-end flex md:block'>
 						<button className='mr-4 text-white'>
 							<Tour unitID={unitData.unit_id} token={storage.token} />
 						</button>
@@ -233,7 +233,7 @@ const Unit = () => {
 							<Apply unitID={unitData.unit_id} token={storage.token} />
 						</button>
 					</div>
-					<div className='row-start-5 col-start-1 col-span-2 mt-10'>
+					<div className='row-start-6 md:row-start-5 col-start-1 col-span-4 md:col-span-2 pr-2 mt-10'>
 						<h3 className='text-2xl'>About</h3>
 						<div className='w-full break-all'>
 							<p className='mt-4 mb-4'>{accmData.accm_description}</p>
@@ -259,7 +259,7 @@ const Unit = () => {
 							</div>
 						</div>
 					</div>
-					<div className='row-start-5 col-start-3 bg-gray-50 col-span-2 text-center mt-10 ring-2 ring-accent rounded-md p-1'>
+					<div className='row-start-6 md:row-start-5 col-start-3 bg-gray-50 col-span-2 text-center mt-10 ring-2 ring-accent rounded-md p-1 hidden md:block'>
 						{isLoaded && (
 							<GoogleMap
 								onLoad={(map) => {
@@ -274,11 +274,11 @@ const Unit = () => {
 							</GoogleMap>
 						)}
 					</div>
-					<div className='row-start-6 col-span-4 mt-10'>
+					<div className='row-start-7 md:row-start-6 col-span-4 mt-10'>
 						<h3 className='text-2xl'>Amenities</h3>
-						<ul className='space-y-1 text-gray-500 list-inside mt-4 max-h-32 w-full flex flex-wrap flex-col'>{amenities}</ul>{' '}
+						<ul className='space-y-1 text-gray-500 list-inside mt-4 max-h-48 md:max-h-32 w-full flex flex-wrap flex-col'>{amenities}</ul>{' '}
 					</div>
-					<div className='row-start-7 col-span-4 mt-10'>
+					<div className='row-start-8 md:row-start-7 col-span-4 mt-10'>
 						<h3 className='text-2xl'>Accommodation Reviews</h3>
 						<div className='mb-24'>
 							<ReviewList route={`accommodations/reviews/${unitData.accm_id}`} />

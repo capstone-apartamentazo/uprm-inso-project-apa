@@ -71,7 +71,7 @@ const Signup = () => {
 		<div className='text-center'>
 			<label id='signup-modal' className='modal cursor-pointer'>
 				<label className='modal-box relative flex' htmlFor=''>
-					<div className='flex-col flex-none w-10 -my-6 bg-gradient-to-b pl-5 -ml-8 mr-5 from-primary to-accent overscroll-none'>
+					<div className='flex-col flex-none w-10 h-[50rem] md:h-auto -my-6 bg-gradient-to-b pl-5 -ml-8 mr-5 from-primary to-accent overscroll-none'>
 						<br></br>
 					</div>
 
@@ -82,7 +82,7 @@ const Signup = () => {
 
 						<h3 className='text-4xl text-accent font-bold my-10'>Create an Account</h3>
 
-						<form onSubmit={handleSubmit} className='p-5 form-control gap-10 flex'>
+						<form onSubmit={handleSubmit} className='p-5 form-control gap-10 flex overflow-scroll md:overflow-hidden'>
 							<div className='gap-5 flex-row flex'>
 								<input type='text' id='first' name='first' placeholder='First Name' className='w-1/2 bg-gray-200 bg-opacity-50 border border-transparent focus:ring-accent focus:border-accent pl-4' required />
 								<input type='text' id='last' name='last' placeholder='Last Name' className='w-1/2 bg-gray-200 bg-opacity-50 border border-transparent focus:ring-accent focus:border-accent pl-4' required />

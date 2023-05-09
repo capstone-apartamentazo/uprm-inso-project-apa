@@ -56,9 +56,13 @@ const Layout = ({ children, ...customMeta }: LayoutProps) => {
 			</Head>
 			<Navbar path={asPath} />
 			<main className='flex flex-col min-h-screen'>{children}</main>
-			<footer className='mt-auto'>
-				<Footer />
-			</footer>
+			{asPath === '/' || asPath === '/#' || asPath === '/about' ? (
+				<footer className='mt-auto'>
+					<Footer />
+				</footer>
+			) : (
+				<></>
+			)}
 		</>
 	);
 };

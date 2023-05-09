@@ -128,8 +128,8 @@ export default function Hero() {
 				</g>
 			</svg>
 			<h1 className='text-4xl md:text-5xl mb-4 pt-52 font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-accent to-white'>APARTAMENTAZO</h1>
-			<h2 className='font-semibold mb-5 text-2xl '>helping you find your next college apartment</h2>
-			<SearchBar className='flex justify-center items-center' width='w-[43rem]' />
+			<h2 className='font-semibold mb-5 text-2xl'>helping you find your next college apartment</h2>
+			<SearchBar className='flex justify-center items-center px-4 md:px-0' width='w-[43rem]' />
 		</section>
 	);
 }

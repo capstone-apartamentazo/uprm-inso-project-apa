@@ -145,7 +145,7 @@ export default function Navbar(path: any) {
 				</div>
 			) : (
 				<ul className='menu menu-horizontal px-1 gap-4 items-end'>
-					<div className='dropdown md:hidden right-6 absolute dropdown-end'>
+					<div className='dropdown md:hidden top-4 right-6 absolute dropdown-end'>
 						<label tabIndex={0} className='btn btn-ghost btn-sm hover:bg-accent bg-white text-accent md:hidden hover:text-white'>
 							Profile
 						</label>

@@ -214,7 +214,7 @@ const Listings = () => {
 
 	return (
 		<Layout>
-			<section className='pt-32 px-4 md:pl-20 bg-gray-50 min-h-screen'>
+			<section className='pt-20 md:pt-32 px-4 md:pl-20 bg-gray-50 min-h-screen'>
 				<div className='flex flex-col md:grid md:grid-cols-2 md:grid-flow-row gap-4'>
 					<div className='md:row-span-1'>
 						<p className='font-bold text-2xl'>
@@ -232,7 +232,6 @@ const Listings = () => {
 						<ExtraFilters className='w-full' />
 					</div>
 					<div className='md:col-start-2 md:row-start-3 md:row-span-2 md:m-6 hidden md:block'>
-			
 						{isLoaded && (
 							<GoogleMap
 								onLoad={(map) => {
