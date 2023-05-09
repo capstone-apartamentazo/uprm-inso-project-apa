@@ -278,7 +278,7 @@ const Unit = () => {
 					</div>
 					<div className='row-start-7 md:row-start-6 col-span-4 mt-10'>
 						<h3 className='text-2xl'>Amenities</h3>
-						<ul className='space-y-1 text-gray-500 list-inside mt-4 max-h-48 md:max-h-32 w-full flex flex-wrap flex-col'>{amenities}</ul>{' '}
+						<ul className='space-y-1 text-gray-500 list-inside mt-4 max-h-60 md:max-h-32 w-full flex flex-wrap flex-col'>{amenities}</ul>{' '}
 					</div>
 					<div className='row-start-8 md:row-start-7 col-span-4 mt-10'>
 						<h3 className='text-2xl'>Accommodation Reviews</h3>
