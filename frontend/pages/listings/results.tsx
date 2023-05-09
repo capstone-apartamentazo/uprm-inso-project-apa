@@ -123,7 +123,7 @@ const Listings = () => {
 						);
 					});
 					setListings(allListings);
-					setAmount(allListings.length > 1 ? allListings.length + ' results' : allListings.length + ' result');
+					setAmount(allListings.length > 1 ? allListings.length + ' accommodations' : allListings.length + ' accommodation');
 					setLocation(search);
 					setAccmData(data);
 				})
@@ -172,7 +172,7 @@ const Listings = () => {
 						);
 					});
 					setListings(allListings);
-					setAmount(allListings.length > 1 ? allListings.length + ' results' : allListings.length + ' result');
+					setAmount(allListings.length > 1 ? allListings.length + ' accommodations' : allListings.length + ' accommodation');
 					setLocation(search);
 					setAccmData(data);
 				})
@@ -212,29 +212,27 @@ const Listings = () => {
 		lng: -67.14088360700836,
 	};
 
-	//const center = ;
-
 	return (
 		<Layout>
-			<section className='pt-32 pl-20 bg-gray-50 min-h-screen'>
-				<div className='grid grid-cols-2 grid-flow-row gap-4'>
-					<div className='row-span-1'>
+			<section className='pt-32 px-4 md:pl-20 bg-gray-50 min-h-screen'>
+				<div className='flex flex-col md:grid md:grid-cols-2 md:grid-flow-row gap-4'>
+					<div className='md:row-span-1'>
 						<p className='font-bold text-2xl'>
 							{amount} for <span className='text-accent'>'{location}'</span>
 						</p>
 					</div>
-					<div className='col-start-1 row-start-2 col-end-2'>
+					<div className='md:col-start-1 md:row-start-2 md:col-end-2'>
 						<SearchBar className='w-full' width='' />
 					</div>
-					<div className='col-start-1 row-start-4 h-screen overflow-auto no-scrollbar'>{listings}</div>
-					<div className='col-start-1 row-start-3'>
+					<div className='md:col-start-1 md:row-start-4 h-screen overflow-auto no-scrollbar'>{listings}</div>
+					<div className='md:col-start-1 md:row-start-3 hidden md:block'>
 						<Filter className='w-full' />
 					</div>
-					<div className='col-start-2 row-start-2 row-span-2'>
+					<div className='md:col-start-2 md:row-start-2 md:row-span-2 hidden md:block'>
 						<ExtraFilters className='w-full' />
 					</div>
-					<div className='col-start-2 row-start-3 row-span-2 m-6'>
-						{/* <LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}> */}
+					<div className='md:col-start-2 md:row-start-3 md:row-span-2 md:m-6 hidden md:block'>
+			
 						{isLoaded && (
 							<GoogleMap
 								onLoad={(map) => {
@@ -264,8 +262,6 @@ const Listings = () => {
 								</MarkerClusterer>
 							</GoogleMap>
 						)}
-
-						{/* </LoadScript> */}
 					</div>
 				</div>
 			</section>

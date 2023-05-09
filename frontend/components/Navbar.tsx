@@ -93,7 +93,7 @@ export default function Navbar(path: any) {
 			right: signedIn ? (
 				<div className='md:menu md:menu-horizontal md:px-1 md:gap-4'>
 					{path.path != '/' ? (
-						<li className='invisible md:visible'>
+						<li className='invisible md:invisible'>
 							<Link href={'/'} className='text-accent normal-case font-semibold md:invisible'>
 								<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' strokeWidth={1.5} stroke='currentColor' className='w-5 h-5 -mr-1'>
 									<path
@@ -108,7 +108,7 @@ export default function Navbar(path: any) {
 					) : (
 						<></>
 					)}
-					<li className={path.path === '/' ? `text-white` : ``}>
+					<li className={path.path === '/' ? `text-white` : `hidden md:block`}>
 						<Link href={'/messages'} className='normal-case font-semibold invisible md:visible'>
 							<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' strokeWidth={1.5} stroke='currentColor' className='w-5 h-5 -mr-1'>
 								<path
@@ -120,7 +120,7 @@ export default function Navbar(path: any) {
 							Messages
 						</Link>
 					</li>
-					<div className='dropdown dropdown-end absolute md:sticky right-10 top-4 md:right-auto md:top-auto'>
+					<div className='dropdown dropdown-end absolute md:sticky right-4 top-2 md:right-auto md:top-auto'>
 						<label tabIndex={0} className='btn btn-ghost btn-circle avatar'>
 							<div className='w-10 rounded-full'>
 								<img src={pic} className='object-cover' />

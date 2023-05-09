@@ -12,7 +12,6 @@ type Props = {
 	accmUnits: any;
 	map: google.maps.Map | null;
 	coords: { lat: number; lng: number };
-	score?: string;
 };
 
 function getAvailableAmenities(amenities: any, id: string) {
@@ -53,7 +52,7 @@ function getAvailableAmenities(amenities: any, id: string) {
 	return toReturn;
 }
 
-const ListingResult: React.FC<Props> = ({ title, address, description, unitAmount, id, accmUnits, map, coords, score }) => {
+const ListingResult: React.FC<Props> = ({ title, address, description, unitAmount, id, accmUnits, map, coords }) => {
 	const [active, setActive] = useState(false);
 	const [units, setUnits] = useState([]);
 	var picLink = '';
@@ -97,7 +96,7 @@ const ListingResult: React.FC<Props> = ({ title, address, description, unitAmoun
 					<img src={picLink} className='rounded-xl lg:object-cover lg:h-full' alt='' />
 				</figure>
 				<div className='card-body lg:w-8/12'>
-					<span className='card-actions justify-end right-10 absolute font-semibold text-accent text-lg'>{score}</span>
+					<span className='card-actions justify-end right-10 absolute font-semibold text-accent text-lg'>8.7</span>
 					<h2 className='card-title lg:w-[95%]'>{title}</h2>
 					<p className='text-neutral-500'>{address}</p>
 					<div className='space-x-1'>{amenities}</div>
